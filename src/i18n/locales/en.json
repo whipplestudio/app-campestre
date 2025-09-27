@@ -1,13 +1,20 @@
 {
   "welcome": "Welcome",
-  "login": {
-    "title": "Member Login",
-    "email": "Email",
-    "password": "Password",
-    "loginButton": "Login",
-    "forgotPassword": "Forgot Password?",
-    "noAccount": "Don't have an account?",
-    "register": "Register"
+  "auth": {
+    "container": {
+      "title": "Member Login"
+    },
+    "logo": {
+      "name": "Club Campestre",
+      "place": "Tampico"
+    },
+    "login": {
+      "title": "Sign In",
+      "email": "Email",
+      "password": "Password",
+      "loginButton": "Sign In",
+      "forgotPassword": "Forgot Password?"
+    }
   },
   "profile": {
     "title": "Member Profile",
@@ -50,6 +57,8 @@
     "back": "Back",
     "loading": "Loading...",
     "error": "Error",
-    "success": "Success"
+    "success": "Success",
+    "exampleEmail": "email@clubtampico.com",
+    "examplePassword": "MyPassword"
   }
 }
