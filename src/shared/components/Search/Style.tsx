@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { COLORS } from '../../theme/colors';
 
 export const styles = StyleSheet.create({
   container: {
@@ -8,28 +9,42 @@ export const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F7FAFC',
+    backgroundColor: COLORS.gray50,
     borderRadius: 8,
     paddingHorizontal: 12,
     height: 48,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: COLORS.gray200,
   },
   searchContainerFocused: {
-    borderColor: '#4A90E2',
-    backgroundColor: '#FFFFFF',
+    borderColor: COLORS.primary,
+    backgroundColor: COLORS.white,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   icon: {
     marginRight: 8,
+    color: COLORS.gray400,
   },
   input: {
     flex: 1,
     height: '100%',
-    color: '#1A202C',
+    color: COLORS.gray800,
     fontSize: 16,
     padding: 0,
+    fontFamily: 'System',
   },
   clearButton: {
     padding: 4,
+    color: COLORS.gray400,
+  },
+  clearButtonActive: {
+    color: COLORS.gray600,
+  },
+  loadingIndicator: {
+    marginLeft: 8,
   },
 });
