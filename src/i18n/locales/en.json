@@ -1,0 +1,55 @@
+{
+  "welcome": "Welcome",
+  "login": {
+    "title": "Member Login",
+    "email": "Email",
+    "password": "Password",
+    "loginButton": "Login",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "register": "Register"
+  },
+  "profile": {
+    "title": "Member Profile",
+    "name": "Name",
+    "email": "Email",
+    "memberSince": "Member Since",
+    "membershipType": "Membership Type",
+    "save": "Save",
+    "edit": "Edit"
+  },
+  "menus": {
+    "title": "Menus",
+    "dailyMenu": "Daily Menu",
+    "weeklyMenu": "Weekly Menu",
+    "specialMenu": "Special Menu",
+    "viewMenu": "View Menu"
+  },
+  "events": {
+    "title": "Events & Reservations",
+    "upcomingEvents": "Upcoming Events",
+    "makeReservation": "Make Reservation",
+    "eventName": "Event Name",
+    "eventDate": "Event Date",
+    "eventTime": "Event Time",
+    "availableSpots": "Available Spots",
+    "bookEvent": "Book Event"
+  },
+  "surveys": {
+    "title": "Voice of the Member",
+    "subtitle": "Help us improve our services",
+    "question1": "How satisfied are you with our club services?",
+    "question2": "What improvements would you like to see?",
+    "question3": "Any other comments?",
+    "submit": "Submit Survey",
+    "thankYou": "Thank you for your feedback!"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "ok": "OK",
+    "back": "Back",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  }
+}
