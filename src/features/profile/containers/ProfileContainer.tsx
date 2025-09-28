@@ -1,22 +1,61 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, SafeAreaView, Alert } from 'react-native';
 import { useStore } from '../../../store';
 import { useTranslation } from 'react-i18next';
+import { COLORS } from '../../../shared/theme/colors';
+import Button from '../../../shared/components/Button/Button';
+import SectionCard from '../components/SectionCard/SectionCard';
+import ProfileHeader from '../components/ProfileHeader/ProfileHeader';
+import PersonalInfo from '../components/PersonalInfo/PersonalInfo';
+import FamilyMembers from '../components/FamilyMembers/FamilyMembers';
+import Vehicles from '../components/Vehicles/Vehicles';
+import EmergencyContact from '../components/EmergencyContact/EmergencyContact';
+import useMessages from '../hooks/useMessages';
+
+// Datos de ejemplo - reemplazar con datos reales de tu aplicación
+const MOCK_FAMILY_MEMBERS = [
+  { id: 1, name: 'María López', relationship: 'Esposa', age: 35, isActive: true },
+  { id: 2, name: 'Carlos Pérez', relationship: 'Hijo', age: 12, isActive: true },
+  { id: 3, name: 'Ana Pérez', relationship: 'Hija', age: 8, isActive: true },
+];
+
+const MOCK_VEHICLES = [
+  { id: 1, plate: 'ABC-1234', model: 'Toyota RAV4 2022', isActive: true },
+  { id: 2, plate: 'XYZ-5678', model: 'Honda Civic 2020', isActive: false },
+];
+
+const MOCK_EMERGENCY_CONTACT = {
+  name: 'Juan Pérez',
+  relationship: 'Hermano',
+  phone: '555-123-4567',
+};
 
 const ProfileContainer = () => {
   const { currentUser, updateProfile, logout } = useStore();
   const { t } = useTranslation();
+  const { messages } = useMessages();
   
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState(currentUser?.name || '');
-  const [email, setEmail] = useState(currentUser?.email || '');
-  const [membershipType, setMembershipType] = useState(currentUser?.membershipType || '');
+  const [formData, setFormData] = useState({
+    name: currentUser?.name || '',
+    email: currentUser?.email || '',
+    //phone: currentUser?.phone || '',
+    //address: currentUser?.address || '',
+    membershipType: currentUser?.membershipType || 'Premium',
+  });
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
 
   const handleSave = () => {
     if (currentUser) {
-      updateProfile({ name, email, membershipType });
+      updateProfile(formData);
       setIsEditing(false);
-      Alert.alert(t('common.success'), 'Profile updated successfully');
+      Alert.alert(t('common.success'), 'Perfil actualizado exitosamente');
     }
   };
 
@@ -26,9 +65,13 @@ const ProfileContainer = () => {
 
   const handleCancel = () => {
     // Reset form values to current user values
-    setName(currentUser?.name || '');
-    setEmail(currentUser?.email || '');
-    setMembershipType(currentUser?.membershipType || '');
+    setFormData({
+      name: currentUser?.name || '',
+      email: currentUser?.email || '',
+      //phone: currentUser?.phone || '',
+      //address: currentUser?.address || '',
+      membershipType: currentUser?.membershipType || 'Premium',
+    });
     setIsEditing(false);
   };
 
@@ -36,106 +79,126 @@ const ProfileContainer = () => {
     logout();
   };
 
+  const handleAddFamilyMember = () => {
+    // Navegar a la pantalla de agregar familiar
+    Alert.alert('Agregar familiar', 'Funcionalidad en desarrollo');
+  };
+
+  const handleAddVehicle = () => {
+    // Navegar a la pantalla de agregar vehículo
+    Alert.alert('Agregar vehículo', 'Funcionalidad en desarrollo');
+  };
+
+  const handleEditEmergencyContact = () => {
+    // Navegar a la pantalla de editar contacto de emergencia
+    Alert.alert('Editar contacto de emergencia', 'Funcionalidad en desarrollo');
+  };
+
   if (!currentUser) {
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={styles.errorText}>No user data available</Text>
+        <Text style={styles.errorText}>No se encontraron datos del usuario</Text>
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>{t('profile.title')}</Text>
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* Encabezado del perfil */}
+        <ProfileHeader
+          name={currentUser.name}
+          memberId={currentUser.id}
+          membershipType={formData.membershipType}
+          isActive={true}
+          style={styles.profileHeader}
+        />
 
-        <View style={styles.profileCard}>
-          {/* Profile Header */}
-          <View style={styles.header}>
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>
-                {currentUser.name.charAt(0)}
-              </Text>
-            </View>
-            <View style={styles.userInfo}>
-              <Text style={styles.name}>{currentUser.name}</Text>
-              <Text style={styles.memberId}>ID: {currentUser.id}</Text>
-            </View>
-          </View>
-
-          {/* Profile Details */}
-          <View style={styles.detailsContainer}>
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>{t('profile.name')}</Text>
-              {isEditing ? (
-                <TextInput
-                  style={styles.input}
-                  value={name}
-                  onChangeText={setName}
+        {/* Información personal */}
+        <SectionCard 
+          title={messages.PERSONAL.TITLE}
+          rightAction={
+            isEditing ? (
+              <View style={styles.editActions}>
+                <Button 
+                  title={messages.CONTAINER.CANCEL}
+                  onPress={handleCancel}
+                  variant="secondary"
+                  style={[styles.actionButton, styles.cancelButton]}
+                  titleStyle={styles.cancelButtonText}
                 />
-              ) : (
-                <Text style={styles.value}>{currentUser.name}</Text>
-              )}
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>{t('profile.email')}</Text>
-              {isEditing ? (
-                <TextInput
-                  style={styles.input}
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
+                <View style={styles.buttonSpacer} />
+                <Button 
+                  title={messages.CONTAINER.SAVE}
+                  onPress={handleSave}
+                  variant="primary"
+                  style={[styles.actionButton, styles.saveButton]}
                 />
-              ) : (
-                <Text style={styles.value}>{currentUser.email}</Text>
-              )}
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>{t('profile.membershipType')}</Text>
-              {isEditing ? (
-                <TextInput
-                  style={styles.input}
-                  value={membershipType}
-                  onChangeText={setMembershipType}
-                />
-              ) : (
-                <Text style={styles.value}>{currentUser.membershipType}</Text>
-              )}
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>{t('profile.memberSince')}</Text>
-              <Text style={styles.value}>
-                {new Date(currentUser.memberSince).toLocaleDateString()}
-              </Text>
-            </View>
-          </View>
-
-          {/* Action Buttons */}
-          <View style={styles.buttonContainer}>
-            {isEditing ? (
-              <>
-                <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-                  <Text style={styles.buttonText}>{t('profile.save')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
-                  <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
-                </TouchableOpacity>
-              </>
+              </View>
             ) : (
-              <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-                <Text style={styles.buttonText}>{t('profile.edit')}</Text>
-              </TouchableOpacity>
-            )}
+              <Button 
+                title={messages.CONTAINER.EDIT}
+                onPress={handleEdit}
+                variant="primary"
+                style={styles.editButton}
+              />
+            )
+          }
+        >
+          <PersonalInfo
+            name={formData.name}
+            email={formData.email}
+            //phone={formData.phone}
+            //address={formData.address}
+            memberSince={currentUser.memberSince || new Date()}
+            isEditing={isEditing}
+            onNameChange={(text) => handleInputChange('name', text)}
+            onEmailChange={(text) => handleInputChange('email', text)}
+            onPhoneChange={(text) => handleInputChange('phone', text)}
+            onAddressChange={(text) => handleInputChange('address', text)}
+          />
+        </SectionCard>
 
-            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-              <Text style={styles.logoutButtonText}>Logout</Text>
-            </TouchableOpacity>
-          </View>
+        {/* Familiares */}
+        <SectionCard title={messages.FAMILY.TITLE}>
+          <FamilyMembers 
+            members={MOCK_FAMILY_MEMBERS}
+            onAddMember={handleAddFamilyMember}
+          />
+        </SectionCard>
+
+        {/* Vehículos */}
+        <SectionCard title={messages.VEHICLES.TITLE}>
+          <Vehicles 
+            vehicles={MOCK_VEHICLES}
+            onAddVehicle={handleAddVehicle}
+          />
+        </SectionCard>
+
+        {/* Contacto de emergencia */}
+        <SectionCard title={messages.EMERGENCY.TITLE}>
+          <EmergencyContact
+            name={MOCK_EMERGENCY_CONTACT.name}
+            relationship={MOCK_EMERGENCY_CONTACT.relationship}
+            phone={MOCK_EMERGENCY_CONTACT.phone}
+            onEdit={handleEditEmergencyContact}
+          />
+        </SectionCard>
+
+        {/* Botón de cierre de sesión */}
+        <View style={styles.logoutContainer}>
+          <Button
+            title={messages.CONTAINER.LOGOUT}
+            onPress={handleLogout}
+            variant="danger"
+            style={styles.logoutButton}
+          />
         </View>
-      </View>
+
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -143,151 +206,58 @@ const ProfileContainer = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FA',
+    backgroundColor: COLORS.gray50,
   },
-  content: {
+  scrollView: {
     flex: 1,
+  },
+  scrollContent: {
     padding: 16,
+    paddingBottom: 40,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#1F2937',
-  },
-  profileCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-  },
-  avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#4A90E2',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  avatarText: {
-    fontSize: 24,
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-  },
-  userInfo: {
-    flex: 1,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1F2937',
-  },
-  memberId: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginTop: 4,
-  },
-  detailsContainer: {
-    marginBottom: 20,
-  },
-  inputContainer: {
+  profileHeader: {
     marginBottom: 16,
   },
-  label: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#374151',
-    marginBottom: 4,
-  },
-  value: {
-    fontSize: 16,
-    color: '#1F2937',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 6,
-    padding: 8,
-    fontSize: 16,
-    backgroundColor: '#F9FAFB',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
+  logoutContainer: {
+    marginTop: 8,
+    marginBottom: 24,
   },
   editButton: {
-    flex: 1,
-    backgroundColor: '#4A90E2',
-    paddingVertical: 12,
-    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  editActions: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 8,
+    justifyContent: 'flex-end',
+  },
+  actionButton: {
+    minWidth: 100,
+    paddingHorizontal: 12,
+  },
+  buttonSpacer: {
+    width: 8,
   },
   saveButton: {
-    flex: 1,
-    backgroundColor: '#10B981',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginRight: 8,
+    marginLeft: 8,
   },
   cancelButton: {
-    flex: 1,
-    backgroundColor: '#9CA3AF',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginLeft: 8,
-  },
-  logoutButton: {
-    flex: 0.4,
-    backgroundColor: '#EF4444',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginLeft: 8,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
+    backgroundColor: COLORS.gray200,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
   },
   cancelButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
-  logoutButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
+  logoutButton: {
+    width: '100%',
   },
   errorText: {
     textAlign: 'center',
     marginTop: 50,
     fontSize: 16,
-    color: '#EF4444',
+    color: COLORS.error,
   },
 });
 

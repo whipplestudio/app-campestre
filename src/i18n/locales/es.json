@@ -23,7 +23,13 @@
     "memberSince": "Socio Desde",
     "membershipType": "Tipo de Membresía",
     "save": "Guardar",
-    "edit": "Editar"
+    "edit": "Editar",
+    "sections": {
+      "personalInfo": "Información Personal",
+      "familyMembers": "Miembros de la Familia",
+      "vehicles": "Vehículos",
+      "emergencyContact": "Contacto de Emergencia"
+    }
   },
   "menus": {
     "title": "Menús",
@@ -59,6 +65,7 @@
     "error": "Error",
     "success": "Éxito",
     "exampleEmail": "email@clubtampico.com",
-    "examplePassword": "Mi contraseña"
+    "examplePassword": "Mi contraseña",
+    "logout": "Cerrar Sesión"
   }
 }

@@ -27,6 +27,11 @@ export const styles = StyleSheet.create({
   errorInput: {
     borderColor: COLORS.error,
   },
+  multilineInput: {
+    minHeight: 100,
+    textAlignVertical: 'top',
+    paddingTop: 12,
+  },
   errorText: {
     fontSize: 12,
     color: COLORS.error,
