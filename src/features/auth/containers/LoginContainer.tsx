@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { SafeAreaView, Text } from 'react-native';
 
 // Styles
@@ -13,9 +13,7 @@ import { useLogin } from '../hooks/useLogin';
 import useMessages from '../hooks/useMessages';
 
 const LoginContainer = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const { handleLogin, isLoading } = useLogin();
+  const { email, password, isLoading, emailError, setEmail, setPassword, handleLogin } = useLogin();
   const { messages } = useMessages();
 
   return (
@@ -29,6 +27,7 @@ const LoginContainer = () => {
         onPasswordChange={setPassword}
         onSubmit={handleLogin}
         isLoading={isLoading}
+        emailError={emailError}
       />
     </SafeAreaView>
   );

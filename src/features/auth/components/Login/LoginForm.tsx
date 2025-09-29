@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-//Translation
+//Alert 
 
 //Styles
 import styles from './Style';
@@ -9,14 +9,8 @@ import styles from './Style';
 //Messages
 import useMessages from '../../hooks/useMessages';
 
-type LoginFormProps = {
-  email: string;
-  password: string;
-  onEmailChange: (text: string) => void;
-  onPasswordChange: (text: string) => void;
-  onSubmit: (email: string, password: string) => void;
-  isLoading: boolean;
-};
+//Interfaces
+import { LoginFormProps } from '../../interfaces';
 
 export const LoginForm: React.FC<LoginFormProps> = ({
   email,
@@ -25,6 +19,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   onPasswordChange,
   onSubmit,
   isLoading,
+  emailError,
 }) => {
   const { messages } = useMessages();
 
@@ -33,7 +28,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       <View style={styles.inputContainer}>
         <Text style={styles.label}>{messages.LOGIN.EMAIL}</Text>
         <TextInput
-          style={styles.input}
+          style={ emailError ? styles.inputError : styles.input}
           value={email}
           onChangeText={onEmailChange}
           placeholder={messages.LOGIN.EXAMPLE_EMAIL}

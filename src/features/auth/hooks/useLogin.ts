@@ -1,9 +1,21 @@
+// Navigation
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
+
+// Alert
 import { Alert } from 'react-native';
+
+// Store
 import { useProfileStore } from '../../profile/store/useProfileStore';
-import { authService, UserProfile } from '../services/authService';
 import { useAuth } from '../store/useAuthStore';
+
+// Services
+import { authService } from '../services/authService';
+
+// Interfaces
+import { userProfile } from '../interfaces';
+
+// Hooks
 import useMessages from './useMessages';
 
 export const useLogin = () => {
@@ -15,12 +27,22 @@ export const useLogin = () => {
   // Estado local para manejar la carga y errores
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState<boolean>(false);
+  
 
   // Función para limpiar errores
   const clearError = () => setError(null);
 
   // Función para manejar el login
   const login = async (email: string, password: string): Promise<boolean> => {
+
+    if (!validateEmail(email)) {
+      console.log('Email invalido');
+      return false;
+    }
+
     if (!email || !password) {
       setError(messages.ALERTS.REQUIRED_FIELDS);
       return false;
@@ -43,7 +65,7 @@ export const useLogin = () => {
         setProfile({
           ...profileData,
           token: '' // Agregar token vacío o undefined si es necesario
-        } as UserProfile);
+        } as userProfile);
         
         // 4. Navegar a la pantalla principal
         // @ts-ignore - asumiendo que existe la ruta 'MainTabs'
@@ -64,6 +86,13 @@ export const useLogin = () => {
     }
   };
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValid = emailRegex.test(email);
+    setEmailError(!isValid);
+    return isValid;
+  };
+
   // Función para manejar el envío del formulario
   const handleLogin = useCallback(
     async (email: string, password: string) => {
@@ -71,6 +100,12 @@ export const useLogin = () => {
     },
     [login]
   );
+
+  // Funcion para manejar el cambio del correo
+  const handleEmailChange = (email: string) => {
+    setEmail(email);
+    validateEmail(email);
+  };
 
   // Función para cerrar sesión
   const logout = async () => {
@@ -102,8 +137,13 @@ export const useLogin = () => {
   }
 
   return {
+    email,
+    password,
     isLoading,
     error,
+    emailError,
+    setEmail: handleEmailChange,
+    setPassword,
     login,
     logout,
     clearError,

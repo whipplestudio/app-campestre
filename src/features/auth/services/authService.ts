@@ -1,42 +1,8 @@
 // Tipos de datos
-
-export interface UserProfile {
-  id: string;
-  name: string;
-  email: string;
-  token: string;
-  refreshToken: string;
-  expiresAt: Date;
-  memberSince: Date;
-  membershipType: string;
-  familyMembers: FamilyMember[];
-  vehicles: Vehicle[];
-  emergencyContact: EmergencyContact;
-}
-
-export interface FamilyMember {
-  id: number;
-  name: string;
-  relationship: string;
-  age: number;
-  isActive: boolean;
-}
-
-export interface Vehicle {
-  id: number;
-  plate: string;
-  model: string;
-  isActive: boolean;
-}
-
-export interface EmergencyContact {
-  name: string;
-  relationship: string;
-  phone: string;
-}
+import { userProfile } from "../interfaces";
 
 // Base de datos mock de usuarios
-const mockUsers: UserProfile[] = [
+const mockUsers: userProfile[] = [
   {
     id: '1',
     name: 'Juan Pérez',
@@ -71,7 +37,7 @@ export const authService = {
   /**
    * Iniciar sesión con email y contraseña
    */
-  login: async (email: string, password: string): Promise<{ success: boolean; user?: UserProfile; error?: string }> => {
+  login: async (email: string, password: string): Promise<{ success: boolean; user?: userProfile; error?: string }> => {
     await simulateNetworkDelay();
     
     // Validación simple para propósitos de demostración
@@ -111,7 +77,7 @@ export const authService = {
   /**
    * Obtener el perfil del usuario actual
    */
-  getCurrentUser: async (): Promise<UserProfile | null> => {
+  getCurrentUser: async (): Promise<userProfile | null> => {
     await simulateNetworkDelay();
     const token = localStorage.getItem('authToken');
     if (!token) return null;
