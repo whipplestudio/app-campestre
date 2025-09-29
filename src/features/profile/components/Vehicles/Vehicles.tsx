@@ -3,13 +3,15 @@ import { FlatList, ListRenderItem, Text, View } from 'react-native';
 import { styles } from './Style';
 
 //Interfaces
-import { VehiclesProps, vehicle } from '../../interfaces/interfaces';
+import { vehiclesProps, vehicle } from '../../interfaces/interfaces';
+import useMessages from '../../hooks/useMessages';
 
-const Vehicles: React.FC<VehiclesProps> = ({
+const Vehicles: React.FC<vehiclesProps> = ({
   vehicles,
   onAddVehicle,
   style,
 }) => {
+  const { messages } = useMessages();
   // Ensure vehicles is always an array
   const vehicleList = vehicles || [];
   const renderItem: ListRenderItem<vehicle> = ({ item }) => (
@@ -26,7 +28,7 @@ const Vehicles: React.FC<VehiclesProps> = ({
           styles.statusText,
           item.isActive ? styles.activeText : styles.inactiveText
         ]}>
-          {item.isActive ? 'Activo' : 'Inactivo'}
+          {item.isActive ? messages.VEHICLES.ACTIVE : messages.VEHICLES.INACTIVE}
         </Text>
       </View>
     </View>
@@ -40,7 +42,7 @@ const Vehicles: React.FC<VehiclesProps> = ({
         keyExtractor={(item) => item.id.toString()}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No hay vehículos registrados</Text>
+            <Text style={styles.emptyText}>{messages.VEHICLES.NO_VEHICLES}</Text>
           </View>
         }
         contentContainerStyle={styles.listContent}
@@ -49,7 +51,7 @@ const Vehicles: React.FC<VehiclesProps> = ({
       {onAddVehicle && (
         <View style={styles.addButtonContainer}>
           <Text style={styles.addButton} onPress={onAddVehicle}>
-            + Agregar vehículo
+            + {messages.VEHICLES.ADD_VEHICLE}
           </Text>
         </View>
       )}

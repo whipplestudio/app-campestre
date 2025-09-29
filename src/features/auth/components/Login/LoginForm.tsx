@@ -28,7 +28,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       <View style={styles.inputContainer}>
         <Text style={styles.label}>{messages.LOGIN.EMAIL}</Text>
         <TextInput
-          style={ emailError ? styles.inputError : styles.input}
+          style={ emailError && email !== '' ? styles.inputError : styles.input}
           value={email}
           onChangeText={onEmailChange}
           placeholder={messages.LOGIN.EXAMPLE_EMAIL}

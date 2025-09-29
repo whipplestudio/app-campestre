@@ -1,5 +1,46 @@
 // Tipos de datos
+<<<<<<< HEAD
 import { userProfile } from "../interfaces";
+=======
+type UserRole = 'admin' | 'user';
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  token: string;
+  refreshToken: string;
+  expiresAt: Date;
+  memberSince: Date;
+  membershipType: string;
+  familyMembers: FamilyMember[];
+  vehicles: Vehicle[];
+  emergencyContact: EmergencyContact;
+}
+
+export interface FamilyMember {
+  id: number;
+  name: string;
+  relationship: string;
+  age: number;
+  isActive: boolean;
+}
+
+export interface Vehicle {
+  id: number;
+  plate: string;
+  model: string;
+  isActive: boolean;
+}
+
+export interface EmergencyContact {
+  name: string;
+  relationship: string;
+  phone: string;
+}
+>>>>>>> a78befbfb6e13b1edfae9e9bb9b9c9f329468856
 
 // Base de datos mock de usuarios
 const mockUsers: userProfile[] = [
@@ -7,6 +48,8 @@ const mockUsers: userProfile[] = [
     id: '1',
     name: 'Juan Pérez',
     email: 'juan@clubtampico.com',
+    phone: '555-123-4567',
+    address: 'Calle 123, Colonia 456, Ciudad 789',
     token: 'mock-jwt-token-admin-123',
     refreshToken: 'mock-jwt-refresh-token-admin-123',
     expiresAt: new Date('2025-05-15'),

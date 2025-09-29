@@ -1,6 +1,7 @@
 import React from 'react';
 import { FlatList, ListRenderItem, Text, View, ViewStyle } from 'react-native';
 import { styles } from './Style';
+import useMessages from '../../hooks/useMessages';
 
 interface FamilyMember {
   id: string | number;
@@ -21,13 +22,14 @@ const FamilyMembers: React.FC<FamilyMembersProps> = ({
   onAddMember,
   style,
 }) => {
+  const { messages } = useMessages();
   const renderItem: ListRenderItem<FamilyMember> = ({ item }) => (
     <View style={styles.memberItem}>
       <View style={styles.memberInfo}>
         <Text style={styles.memberName}>{item.name}</Text>
         <View style={styles.memberDetails}>
           <Text style={styles.detailText}>{item.relationship}</Text>
-          <Text style={styles.detailText}>• {item.age} años</Text>
+          <Text style={styles.detailText}>• {item.age} {messages.FAMILY.AGE}</Text>
         </View>
       </View>
       <View style={[
@@ -38,7 +40,7 @@ const FamilyMembers: React.FC<FamilyMembersProps> = ({
           styles.statusText,
           item.isActive ? styles.activeText : styles.inactiveText
         ]}>
-          {item.isActive ? 'Activo' : 'Inactivo'}
+          {item.isActive ? messages.FAMILY.ACTIVE : messages.FAMILY.INACTIVE}
         </Text>
       </View>
     </View>
@@ -52,7 +54,7 @@ const FamilyMembers: React.FC<FamilyMembersProps> = ({
         keyExtractor={(item) => item.id.toString()}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No hay familiares registrados</Text>
+            <Text style={styles.emptyText}>{messages.FAMILY.NO_FAMILYMEMBERS}</Text>
           </View>
         }
         contentContainerStyle={styles.listContent}
@@ -60,7 +62,7 @@ const FamilyMembers: React.FC<FamilyMembersProps> = ({
       {onAddMember && (
         <View style={styles.addButtonContainer}>
           <Text style={styles.addButton} onPress={onAddMember}>
-            + Agregar familiar
+            + {messages.FAMILY.ADD_MEMBER}
           </Text>
         </View>
       )}

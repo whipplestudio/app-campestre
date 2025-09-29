@@ -41,10 +41,7 @@ const styles = StyleSheet.create({
       marginLeft: 8,
     },
     cancelButton: {
-      backgroundColor: COLORS.gray200,
-      paddingHorizontal: 12,
-      paddingVertical: 6,
-      borderRadius: 6,
+      marginLeft: 8
     },
     cancelButtonText: {
     },

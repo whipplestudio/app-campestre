@@ -23,9 +23,9 @@ export const styles = StyleSheet.create({
     color: COLORS.gray900,
   },
   editButton: {
-    color: COLORS.primary,
-    fontWeight: '600',
-    fontSize: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
   },
   detailRow: {
     flexDirection: 'row',
@@ -46,5 +46,14 @@ export const styles = StyleSheet.create({
   phone: {
     color: COLORS.primary,
     fontWeight: '500',
+  },
+  input: {
+    marginBottom: 0,
+    paddingHorizontal: 0,
+    borderWidth: 0,
+    borderBottomWidth: 1,
+    borderColor: COLORS.gray300,
+    borderRadius: 0,
+    paddingLeft: 0,
   },
 });

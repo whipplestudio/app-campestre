@@ -24,11 +24,25 @@
   "profile": {
     "title": "Member Profile",
     "name": "Name",
+    "nameComplete": "Name Complete",
+    "user": "User",
     "email": "Email",
     "memberSince": "Member Since",
     "membershipType": "Membership Type",
     "save": "Save",
     "edit": "Edit",
+    "dataUser": "User information could not be found",
+    "noSpecified": "No specified",
+    "relationship": "Relationship",
+    "phone": "Phone",
+    "age": "years old",
+    "address": "Address",
+    "noFamilyMembers": "No family members registered",
+    "addMember": "Add member",
+    "exampleEmail": "email@example.com",
+    "exampleAddress": "Street, number, neighborhood, city",
+    "noVehicles": "No vehicles registered",
+    "addVehicle": "Add vehicle",
     "sections": {
       "personalInfo": "Personal Information",
       "familyMembers": "Family Members",
@@ -71,6 +85,9 @@
     "success": "Success",
     "exampleEmail": "email@clubtampico.com",
     "examplePassword": "MyPassword",
-    "logout": "Logout"
+    "logout": "Logout",
+    "active": "Active",
+    "inactive": "Inactive",
+    "textLogout": "Logout failed"
   }
 }

@@ -22,12 +22,16 @@ const ProfileContainer = () => {
   
   const {
     isEditing,
+    isEditingContactEmergency,
     formData,
     currentUser,
     handleInputChange,
     handleSave,
+    handleSaveContactEmergency,
     handleEdit,
+    handleEditContactEmergency,
     handleCancel,
+    handleCancelContactEmergency,
     handleLogout,
     handleAddVehicle,
     handleAddFamilyMember,
@@ -37,7 +41,7 @@ const ProfileContainer = () => {
     return (
       <SafeAreaView style={styles.container}>
         <Text style={styles.errorText}>
-          No se encontraron datos del usuario
+          {messages.CONTAINER.DATA_USER}
         </Text>
       </SafeAreaView>
     );
@@ -51,7 +55,7 @@ const ProfileContainer = () => {
       >
         {/* Profile Header */}
         <ProfileHeader
-          name={currentUser?.name || 'Usuario'}
+          name={currentUser?.name || messages.CONTAINER.USER}
           memberId={currentUser?.id || 'N/A'}
           membershipType={currentUser?.membershipType || 'Premium'}
           isActive={true}
@@ -63,6 +67,30 @@ const ProfileContainer = () => {
           title={messages.PERSONAL.TITLE}
           rightAction={
             isEditing ? (
+              null
+            ) : (
+              <Button 
+                title={messages.CONTAINER.EDIT}
+                onPress={handleEdit}
+                variant="primary"
+                style={styles.editButton}
+              />
+            )
+          }
+        >
+          <PersonalInfo
+            name={formData.name}
+            email={formData.email}
+            phone={formData.phone}
+            address={formData.address}
+            memberSince={currentUser?.memberSince || new Date()}
+            isEditing={isEditing}
+            onNameChange={(text) => handleInputChange('name', text)}
+            onEmailChange={(text) => handleInputChange('email', text)}
+            onPhoneChange={(text) => handleInputChange('phone', text)}
+            onAddressChange={(text) => handleInputChange('address', text)}
+            />
+            { isEditing && (
               <View style={styles.editActions}>
                 <Button 
                   title={messages.CONTAINER.CANCEL}
@@ -79,27 +107,8 @@ const ProfileContainer = () => {
                   style={[styles.actionButton, styles.saveButton]}
                 />
               </View>
-            ) : (
-              <Button 
-                title={messages.CONTAINER.EDIT}
-                onPress={handleEdit}
-                variant="primary"
-                style={styles.editButton}
-              />
-            )
-          }
-        >
-          <PersonalInfo
-            name={formData.name}
-            email={formData.email}
-            //phone={formData.phone}
-            //address={formData.address}
-            memberSince={currentUser?.memberSince || new Date()}
-            isEditing={isEditing}
-            onNameChange={(text) => handleInputChange('name', text)}
-            onEmailChange={(text) => handleInputChange('email', text)}
-            onPhoneChange={(text) => handleInputChange('phone', text)}
-          />
+            )}
+          
         </SectionCard>
 
         {/* Familiares */}
@@ -119,19 +128,54 @@ const ProfileContainer = () => {
         </SectionCard>
 
         {/* Contacto de emergencia */}
-        <SectionCard title={messages.EMERGENCY.TITLE}>
+        <SectionCard title={messages.EMERGENCY.TITLE}
+          rightAction={
+            isEditingContactEmergency ? (
+              null
+            ) : (
+              <Button 
+                title={messages.CONTAINER.EDIT}
+                onPress={handleEditContactEmergency}
+                variant="primary"
+                style={styles.editButton}
+              />
+            )
+          }
+          >
           <EmergencyContact 
-            name={currentUser?.emergencyContact?.name || 'No especificado'}
-            relationship={currentUser?.emergencyContact?.relationship || 'No especificado'}
-            phone={currentUser?.emergencyContact?.phone || 'No especificado'}
-            onEdit={() => {}}
+            name={currentUser?.emergencyContact?.name || messages.CONTAINER.NO_SPECIFIED}
+            relationship={currentUser?.emergencyContact?.relationship || messages.CONTAINER.NO_SPECIFIED}
+            phone={currentUser?.emergencyContact?.phone || messages.CONTAINER.NO_SPECIFIED}
+
+            isEditingContactEmergency={isEditingContactEmergency}
+            onNameChange={(text) => handleInputChange('name', text)}
+            onRelationshipChange={(text) => handleInputChange('relationship', text)}
+            onPhoneChange={(text) => handleInputChange('phone', text)}
           />
+          { isEditingContactEmergency && (
+            <View style={styles.editActions}>
+              <Button 
+                title={messages.CONTAINER.CANCEL}
+                onPress={handleCancelContactEmergency}
+                variant="secondary"
+                style={[styles.actionButton, styles.cancelButton]}
+                titleStyle={styles.cancelButtonText}
+              />
+              <View style={styles.buttonSpacer} />
+              <Button 
+                title={messages.CONTAINER.SAVE}
+                onPress={handleSaveContactEmergency}
+                variant="primary"
+                style={[styles.actionButton, styles.saveButton]}
+              />
+            </View>
+          )}
         </SectionCard>
 
         {/* Logout Button */}
         <View style={styles.logoutContainer}>
           <Button
-            title="Cerrar sesión"
+            title={messages.CONTAINER.LOGOUT}
             onPress={handleLogout}
             variant="danger"
             style={styles.logoutButton}
