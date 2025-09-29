@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, ViewStyle } from 'react-native';
 import { styles } from './Style';
+import useMessages from '../../hooks/useMessages';
 
 interface ProfileHeaderProps {
   name: string;
@@ -19,6 +20,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   photoUrl,
   style,
 }) => {
+  const { messages } = useMessages();
   const avatar = photoUrl ? (
     <Image source={{ uri: photoUrl }} style={styles.avatarImage} />
   ) : (
@@ -37,7 +39,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           <Text style={styles.membershipType}>{membershipType}</Text>
           <View style={[styles.statusPill, isActive ? styles.active : styles.inactive]}>
             <Text style={[styles.statusText, isActive ? styles.activeText : styles.inactiveText]}>
-              {isActive ? 'Activo' : 'Inactivo'}
+              {isActive ? messages.HEADER.ACTIVE : messages.HEADER.INACTIVE}
             </Text>
           </View>
         </View>

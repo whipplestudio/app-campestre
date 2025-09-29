@@ -5,6 +5,8 @@ export interface UserProfile {
   id: string;
   name: string;
   email: string;
+  phone: string;
+  address: string;
   token: string;
   refreshToken: string;
   expiresAt: Date;
@@ -42,6 +44,8 @@ const mockUsers: UserProfile[] = [
     id: '1',
     name: 'Juan Pérez',
     email: 'juan@clubtampico.com',
+    phone: '555-123-4567',
+    address: 'Calle 123, Colonia 456, Ciudad 789',
     token: 'mock-jwt-token-admin-123',
     refreshToken: 'mock-jwt-refresh-token-admin-123',
     expiresAt: new Date('2025-05-15'),

@@ -17,18 +17,32 @@
     },
     "alert": {
       "title": "Error",
-      "message": "Invalid email or password",
-      "requiredFields": "Email and password are required"
+      "message": "Correo electrónico o contraseña inválidos",
+      "requiredFields": "Se requieren el correo electrónico y la contraseña"
     }
   },
   "profile": {
     "title": "Perfil del Socio",
     "name": "Nombre",
+    "nameComplete": "Nombre Completo",
+    "user": "Usuario",
     "email": "Correo Electrónico",
     "memberSince": "Socio Desde",
     "membershipType": "Tipo de Membresía",
     "save": "Guardar",
     "edit": "Editar",
+    "dataUser": "No se encontraron datos del usuario",
+    "noSpecified": "No especificado",
+    "relationship": "Parentesco",
+    "phone": "Teléfono",
+    "age": "años",
+    "address": "Dirección",
+    "noFamilyMembers": "No hay familiares registrados",
+    "addMember": "Agregar familiar",
+    "exampleEmail": "correo@ejemplo.com",
+    "exampleAddress": "Calle, número, colonia, ciudad",
+    "noVehicles": "No hay vehículos registrados",
+    "addVehicle": "Agregar vehículo",
     "sections": {
       "personalInfo": "Información Personal",
       "familyMembers": "Miembros de la Familia",
@@ -71,6 +85,9 @@
     "success": "Éxito",
     "exampleEmail": "email@clubtampico.com",
     "examplePassword": "Mi contraseña",
-    "logout": "Cerrar Sesión"
+    "logout": "Cerrar Sesión",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "textLogout": "No se pudo cerrar la sesión"
   }
 }

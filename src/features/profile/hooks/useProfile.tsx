@@ -4,19 +4,29 @@ import { Alert } from 'react-native';
 import { useAuthStore } from '../../../store/index';
 import { updateProfileData, userProfile } from '../interfaces/interfaces';
 import { useProfileStore } from '../store/useProfileStore';
+import useMessages from '../hooks/useMessages';
 
 export const useProfile = () => {
   const navigation = useNavigation();
   const { profile, updateProfile, clearProfile } = useProfileStore();
   const { clearAuth } = useAuthStore();
+  const { messages } = useMessages();
   
   const currentUser = profile as userProfile | null;
   
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditingContactEmergency, setIsEditingContactEmergency] = useState(false);
   const [formData, setFormData] = useState({
     name: currentUser?.name || '',
     email: currentUser?.email || '',
+    phone: currentUser?.phone || '',
+    address: currentUser?.address || '',
     membershipType: currentUser?.membershipType || 'Premium',
+  });
+  const [emergencyContactFormData, setEmergencyContactFormData] = useState({
+    name: currentUser?.emergencyContact?.name || '',
+    relationship: currentUser?.emergencyContact?.relationship || '',
+    phone: currentUser?.emergencyContact?.phone || '',
   });
 
   const handleInputChange = useCallback((field: string, value: string) => {
@@ -37,8 +47,16 @@ export const useProfile = () => {
     }
   }, [currentUser, formData, updateProfile]);
 
+  const handleSaveContactEmergency = useCallback(() => {
+      setIsEditingContactEmergency(false);
+    }, []);
+
   const handleEdit = useCallback(() => {
     setIsEditing(true);
+  }, []);
+
+  const handleEditContactEmergency = useCallback(() => {
+    setIsEditingContactEmergency(true);
   }, []);
 
   const handleCancel = useCallback(() => {
@@ -46,8 +64,19 @@ export const useProfile = () => {
       name: currentUser?.name || '',
       email: currentUser?.email || '',
       membershipType: currentUser?.membershipType || 'Premium',
+      phone: currentUser?.phone || '',
+      address: currentUser?.address || '',
     });
     setIsEditing(false);
+  }, [currentUser]);
+
+  const handleCancelContactEmergency = useCallback(() => {
+    setEmergencyContactFormData({
+      name: currentUser?.emergencyContact?.name || '',
+      relationship: currentUser?.emergencyContact?.relationship || '',
+      phone: currentUser?.emergencyContact?.phone || '',
+    });
+    setIsEditingContactEmergency(false);
   }, [currentUser]);
 
   const handleLogout = useCallback(async () => {
@@ -57,7 +86,7 @@ export const useProfile = () => {
       // Usamos una aserción de tipo para evitar el error de TypeScript
       (navigation as any).navigate('Login');
     } catch (error) {
-      Alert.alert('Error', 'No se pudo cerrar la sesión');
+      Alert.alert('Error', messages.CONTAINER.TEXT_LOGOUT);
       console.error('Logout error:', error);
     }
   }, [clearAuth, clearProfile, navigation]);
@@ -75,12 +104,16 @@ export const useProfile = () => {
     isEditing,
     formData,
     currentUser,
+    isEditingContactEmergency,
     
     // Handlers
     handleInputChange,
     handleSave,
+    handleSaveContactEmergency,
     handleEdit,
+    handleEditContactEmergency,
     handleCancel,
+    handleCancelContactEmergency,
     handleLogout,
     handleAddVehicle,
     handleAddFamilyMember,

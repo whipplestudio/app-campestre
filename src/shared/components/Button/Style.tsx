@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
       justifyContent: 'center',
     },
     primaryButton: {
-      backgroundColor: COLORS.primary,
+      backgroundColor: COLORS.primaryDark,
     },
     secondaryButton: {
       backgroundColor: COLORS.gray200,
