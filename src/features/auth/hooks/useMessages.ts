@@ -23,7 +23,7 @@ const useMessages = () => {
         TITLE: t('auth.alert.title'),
         MESSAGE: t('auth.alert.message'),
         REQUIRED_FIELDS: t('auth.alert.requiredFields'),
-        ERROR: t('auth.common.error'),
+        ERROR: t('common.error'),
         OK: t('common.ok')
       }
     };

@@ -1,5 +1,4 @@
 // Tipos de datos
-type UserRole = 'admin' | 'user';
 
 export interface UserProfile {
   id: string;

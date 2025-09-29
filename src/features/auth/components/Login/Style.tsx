@@ -24,9 +24,6 @@ const styles = StyleSheet.create({
       fontSize: 16,
       backgroundColor: COLORS.white,
     },
-    inputPlaceholder: {
-      color: COLORS.gray400,
-    },
     loginButton: {
       backgroundColor: COLORS.primaryExtraDark,
       padding: 16,
@@ -44,7 +41,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
     },
     linkText: {
-      color: COLORS.primaryDark,
+      color: COLORS.primaryLight,
       fontSize: 14,
     },
   });
