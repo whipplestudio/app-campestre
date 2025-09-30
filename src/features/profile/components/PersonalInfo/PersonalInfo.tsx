@@ -19,14 +19,23 @@ const PersonalInfo: React.FC<userProfile> = ({
   style,
 }) => {
   const { messages } = useMessages();
-  const formatDate = (date: string | Date) => {
-    if (!date) return '';
-    const d = new Date(date);
-    return d.toLocaleDateString('es-MX', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
+  const formatDate = (date: string | Date | undefined): string => {
+    if (!date) return messages.CONTAINER.NO_SPECIFIED;
+    
+    try {
+      const d = new Date(date);
+      // Check if the date is valid
+      if (isNaN(d.getTime())) return messages.CONTAINER.NO_SPECIFIED;
+      
+      return d.toLocaleDateString('es-MX', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return messages.CONTAINER.NO_SPECIFIED;
+    }
   };
 
   return (

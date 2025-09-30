@@ -56,7 +56,7 @@ const ProfileContainer = () => {
         {/* Profile Header */}
         <ProfileHeader
           name={currentUser?.name || messages.CONTAINER.USER}
-          memberId={currentUser?.id || 'N/A'}
+          id={currentUser?.id || 'N/A'}
           membershipType={currentUser?.membershipType || 'Premium'}
           isActive={true}
           style={styles.profileHeader}
@@ -79,6 +79,7 @@ const ProfileContainer = () => {
           }
         >
           <PersonalInfo
+            id={currentUser?.id || ''}
             name={formData.name}
             email={formData.email}
             phone={formData.phone}

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import { UserProfile } from '../../auth/services/authService';
+import { UserProfile } from '../../../interfaces/user.interface';
 
 interface ProfileState {
   profile: UserProfile | null;
