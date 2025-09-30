@@ -3,23 +3,9 @@ import { View, Text, TextInput, ViewStyle } from 'react-native';
 import { styles } from './Style';
 import Input from '../../../../shared/components/Input/Input';
 import useMessages from '../../hooks/useMessages';
+import { userProfile } from '../../interfaces/interfaces';
 
-interface PersonalInfoProps {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  memberSince: string | Date;
-  isEditing?: boolean;
-  onNameChange?: (text: string) => void;
-  onEmailChange?: (text: string) => void;
-  onPhoneChange?: (text: string) => void;
-  onAddressChange?: (text: string) => void;
-  style?: ViewStyle;
-  rightAction?: React.ReactNode;
-}
-
-const PersonalInfo: React.FC<PersonalInfoProps> = ({
+const PersonalInfo: React.FC<userProfile> = ({
   name,
   email,
   phone,
@@ -33,14 +19,23 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
   style,
 }) => {
   const { messages } = useMessages();
-  const formatDate = (date: string | Date) => {
-    if (!date) return '';
-    const d = new Date(date);
-    return d.toLocaleDateString('es-MX', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
+  const formatDate = (date: string | Date | undefined): string => {
+    if (!date) return messages.CONTAINER.NO_SPECIFIED;
+    
+    try {
+      const d = new Date(date);
+      // Check if the date is valid
+      if (isNaN(d.getTime())) return messages.CONTAINER.NO_SPECIFIED;
+      
+      return d.toLocaleDateString('es-MX', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return messages.CONTAINER.NO_SPECIFIED;
+    }
   };
 
   return (

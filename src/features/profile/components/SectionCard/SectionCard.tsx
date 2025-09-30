@@ -1,15 +1,9 @@
 import React from 'react';
 import { View, Text, ViewStyle } from 'react-native';
 import { styles } from './Style';
+import { sectionCardProps } from '../../interfaces/interfaces';
 
-interface SectionCardProps {
-  title: string;
-  rightAction?: React.ReactNode;
-  style?: ViewStyle;
-  children: React.ReactNode;
-}
-
-const SectionCard: React.FC<SectionCardProps> = ({ title, rightAction, style, children }) => {
+const SectionCard: React.FC<sectionCardProps> = ({ title, rightAction, style, children }) => {
   return (
     <View style={[styles.card, style]}>
       <View style={styles.header}>

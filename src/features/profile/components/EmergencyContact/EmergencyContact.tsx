@@ -4,20 +4,9 @@ import { styles } from './Style';
 import Button from '@/src/shared/components/Button/Button';
 import useMessages from '../../hooks/useMessages';
 import Input from '@/src/shared/components/Input/Input';
+import { emergencyContact } from '../../interfaces/interfaces';
 
-interface EmergencyContactProps {
-  name: string;
-  relationship: string;
-  phone: string;
-  style?: ViewStyle;
-  isEditingContactEmergency: boolean;
-  onNameChange: (text: string) => void;
-  onRelationshipChange: (text: string) => void;
-  onPhoneChange: (text: string) => void;
-  rightAction?: React.ReactNode;
-}
-
-const EmergencyContact: React.FC<EmergencyContactProps> = ({
+const EmergencyContact: React.FC<emergencyContact> = ({
   name,
   relationship,
   phone,
