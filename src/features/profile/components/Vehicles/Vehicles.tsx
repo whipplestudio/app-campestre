@@ -38,6 +38,7 @@ const Vehicles: React.FC<vehiclesProps> = ({
     <View style={[styles.container, style]}>
       <FlatList
         data={vehicleList}
+        scrollEnabled={false}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         ListEmptyComponent={

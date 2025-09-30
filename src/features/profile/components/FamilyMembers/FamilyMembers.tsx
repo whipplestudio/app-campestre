@@ -37,6 +37,7 @@ const FamilyMembers: React.FC<familyMembersProps> = ({
     <View style={[styles.container, style]}>
       <FlatList
         data={members}
+        scrollEnabled={false}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         ListEmptyComponent={
