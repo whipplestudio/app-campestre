@@ -1,27 +1,26 @@
-import React from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { 
-  createDrawerNavigator, 
-  DrawerContentScrollView, 
-  DrawerItem, 
+import {
+  createDrawerNavigator,
   DrawerContentComponentProps,
+  DrawerContentScrollView,
+  DrawerItem,
   DrawerNavigationProp
 } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../shared/theme/colors';
 
 // Screens
-import HomeScreen from '../features/home';
 import EventsScreen from '../features/events/containers/EventsContainer';
+import HomeScreen from '../features/home';
 import MenusScreen from '../features/menus/containers/MenusContainer';
 import ProfileScreen from '../features/profile/containers/ProfileContainer';
-import SurveysScreen from '../features/surveys/containers/SurveysContainer';
 import SettingsScreen from '../features/settings';
+import SurveysScreen from '../features/surveys/containers/SurveysContainer';
 
 // Types
-import { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
 
 // Crear navegadores
 const Tab = createBottomTabNavigator();
@@ -37,7 +36,7 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
       <DrawerItem
         label={t('profile.title')}
         onPress={() => {
-          props.navigation.navigate('Profile');
+          props.navigation.navigate('ProfileDrawer');
           props.navigation.closeDrawer();
         }}
         icon={({ focused, size }) => (
@@ -51,7 +50,7 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
       <DrawerItem
         label={t('settings.title')}
         onPress={() => {
-          props.navigation.navigate('Settings');
+          props.navigation.navigate('SettingsDrawer');
           props.navigation.closeDrawer();
         }}
         icon={({ focused, size }) => (
@@ -88,7 +87,25 @@ const MoreStack: React.FC = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MoreHome" component={MoreHomeScreen} />
+      <Stack.Screen name="ProfileStack" component={ProfileScreen} />
+      <Stack.Screen name="SettingsStack" component={SettingsScreen} />
+    </Stack.Navigator>
+  );
+};
+
+// Stack para el perfil
+const ProfileStack: React.FC = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Profile" component={ProfileScreen} />
+    </Stack.Navigator>
+  );
+};
+
+// Stack para configuración
+const SettingsStack: React.FC = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Settings" component={SettingsScreen} />
     </Stack.Navigator>
   );
@@ -201,6 +218,22 @@ const ProtectedTabNavigator: React.FC = () => {
         name="MainTabs" 
         component={MainTabs}
         options={{
+          drawerItemStyle: { display: 'none' },
+        }}
+      />
+      <Drawer.Screen 
+        name="ProfileDrawer" 
+        component={ProfileStack}
+        options={{
+          title: 'Profile',
+          drawerItemStyle: { display: 'none' },
+        }}
+      />
+      <Drawer.Screen 
+        name="SettingsDrawer" 
+        component={SettingsStack}
+        options={{
+          title: 'Settings',
           drawerItemStyle: { display: 'none' },
         }}
       />
