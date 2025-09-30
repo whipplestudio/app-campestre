@@ -3,23 +3,9 @@ import { View, Text, TextInput, ViewStyle } from 'react-native';
 import { styles } from './Style';
 import Input from '../../../../shared/components/Input/Input';
 import useMessages from '../../hooks/useMessages';
+import { userProfile } from '../../interfaces/interfaces';
 
-interface PersonalInfoProps {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  memberSince: string | Date;
-  isEditing?: boolean;
-  onNameChange?: (text: string) => void;
-  onEmailChange?: (text: string) => void;
-  onPhoneChange?: (text: string) => void;
-  onAddressChange?: (text: string) => void;
-  style?: ViewStyle;
-  rightAction?: React.ReactNode;
-}
-
-const PersonalInfo: React.FC<PersonalInfoProps> = ({
+const PersonalInfo: React.FC<userProfile> = ({
   name,
   email,
   phone,

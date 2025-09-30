@@ -2,19 +2,11 @@ import React from 'react';
 import { View, Text, Image, ViewStyle } from 'react-native';
 import { styles } from './Style';
 import useMessages from '../../hooks/useMessages';
+import { userProfile } from '../../interfaces/interfaces';
 
-interface ProfileHeaderProps {
-  name: string;
-  memberId: string | number;
-  membershipType: string;
-  isActive?: boolean;
-  photoUrl?: string;
-  style?: ViewStyle;
-}
-
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({
+const ProfileHeader: React.FC<userProfile> = ({
   name,
-  memberId,
+  id,
   membershipType,
   isActive = true,
   photoUrl,
@@ -34,7 +26,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       {avatar}
       <View style={styles.userInfo}>
         <Text style={styles.name}>{name}</Text>
-        <Text style={styles.memberId}>ID: {memberId}</Text>
+        <Text style={styles.memberId}>ID: {id}</Text>
         <View style={styles.row}>
           <Text style={styles.membershipType}>{membershipType}</Text>
           <View style={[styles.statusPill, isActive ? styles.active : styles.inactive]}>

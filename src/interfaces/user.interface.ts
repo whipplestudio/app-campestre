@@ -6,7 +6,7 @@ export interface UserProfile {
   phone: string;
   address: string;
   membershipType?: string;
-  memberSince?: Date | string; // Acepta tanto Date como string
+  memberSince: Date | string; // Acepta tanto Date como string
   familyMembers?: FamilyMember[];
   vehicles?: Vehicle[];
   emergencyContact?: EmergencyContact;

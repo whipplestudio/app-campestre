@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, ListRenderItem, Text, View } from 'react-native';
+import { Alert, FlatList, ListRenderItem, Text, View } from 'react-native';
 import { styles } from './Style';
 
 //Interfaces
@@ -50,7 +50,16 @@ const Vehicles: React.FC<vehiclesProps> = ({
       />
       {onAddVehicle && (
         <View style={styles.addButtonContainer}>
-          <Text style={styles.addButton} onPress={onAddVehicle}>
+          <Text style={styles.addButton} 
+          onPress={() => {
+            Alert.alert(
+              messages.VEHICLES.ADD_VEHICLE,
+              'Esta función no está disponible en este momento.',
+              [{ text: 'OK' }]
+            );
+            if (onAddVehicle) onAddVehicle();
+          }}
+          /*onPress={onAddVehicle}*/>
             + {messages.VEHICLES.ADD_VEHICLE}
           </Text>
         </View>

@@ -1,29 +1,16 @@
 import React from 'react';
-import { FlatList, ListRenderItem, Text, View, ViewStyle } from 'react-native';
+import { Alert, FlatList, ListRenderItem, Text, View, ViewStyle } from 'react-native';
 import { styles } from './Style';
 import useMessages from '../../hooks/useMessages';
+import { familyMembersProps, familyMembers } from '../../interfaces/interfaces';
 
-interface FamilyMember {
-  id: string | number;
-  name: string;
-  relationship: string;
-  age: number;
-  isActive: boolean;
-}
-
-interface FamilyMembersProps {
-  members: FamilyMember[];
-  onAddMember?: () => void;
-  style?: ViewStyle;
-}
-
-const FamilyMembers: React.FC<FamilyMembersProps> = ({
+const FamilyMembers: React.FC<familyMembersProps> = ({
   members = [],
   onAddMember,
   style,
 }) => {
   const { messages } = useMessages();
-  const renderItem: ListRenderItem<FamilyMember> = ({ item }) => (
+  const renderItem: ListRenderItem<familyMembers> = ({ item }) => (
     <View style={styles.memberItem}>
       <View style={styles.memberInfo}>
         <Text style={styles.memberName}>{item.name}</Text>
@@ -61,7 +48,17 @@ const FamilyMembers: React.FC<FamilyMembersProps> = ({
       />
       {onAddMember && (
         <View style={styles.addButtonContainer}>
-          <Text style={styles.addButton} onPress={onAddMember}>
+          <Text 
+            style={styles.addButton} 
+            onPress={() => {
+              Alert.alert(
+                messages.FAMILY.ADD_MEMBER,
+                'Esta función no está disponible en este momento.',
+                [{ text: 'OK' }]
+              );
+              if (onAddMember) onAddMember();
+            }}
+            /*onPress={onAddMember}*/>
             + {messages.FAMILY.ADD_MEMBER}
           </Text>
         </View>
