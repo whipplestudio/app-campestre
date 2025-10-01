@@ -1,6 +1,6 @@
 // src/features/menus/components/RestaurantDishCard.tsx
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { Dish } from '../interfaces/dishInterface';
 import { useCartStore } from '../store/useCartStore';
 import { COLORS } from '../../../shared/theme/colors';
@@ -8,37 +8,48 @@ import { useTranslation } from 'react-i18next';
 
 interface RestaurantDishCardProps {
   dish: Dish;
-  onAddToCart?: (dish: Dish) => void;
 }
 
-const RestaurantDishCard: React.FC<RestaurantDishCardProps> = ({ dish, onAddToCart }) => {
+const RestaurantDishCard: React.FC<RestaurantDishCardProps> = ({ dish }) => {
   const { t } = useTranslation('restaurant');
-  const [quantity, setQuantity] = useState(1);
+  const { items, addItem, updateQuantity, removeItem } = useCartStore();
+  const [quantity, setQuantity] = useState(0);
   const [isInCart, setIsInCart] = useState(false);
-  const { addItem, updateQuantity, getItemsCount } = useCartStore();
+
+  // Actualizar estado cuando cambian los elementos del carrito
+  useEffect(() => {
+    const cartItem = items.find(item => item.id === dish.id);
+    if (cartItem) {
+      setQuantity(cartItem.quantity);
+      setIsInCart(true);
+    } else {
+      setQuantity(0);
+      setIsInCart(false);
+    }
+  }, [items, dish.id]);
 
   const handleAddToCart = () => {
-    addItem(dish, quantity);
+    addItem(dish, 1);
+    setQuantity(1);
     setIsInCart(true);
-    if (onAddToCart) {
-      onAddToCart(dish);
-    }
   };
 
   const handleIncrement = () => {
     const newQuantity = quantity + 1;
-    setQuantity(newQuantity);
     updateQuantity(dish.id, newQuantity);
+    setQuantity(newQuantity);
   };
 
   const handleDecrement = () => {
     if (quantity > 1) {
       const newQuantity = quantity - 1;
-      setQuantity(newQuantity);
       updateQuantity(dish.id, newQuantity);
+      setQuantity(newQuantity);
     } else {
-      setQuantity(1);
-      updateQuantity(dish.id, 1);
+      // Si la cantidad es 1 y se decrementa, eliminar del carrito
+      removeItem(dish.id);
+      setQuantity(0);
+      setIsInCart(false);
     }
   };
 

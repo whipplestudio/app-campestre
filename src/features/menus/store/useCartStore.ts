@@ -2,37 +2,67 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { CartState, CartItem, Dish } from '../interfaces/dishInterface';
 
-export const useCartStore = create<CartState>()(
+interface ExtendedCartState extends CartState {
+  totalItems: number;
+  totalPrice: number;
+  updateTotals: () => void;
+}
+
+export const useCartStore = create<ExtendedCartState>()(
   devtools(
     (set, get) => ({
       items: [],
+      totalItems: 0,
+      totalPrice: 0,
+      
+      updateTotals: () => {
+        const items = get().items;
+        const totalItems = items.reduce((total, item) => total + item.quantity, 0);
+        const totalPrice = items.reduce((total, item) => total + (item.price * item.quantity), 0);
+        
+        set({ totalItems, totalPrice });
+      },
       
       addItem: (dish: Dish, quantity = 1) => {
         set((state) => {
           const existingItem = state.items.find(item => item.id === dish.id);
           
+          let newItems;
           if (existingItem) {
             // Update quantity if item already exists
-            return {
-              items: state.items.map(item =>
-                item.id === dish.id
-                  ? { ...item, quantity: item.quantity + quantity }
-                  : item
-              )
-            };
+            newItems = state.items.map(item =>
+              item.id === dish.id
+                ? { ...item, quantity: item.quantity + quantity }
+                : item
+            );
           } else {
             // Add new item to cart
-            return {
-              items: [...state.items, { ...dish, quantity }]
-            };
+            newItems = [...state.items, { ...dish, quantity }];
           }
+          
+          const totalItems = newItems.reduce((total, item) => total + item.quantity, 0);
+          const totalPrice = newItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+          
+          return {
+            items: newItems,
+            totalItems,
+            totalPrice
+          };
         });
       },
       
       removeItem: (dishId: string) => {
-        set((state) => ({
-          items: state.items.filter(item => item.id !== dishId)
-        }));
+        set((state) => {
+          const newItems = state.items.filter(item => item.id !== dishId);
+          const totalItems = newItems.reduce((total, item) => total + item.quantity, 0);
+          const totalPrice = newItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+          
+          return {
+            items: newItems,
+            totalItems,
+            totalPrice
+          };
+        });
       },
       
       updateQuantity: (dishId: string, quantity: number) => {
@@ -41,30 +71,33 @@ export const useCartStore = create<CartState>()(
           return;
         }
         
-        set((state) => ({
-          items: state.items.map(item =>
+        set((state) => {
+          const newItems = state.items.map(item =>
             item.id === dishId
               ? { ...item, quantity }
               : item
-          )
-        }));
+          );
+          
+          const totalItems = newItems.reduce((total, item) => total + item.quantity, 0);
+          const totalPrice = newItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+          
+          return {
+            items: newItems,
+            totalItems,
+            totalPrice
+          };
+        });
       },
       
       clearCart: () => {
-        set({ items: [] });
+        set({ items: [], totalItems: 0, totalPrice: 0 });
       },
       
-      getTotalItems: () => {
-        return get().items.reduce((total, item) => total + item.quantity, 0);
-      },
+      getTotalItems: () => get().totalItems,
       
-      getTotalPrice: () => {
-        return get().items.reduce((total, item) => total + (item.price * item.quantity), 0);
-      },
+      getTotalPrice: () => get().totalPrice,
       
-      getItemsCount: () => {
-        return get().items.length;
-      }
+      getItemsCount: () => get().items.length,
     }),
     { name: 'cart-store' }
   )

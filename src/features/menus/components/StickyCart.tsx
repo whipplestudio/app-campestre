@@ -1,17 +1,19 @@
 // src/features/menus/components/StickyCart.tsx
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useCartStore } from '../store/useCartStore';
-import { COLORS } from '../../../shared/theme/colors';
 import { useTranslation } from 'react-i18next';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { COLORS } from '../../../shared/theme/colors';
+import { useCartStore } from '../store/useCartStore';
 import CartModal from './CartModal';
 
 const StickyCart: React.FC = () => {
   const { t } = useTranslation('restaurant');
-  const { items, getTotalItems, getTotalPrice } = useCartStore();
+  const totalItems = useCartStore(state => state.totalItems);
+  const totalPrice = useCartStore(state => state.totalPrice);
+  const { getTotalItems, getTotalPrice } = useCartStore();
   const [isCartModalVisible, setIsCartModalVisible] = useState(false);
   
-  const hasItems = items.length > 0;
+  const hasItems = totalItems > 0;
 
   const handleViewCart = () => {
     setIsCartModalVisible(true);
@@ -32,8 +34,8 @@ const StickyCart: React.FC = () => {
         </TouchableOpacity>
         
         <View style={styles.totalContainer}>
-          <Text style={styles.totalItems}>{getTotalItems()} productos</Text>
-          <Text style={styles.totalPrice}>${getTotalPrice().toFixed(2)}</Text>
+          <Text style={styles.totalItems}>{totalItems} {totalItems === 1 ? 'producto' : 'productos'}</Text>
+          <Text style={styles.totalPrice}>${totalPrice.toFixed(2)}</Text>
         </View>
       </View>
       

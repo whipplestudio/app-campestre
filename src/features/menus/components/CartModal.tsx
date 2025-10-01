@@ -13,7 +13,7 @@ interface CartModalProps {
 
 const CartModal: React.FC<CartModalProps> = ({ visible, onClose }) => {
   const { t } = useTranslation('restaurant');
-  const { items, removeItem, updateQuantity, getTotalPrice, clearCart } = useCartStore();
+  const { items, removeItem, updateQuantity, getTotalPrice, getTotalItems, clearCart } = useCartStore();
   const [ivaRate] = useState(0.16); // 16% IVA
 
   const subtotal = getTotalPrice();
@@ -36,6 +36,10 @@ const CartModal: React.FC<CartModalProps> = ({ visible, onClose }) => {
     const item = items.find(i => i.id === itemId);
     if (item && item.quantity > 1) {
       updateQuantity(itemId, item.quantity - 1);
+    } else if (item && item.quantity === 1) {
+      // Si la cantidad es 1 y se decrementa, eliminar del carrito
+      removeItem(itemId);
+      Alert.alert(t('dishRemoved'));
     }
   };
 
@@ -63,7 +67,7 @@ const CartModal: React.FC<CartModalProps> = ({ visible, onClose }) => {
           <View style={styles.headerContent}>
             <Text style={styles.headerIcon}>🛒</Text>
             <Text style={styles.headerTitle}>Carrito de compras</Text>
-            <Text style={styles.headerSubtitle}>{items.length} {items.length === 1 ? 'producto' : 'productos'}</Text>
+            <Text style={styles.headerSubtitle}>{getTotalItems()} {getTotalItems() === 1 ? 'producto' : 'productos'}</Text>
           </View>
         </View>
 
