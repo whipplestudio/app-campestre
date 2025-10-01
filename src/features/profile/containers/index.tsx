@@ -6,12 +6,12 @@ import Button from '../../../shared/components/Button/Button';
 import styles from './Style';
 
 // Components
-import EmergencyContact from '../components/EmergencyContact/EmergencyContact';
-import FamilyMembers from '../components/FamilyMembers/FamilyMembers';
-import PersonalInfo from '../components/PersonalInfo/PersonalInfo';
-import ProfileHeader from '../components/ProfileHeader/ProfileHeader';
-import SectionCard from '../components/SectionCard/SectionCard';
-import Vehicles from '../components/Vehicles/Vehicles';
+import EmergencyContact from '../components/EmergencyContact';
+import FamilyMembers from '../components/FamilyMembers';
+import PersonalInfo from '../components/PersonalInfo';
+import ProfileHeader from '../components/ProfileHeader';
+import SectionCard from '../components/SectionCard';
+import Vehicles from '../components/Vehicles';
 
 import useMessages from '../hooks/useMessages';
 import useProfile from '../hooks/useProfile';

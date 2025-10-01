@@ -1,1 +1,2 @@
-export { default } from './containers/LoginContainer';
+export { default } from './containers';
+

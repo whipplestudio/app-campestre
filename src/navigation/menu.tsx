@@ -16,7 +16,7 @@ import { COLORS } from '../shared/theme/colors';
 import EventsScreen from '../features/events/containers/EventsContainer';
 import HomeScreen from '../features/home';
 import MenusScreen from '../features/menus/containers/MenusContainer';
-import ProfileScreen from '../features/profile/containers/ProfileContainer';
+import ProfileScreen from '../features/profile/containers';
 import SettingsScreen from '../features/settings';
 import SurveysScreen from '../features/surveys/containers/SurveysContainer';
 

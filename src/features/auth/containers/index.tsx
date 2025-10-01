@@ -5,8 +5,8 @@ import { SafeAreaView, Text } from 'react-native';
 import styles from './Style';
 
 // Components
-import { LoginForm } from '../components/Login/LoginForm';
-import Logo from '../components/Logo/Logo';
+import { LoginForm } from '../components/Login';
+import Logo from '../components/Logo';
 
 // Hooks
 import { useLogin } from '../hooks/useLogin';
