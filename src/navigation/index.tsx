@@ -7,7 +7,7 @@ import { useStore } from '../store';
 // Import feature containers
 import LoginScreen from '../features/auth';
 
-import ProtectedTabNavigator from './menu';
+import ProtectedTabNavigator from '../shared/components/AppMenu/Container';
 
 // Create stack navigators
 const Stack = createNativeStackNavigator();

@@ -10,15 +10,16 @@ import {
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { COLORS } from '../shared/theme/colors';
+import { COLORS } from '../../../theme/colors';
+import MainHeader from '../../MainHeader/Container';
 
 // Screens
-import EventsScreen from '../features/events/containers/EventsContainer';
-import HomeScreen from '../features/home';
-import MenusScreen from '../features/menus/containers/MenusContainer';
-import ProfileScreen from '../features/profile/containers';
-import SettingsScreen from '../features/settings';
-import SurveysScreen from '../features/surveys/containers/SurveysContainer';
+import EventsScreen from '../../../../features/events/containers/EventsContainer';
+import HomeScreen from '../../../../features/home';
+import MenusScreen from '../../../../features/menus/containers/MenusContainer';
+import ProfileScreen from '../../../../features/profile/containers';
+import SettingsScreen from '../../../../features/settings';
+import SurveysScreen from '../../../../features/surveys/containers/SurveysContainer';
 
 // Types
 
@@ -117,7 +118,24 @@ const MainTabs: React.FC = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        header: ({ route }) => {
+          // Mapeo de nombres de rutas a títulos traducidos
+          const titleMap: Record<string, string> = {
+            Home: t('home.title'),
+            Events: t('events.title'),
+            Menus: t('menus.title'),
+            Surveys: t('surveys.title'),
+            More: t('more.title'),
+          };
+
+          return (
+            <MainHeader 
+              title={titleMap[route.name] || route.name}
+              showMenu={route.name !== 'Home'}
+            />
+          );
+        },
         tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: COLORS.gray500,
         tabBarStyle: {
@@ -199,7 +217,20 @@ const ProtectedTabNavigator: React.FC = () => {
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        header: ({ route }) => {
+          // Ocultar header en las pantallas que ya tienen su propio header
+          if (['MainTabs', 'ProfileDrawer', 'SettingsDrawer'].includes(route.name)) {
+            return null;
+          }
+          
+          return (
+            <MainHeader 
+              title={route.name}
+              showMenu={true}
+            />
+          );
+        },
         drawerActiveTintColor: COLORS.primary,
         drawerInactiveTintColor: COLORS.gray600,
         drawerLabelStyle: {
