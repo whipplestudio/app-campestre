@@ -1,16 +1,24 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, TouchableOpacity, SafeAreaView, ActivityIndicator, ScrollView } from 'react-native';
 import { useStore } from '../../../store';
 import { useTranslation } from 'react-i18next';
 import styles from './Style';
 
-const MenusContainer = () => {
-  const { menus } = useStore();
+const index = () => {
+  const { menus, setMenus } = useStore();
   const { t } = useTranslation();
   const [selectedMenuType, setSelectedMenuType] = useState<'daily' | 'weekly' | 'special'>('daily');
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Filter menus by type
-  const filteredMenus = menus.filter(menu => menu.type === selectedMenuType);
+  // Cargar menús al montar el componente
+  useEffect(() => {
+    // Aquí podrías hacer una llamada a tu API para cargar los menús
+    // Por ahora, usamos los datos de ejemplo del store
+    setIsLoading(false);
+  }, []);
+
+  // Filtrar menús por tipo
+  const filteredMenus = (menus || []).filter(menu => menu.type === selectedMenuType);
 
   const renderMenuItem = ({ item }: { item: any }) => (
     <View style={styles.menuItem}>
@@ -23,28 +31,30 @@ const MenusContainer = () => {
     </View>
   );
 
-  const renderMenu = ({ item }: { item: any }) => (
-    <View style={styles.menuCard}>
-      <Text style={styles.menuTitle}>{item.name}</Text>
-      <Text style={styles.menuDate}>
-        {new Date(item.date).toLocaleDateString()}
-      </Text>
-      <FlatList
-        data={item.items}
-        renderItem={renderMenuItem}
-        keyExtractor={item => item.id}
-        style={styles.itemsList}
-      />
-    </View>
-  );
+  if (isLoading) {
+    return (
+      <View style={[styles.container, styles.loadingContainer]}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>{t('menus.title')}</Text>
+        
+        {filteredMenus.length === 0 && (
+          <Text style={styles.noMenusText}>
+            {t('menus.noMenusAvailable')}
+          </Text>
+        )}
 
         {/* Menu Type Selector */}
         <View style={styles.tabContainer}>
+          <Text style={styles.sectionTitle}>
+            {t('menus.selectMenuType')}
+          </Text>
           <TouchableOpacity
             style={[
               styles.tab,
@@ -132,4 +142,4 @@ const MenusContainer = () => {
 };
 
 
-export default MenusContainer;
+export default index;
