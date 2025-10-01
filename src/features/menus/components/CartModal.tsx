@@ -1,10 +1,10 @@
 // src/features/menus/components/CartModal.tsx
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, ScrollView, StyleSheet, Alert, Image } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { Alert, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { COLORS } from '../../../shared/theme/colors';
 import { CartItem } from '../interfaces/dishInterface';
 import { useCartStore } from '../store/useCartStore';
-import { COLORS } from '../../../shared/theme/colors';
-import { useTranslation } from 'react-i18next';
 
 interface CartModalProps {
   visible: boolean;
@@ -14,6 +14,7 @@ interface CartModalProps {
 const CartModal: React.FC<CartModalProps> = ({ visible, onClose }) => {
   const { t } = useTranslation('restaurant');
   const { items, removeItem, updateQuantity, getTotalPrice, getTotalItems, clearCart } = useCartStore();
+  const totalItems = useCartStore(state => state.totalItems);
   const [ivaRate] = useState(0.16); // 16% IVA
 
   const subtotal = getTotalPrice();
@@ -67,7 +68,7 @@ const CartModal: React.FC<CartModalProps> = ({ visible, onClose }) => {
           <View style={styles.headerContent}>
             <Text style={styles.headerIcon}>🛒</Text>
             <Text style={styles.headerTitle}>Carrito de compras</Text>
-            <Text style={styles.headerSubtitle}>{getTotalItems()} {getTotalItems() === 1 ? 'producto' : 'productos'}</Text>
+            <Text style={styles.headerSubtitle}>{totalItems} {totalItems === 1 ? 'producto' : 'productos'}</Text>
           </View>
         </View>
 
