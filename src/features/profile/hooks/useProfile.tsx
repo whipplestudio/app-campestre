@@ -2,9 +2,9 @@ import { useNavigation } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { Alert } from 'react-native';
 import { useAuthStore } from '../../../store/index';
+import useMessages from '../hooks/useMessages';
 import { updateProfileData, userProfile } from '../interfaces/interfaces';
 import { useProfileStore } from '../store/useProfileStore';
-import useMessages from '../hooks/useMessages';
 
 export const useProfile = () => {
   const navigation = useNavigation();
@@ -84,7 +84,7 @@ export const useProfile = () => {
       await clearAuth();
       clearProfile();
       // Usamos una aserción de tipo para evitar el error de TypeScript
-      (navigation as any).navigate('Login');
+      (navigation as any).navigate('Auth');
     } catch (error) {
       Alert.alert('Error', messages.CONTAINER.TEXT_LOGOUT);
       console.error('Logout error:', error);

@@ -69,7 +69,7 @@ export const useLogin = () => {
         
         // 4. Navegar a la pantalla principal
         // @ts-ignore - asumiendo que existe la ruta 'MainTabs'
-        navigation.navigate('MainTabs');
+        // navigation.navigate('Main');
         return true;
       } else {
         // 5. Manejar error de autenticación
