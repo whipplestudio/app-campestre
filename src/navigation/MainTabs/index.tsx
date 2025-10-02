@@ -1,6 +1,6 @@
-// navigation/MainTabs.tsx
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import EventsScreen from '../../features/events/containers/EventsContainer';
@@ -8,6 +8,7 @@ import HomeScreen from '../../features/home';
 import MoreOptionsScreen from '../../features/moreOptions';
 import RestauranteScreen from '../../features/restaurante';
 import SurveysScreen from '../../features/surveys/containers/SurveysContainer';
+import MainHeader from '../../shared/components/MainHeader/Container';
 import { COLORS } from '../../shared/theme/colors';
 
 const Tab = createBottomTabNavigator();
@@ -15,10 +16,32 @@ const Tab = createBottomTabNavigator();
 const MainTabs = () => {
   const { t } = useTranslation();
   
+  const screenOptions = (route: any) => {
+    return {
+      header: (props: any) => {
+        const title = props.options?.title || route.name;
+        return (
+          <MainHeader 
+            title={title}
+            onBack={props.navigation?.canGoBack?.() ? props.navigation.goBack : undefined}
+            showNotifications={route.name !== 'Auth'}
+          />
+        );
+      },
+      headerShown: true,
+      headerStyle: {
+        backgroundColor: 'transparent',
+        elevation: 0,
+        shadowOpacity: 0,
+      },
+      headerTitleAlign: 'center' as const,
+    };
+  };
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        headerShown: true,
+        ...screenOptions(route),
         tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: COLORS.gray500,
         tabBarStyle: {
