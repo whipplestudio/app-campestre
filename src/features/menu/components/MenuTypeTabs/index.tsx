@@ -1,8 +1,8 @@
 // src/features/menus/components/MenuTypeTabs/index.tsx
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { styles } from './Style';
+import { Text, TouchableOpacity, View } from 'react-native';
 import useMessages from '../../hooks/useMessages';
+import { styles } from './Style';
 
 interface MenuTypeTabsProps {
   selectedType: 'daily' | 'weekly' | 'special';

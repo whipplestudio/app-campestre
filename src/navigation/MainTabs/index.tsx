@@ -5,8 +5,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import EventsScreen from '../../features/events/containers/EventsContainer';
 import HomeScreen from '../../features/home';
-import { default as MenusScreen, default as SurveysScreen } from '../../features/menus/containers';
 import MoreOptionsScreen from '../../features/moreOptions';
+import RestauranteScreen from '../../features/restaurante';
+import SurveysScreen from '../../features/surveys/containers/SurveysContainer';
 import { COLORS } from '../../shared/theme/colors';
 
 const Tab = createBottomTabNavigator();
@@ -60,10 +61,10 @@ const MainTabs = () => {
         }} 
       />
       <Tab.Screen 
-        name="Menus" 
-        component={MenusScreen} 
+        name="Restaurant" 
+        component={RestauranteScreen} 
         options={{
-          title: t('menus.title'),
+          title: t('restaurant.title'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="restaurant-outline" size={size} color={color} />
           ),

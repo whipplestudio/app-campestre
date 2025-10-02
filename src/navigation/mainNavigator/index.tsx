@@ -14,12 +14,12 @@ import MainHeader from '../../shared/components/MainHeader/Container';
 import { COLORS } from '../../shared/theme/colors';
 
 // Screens
-import EventsScreen from '../../features/events/containers/EventsContainer';
-import HomeScreen from '../../features/home';
-import MenusScreen from '../../features/menus/containers';
-import ProfileScreen from '../../features/profile/containers';
-import SettingsScreen from '../../features/settings';
-import SurveysScreen from '../../features/surveys/containers/SurveysContainer';
+import EventsScreen from '../features/events/containers/EventsContainer';
+import HomeScreen from '../features/home';
+import ProfileScreen from '../features/profile/containers/ProfileContainer';
+import RestauranteScreen from '../features/restaurante/containers/index';
+import SettingsScreen from '../features/settings';
+import SurveysScreen from '../features/surveys/containers/SurveysContainer';
 
 // Types
 
@@ -230,10 +230,10 @@ const MainTabs: React.FC = () => {
         }} 
       />
       <Tab.Screen 
-        name="Menus" 
-        component={MenusScreen} 
+        name="Restaurant" 
+        component={RestauranteScreen} 
         options={{
-          title: t('menus.title'),
+          title: t('restaurant.title'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="restaurant-outline" size={size} color={color} />
           )

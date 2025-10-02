@@ -1,12 +1,12 @@
 // src/features/menus/containers/index.tsx
-import React, { useState, useEffect } from 'react';
-import { View, Text, ActivityIndicator, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMenus } from '../hooks/useMenus';
-import MenuTypeTabs from '../components/MenuTypeTabs';
+import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import MenuList from '../components/MenuList';
-import { styles } from './Style';
+import MenuTypeTabs from '../components/MenuTypeTabs';
+import { useMenus } from '../hooks/useMenus';
 import useMessages from '../hooks/useMessages';
+import { styles } from './Style';
 
 const MenusContainer: React.FC = () => {
   const { t } = useTranslation('menus');

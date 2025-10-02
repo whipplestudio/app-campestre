@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useMenusStore } from '../store/useMenusStore';
+import { useMenusStore } from '../store/useMenuStore';
 
 export const useMenus = () => {
   const { t } = useTranslation('menus');
