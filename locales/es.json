@@ -1,0 +1,31 @@
+{
+  "surveys": {
+    "title": "Encuestas",
+    "subtitle": "Tu opinión nos ayuda a mejorar",
+    "total": "Total",
+    "completed": "Completadas",
+    "completionRate": "Tasa de Completitud",
+    "filter": {
+      "all": "Todas",
+      "services": "Servicios",
+      "restaurant": "Restaurante",
+      "sports": "Deportes",
+      "events": "Eventos"
+    }
+  },
+  "surveyCard": {
+    "respond": "Responder",
+    "estimatedTime": "Tiempo estimado",
+    "responses": "Respuestas",
+    "questions": "Preguntas"
+  },
+  "surveyDetail": {
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "submit": "Enviar",
+    "of": "de",
+    "question": "Pregunta",
+    "commentPlaceholder": "Comentarios adicionales (opcional)",
+    "back": "Regresar"
+  }
+}
