@@ -22,7 +22,7 @@ const SurveyCard: React.FC<SurveyCardProps> = ({ survey, onPress, surveyId }) =>
       case 'normal':
         return COLORS.gray500;
       case 'baja':
-        return COLORS.success;
+        return COLORS.info;
       default:
         return COLORS.gray500;
     }
