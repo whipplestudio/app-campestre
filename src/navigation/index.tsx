@@ -4,7 +4,7 @@ import { useStore } from '../store';
 
 // Import screens
 import AuthScreen from './authScreen';
-import MainTabs from './MainTabs';
+import MainTabs from './mainTabs';
 
 // Types
 import { RootStackParamList } from './types';
