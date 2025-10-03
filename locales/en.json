@@ -1,4 +1,12 @@
 {
+  "auth": {
+    "logout": "Logout",
+    "logoutConfirm": "Are you sure you want to log out?"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "logout": "Log Out"
+  },
   "surveys": {
     "title": "Surveys",
     "subtitle": "Your opinion helps us improve",

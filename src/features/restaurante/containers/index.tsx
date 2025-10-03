@@ -1,13 +1,13 @@
 // src/features/restaurante/containers/index.tsx
+import Search from '@/src/shared/components/Search/Search';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, Text, TextInput, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { COLORS } from '../../../shared/theme/colors';
 import RestaurantDishCard from '../components/RestaurantDishCard';
 import StickyCart from '../components/StickyCart';
 import useMessages from '../hooks/useRestaurantMessages';
 import { Dish } from '../interfaces/dishInterface';
 import { styles } from './Style';
-import Search from '@/src/shared/components/Search/Search';
 
 const RestaurantContainer: React.FC = () => {
   const { messages } = useMessages();
@@ -97,10 +97,10 @@ const RestaurantContainer: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* Header with restaurant name and opening hours */}
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text style={styles.headerText}>{messages.CONTAINER.HEADER_TEXT}</Text>
         <Text style={styles.openingHours}>{messages.CONTAINER.OPENING_HOURS}</Text>
-      </View>
+      </View> */}
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>

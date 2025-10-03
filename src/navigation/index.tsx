@@ -28,14 +28,40 @@ const MainNavigator = (): React.JSX.Element => {
           }}
         />
       ) : (
-        <Stack.Screen 
-          name="MainTabs" 
-          component={MainTabs} 
-          options={{ 
-            headerShown: false,
-            title: 'Inicio'
-          }}
-        />
+        <>
+          <Stack.Screen 
+            name="MainTabs" 
+            component={MainTabs} 
+            options={{ 
+              headerShown: false,
+              title: 'Inicio'
+            }}
+          />
+          {/* <Stack.Screen 
+            name="Profile" 
+            component={ProfileScreen} 
+            options={{ 
+              headerShown: false,
+              title: 'Perfil'
+            }}
+          /> */}
+          {/* <Stack.Screen 
+            name="Settings" 
+            component={SettingsScreen} 
+            options={{ 
+              headerShown: false,
+              title: 'Configuración'
+            }}
+          /> */}
+          {/* <Stack.Screen 
+            name="Help" 
+            component={HelpScreen} 
+            options={{ 
+              headerShown: false,
+              title: 'Ayuda'
+            }}
+          /> */}
+        </>
       )}
     </Stack.Navigator>
   );

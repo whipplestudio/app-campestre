@@ -18,6 +18,7 @@ import { COLORS } from '../../../../shared/theme/colors';
 
 const MainHeader: React.FC<MainHeaderProps> = ({
   title,
+  subtitle,
   showNotifications = true,
   onBack
 }) => {
@@ -26,21 +27,32 @@ const MainHeader: React.FC<MainHeaderProps> = ({
 
   return (
     <View style={styles.container}>
-      {onBack ? (
-        <TouchableOpacity onPress={onBack} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color={COLORS.white} />
-        </TouchableOpacity>
-      ) : null}
-      <View style={[styles.titleContainer, onBack && { marginLeft: 40 }]}>
-        <Text style={styles.title} numberOfLines={1}>
-          {title}
-        </Text>
+      <View style={styles.headerContent}>
+        <View style={styles.leftContainer}>
+          {onBack && (
+            <TouchableOpacity onPress={onBack} style={styles.backButton}>
+              <Ionicons name="arrow-back" size={24} color={COLORS.white} />
+            </TouchableOpacity>
+          )}
+        </View>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title} numberOfLines={1}>
+            {title}
+          </Text>
+          {subtitle && (
+            <Text style={styles.subtitle} numberOfLines={1}>
+              {subtitle}
+            </Text>
+          )}
+        </View>
+        <View style={styles.rightContainer}>
+          {showNotifications && (
+            <TouchableOpacity onPress={handleNotifications} style={styles.iconContainer}>
+              <Ionicons name="notifications-outline" size={24} color={COLORS.white} />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
-      {showNotifications && (
-        <TouchableOpacity onPress={handleNotifications} style={styles.iconContainer}>
-          <Ionicons name="notifications-outline" size={24} color={COLORS.white} />
-        </TouchableOpacity>
-      )}
     </View>
   );
 };

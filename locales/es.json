@@ -1,4 +1,12 @@
 {
+  "auth": {
+    "logout": "Cerrar sesión",
+    "logoutConfirm": "¿Estás seguro de que quieres cerrar sesión?"
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "logout": "Cerrar sesión"
+  },
   "surveys": {
     "title": "Encuestas",
     "subtitle": "Tu opinión nos ayuda a mejorar",

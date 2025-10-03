@@ -18,6 +18,10 @@
     "container": {
       "title": "Inicio de Sesión"
     },
+    "logout": {
+      "title": "Cerrar Sesión",
+      "confirm": "¿Estás seguro de que deseas cerrar sesión?"
+    },
     "logo": {
       "name": "Club Campestre",
       "place": "Tampico"
