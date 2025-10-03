@@ -1,16 +1,15 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
-import { Alert } from 'react-native';
-import { useAuthStore } from '../../../store/index';
-import useMessages from '../hooks/useMessages';
+import useLogout from '../../../hooks/useLogout';
 import { updateProfileData, userProfile } from '../interfaces/interfaces';
 import { useProfileStore } from '../store/useProfileStore';
+import useMessages from '../hooks/useMessages';
 
 export const useProfile = () => {
   const navigation = useNavigation();
-  const { profile, updateProfile, clearProfile } = useProfileStore();
-  const { clearAuth } = useAuthStore();
-  const { messages } = useMessages();
+  const { profile, updateProfile } = useProfileStore();
+  const { handleLogout } = useLogout();
+  const messages = useMessages();
   
   const currentUser = profile as userProfile | null;
   
@@ -97,17 +96,8 @@ export const useProfile = () => {
     setIsEditingContactEmergency(false);
   }, [currentUser]);
 
-  const handleLogout = useCallback(async () => {
-    try {
-      await clearAuth();
-      clearProfile();
-      // Usamos una aserción de tipo para evitar el error de TypeScript
-      (navigation as any).navigate('Auth');
-    } catch (error) {
-      Alert.alert('Error', messages.CONTAINER.TEXT_LOGOUT);
-      console.error('Logout error:', error);
-    }
-  }, [clearAuth, clearProfile, navigation]);
+  //-------------------------------------------------------
+  // La lógica de logout ahora está centralizada en el hook useLogout
 
   const handleAddVehicle = useCallback(() => {
     // Navigation to add vehicle screen will be implemented here

@@ -5,12 +5,12 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import EventsScreen from '../../features/events/containers/EventsContainer';
 import HomeScreen from '../../features/home';
-import MoreOptionsScreen from '../../features/moreOptions';
 import ProfileScreen from '../../features/profile/containers';
 import RestauranteScreen from '../../features/restaurante';
 import SurveysScreen from '../../features/surveys';
 import MainHeader from '../../shared/components/MainHeader/Container';
 import { COLORS } from '../../shared/theme/colors';
+import MoreOptionsScreen from '../moreOptions';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -62,12 +62,12 @@ const MoreStack = () => (
     <Stack.Screen 
       name="MoreOptionsScreen" 
       component={MoreOptionsScreen} 
-      options={{ headerShown: true }}
+      options={{ headerShown: false }}
     />
     <Stack.Screen 
       name="Profile" 
       component={ProfileScreen} 
-      options={{ headerShown: true }}
+      options={{ headerShown: false }}
     />
     {/* <Stack.Screen 
       name="Settings" 

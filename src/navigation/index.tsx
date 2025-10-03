@@ -3,11 +3,8 @@ import React from 'react';
 import { useStore } from '../store';
 
 // Import screens
-import ProfileScreen from '../features/profile/containers';
-import SettingsScreen from '../features/settings';
 import AuthScreen from './authScreen';
 import MainTabs from './mainTabs';
-// import HelpScreen from '../features/help';
 
 // Types
 import { RootStackParamList } from './types';
@@ -40,22 +37,22 @@ const MainNavigator = (): React.JSX.Element => {
               title: 'Inicio'
             }}
           />
-          <Stack.Screen 
+          {/* <Stack.Screen 
             name="Profile" 
             component={ProfileScreen} 
             options={{ 
               headerShown: false,
               title: 'Perfil'
             }}
-          />
-          <Stack.Screen 
+          /> */}
+          {/* <Stack.Screen 
             name="Settings" 
             component={SettingsScreen} 
             options={{ 
               headerShown: false,
               title: 'Configuración'
             }}
-          />
+          /> */}
           {/* <Stack.Screen 
             name="Help" 
             component={HelpScreen} 

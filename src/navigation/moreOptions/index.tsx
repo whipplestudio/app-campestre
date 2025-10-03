@@ -1,17 +1,17 @@
-import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import useLogout from '../../hooks/useLogout';
 import { COLORS } from '../../shared/theme/colors';
 
 // Importar tipos de navegación
-import { RootStackParamList, MoreStackParamList } from '../../navigation/types';
-import { CompositeNavigationProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { CompositeNavigationProp } from '@react-navigation/native';
+import { MoreStackParamList, RootStackParamList } from '../types';
 
-// Usamos 'More' que es el nombre de la pestaña en MainTabsParamList
 // Tipo para la navegación del stack de More
 type MoreOptionsScreenNavigationProp = CompositeNavigationProp<
   NativeStackNavigationProp<MoreStackParamList, 'MoreOptions'>,
@@ -21,6 +21,7 @@ type MoreOptionsScreenNavigationProp = CompositeNavigationProp<
 const MoreOptionsScreen = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<MoreOptionsScreenNavigationProp>();
+  const { handleLogout } = useLogout();
 
   const menuItems = [
     { 
@@ -39,11 +40,25 @@ const MoreOptionsScreen = () => {
       onPress: () => navigation.navigate('Help')
     },
     { 
-      title: t('auth.logout'), 
+      title: t('auth.logout.title'), 
       icon: 'log-out-outline' as const,
       onPress: () => {
-        // Aquí iría la lógica para cerrar sesión
-        navigation.navigate('Auth');
+        Alert.alert(
+          t('auth.logout.title'),
+          t('auth.logout.confirm'),
+          [
+            {
+              text: t('common.cancel'),
+              style: 'cancel',
+            },
+            {
+              text: t('common.logout'),
+              onPress: handleLogout,
+              style: 'destructive',
+            },
+          ],
+          { cancelable: true }
+        );
       }
     },
   ];
