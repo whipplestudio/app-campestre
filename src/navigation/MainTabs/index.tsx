@@ -5,6 +5,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import EventsScreen from '../../features/events/containers/EventsContainer';
 import HomeScreen from '../../features/home';
+import MenuScreen from '../../features/menu/containers/';
 import ProfileScreen from '../../features/profile/containers';
 import ReservationScreen from '../../features/reservations';
 import RestauranteScreen from '../../features/restaurante';
@@ -73,6 +74,11 @@ const MoreStack = () => (
     <Stack.Screen 
       name="Reservations" 
       component={ReservationScreen} 
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen 
+      name="Menu" 
+      component={MenuScreen} 
       options={{ headerShown: false }}
     />
     {/* <Stack.Screen 

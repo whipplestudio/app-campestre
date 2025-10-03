@@ -35,6 +35,11 @@ const MoreOptionsScreen = () => {
       onPress: () => navigation.navigate('Reservations')
     },
     { 
+      title: t('menus.title'), 
+      icon: 'restaurant-outline' as const,
+      onPress: () => navigation.navigate('Menu')
+    },
+    { 
       title: t('settings.title'), 
       icon: 'settings-outline' as const,
       onPress: () => navigation.navigate('Settings')
