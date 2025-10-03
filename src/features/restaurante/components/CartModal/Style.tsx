@@ -19,12 +19,6 @@ export const styles = StyleSheet.create({
     top: 40,
     zIndex: 1,
   },
-  closeButton: {
-    position: 'absolute',
-    right: 15,
-    top: 40,
-    zIndex: 1,
-  },
   headerContent: {
     alignItems: 'center',
   },

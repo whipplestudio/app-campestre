@@ -164,7 +164,10 @@ const MenuContainer: React.FC = () => {
         {/* Menu Header */}
         <MenuHeader 
           menuCount={allMenus.length} 
-          onDownloadPress={() => Alert.alert(t('common.alert'), t('menu.notImplemented'))}
+          onDownloadPress={() => Alert.alert(
+            t('menu.downloadAllTitle', 'Descargar todos los menús'), 
+            t('menu.notImplemented', 'Funcionalidad no implementada aún.')
+          )}
         />
         
         {/* Search */}
@@ -190,8 +193,14 @@ const MenuContainer: React.FC = () => {
               <MenuCard 
                 key={menu.id} 
                 menu={menu} 
-                onDownloadPress={() => Alert.alert(t('common.alert'), t('menu.notImplemented'))}
-                onViewPress={() => Alert.alert(t('common.alert'), t('menu.notImplemented'))}
+                onDownloadPress={() => Alert.alert(
+                  t('menu.downloadTitle', 'Descargar menú'), 
+                  t('menu.notImplemented', 'Funcionalidad no implementada aún.')
+                )}
+                onViewPress={() => Alert.alert(
+                  t('menu.viewTitle', 'Ver menú'), 
+                  t('menu.notImplemented', 'Funcionalidad no implementada aún.')
+                )}
               />
             ))
           ) : (

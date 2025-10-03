@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { COLORS } from '../../../shared/theme/colors';
 import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { COLORS } from '../../../shared/theme/colors';
 
 interface SummaryCardProps {
   serviceName: string;
@@ -80,22 +80,6 @@ export const SummaryCard: React.FC<SummaryCardProps> = ({
           <Ionicons name="people-outline" size={20} color={COLORS.gray600} />
           <Text style={styles.label}>Personas</Text>
           <Text style={styles.value}>{details.partySize}</Text>
-        </View>
-      )}
-      
-      {details.treatment && (
-        <View style={styles.detailRow}>
-          <Ionicons name="water-outline" size={20} color={COLORS.gray600} />
-          <Text style={styles.label}>Tratamiento</Text>
-          <Text style={styles.value}>{details.treatment}</Text>
-        </View>
-      )}
-      
-      {details.equipment && (
-        <View style={styles.detailRow}>
-          <Ionicons name="barbell-outline" size={20} color={COLORS.gray600} />
-          <Text style={styles.label}>Equipo</Text>
-          <Text style={styles.value}>{details.equipment}</Text>
         </View>
       )}
     </View>

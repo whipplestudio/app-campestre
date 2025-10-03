@@ -118,8 +118,6 @@ const ReservationsContainer = () => {
       details: {
         ...(selectedService.id === 'tenis' && { court: selectedCourt }), // Usar ID para persistencia
         ...(selectedService.id === 'restaurante' && { table: selectedTable, partySize }), // Usar ID para persistencia
-        ...(selectedService.id === 'spa' && { treatment: 'Masaje relajante' }),
-        ...(selectedService.id === 'gimnasio' && { equipment: 'Zona cardiovascular' }),
       },
       status: 'confirmed' as const,
       createdAt: new Date().toISOString(),
@@ -265,8 +263,6 @@ const ReservationsContainer = () => {
             details={{
               ...(selectedService.id === 'tenis' && selectedCourt && { court: getCourtName(selectedCourt), courtId: selectedCourt }),
               ...(selectedService.id === 'restaurante' && selectedTable && { table: getTableName(selectedTable), tableId: selectedTable, partySize }),
-              ...(selectedService.id === 'spa' && { treatment: 'Masaje relajante' }),
-              ...(selectedService.id === 'gimnasio' && { equipment: 'Zona cardiovascular' }),
             }}
           />
         )}
