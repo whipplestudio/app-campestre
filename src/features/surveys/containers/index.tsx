@@ -256,20 +256,20 @@ const Surveys: React.FC = () => {
               variant="outline"
               onPress={goToPreviousQuestion}
               disabled={currentQuestionIndex === 0}
-              containerStyle={styles.navButton}
+              style={styles.navButton}
             />
             
             {currentQuestionIndex < questions.length - 1 ? (
               <Button 
                 text="Siguiente" 
                 onPress={goToNextQuestion}
-                containerStyle={styles.navButton}
+                style={styles.navButton}
               />
             ) : (
               <Button 
                 text="Enviar" 
                 onPress={handleSubmit}
-                containerStyle={styles.navButton}
+                style={styles.navButton}
               />
             )}
           </View>
@@ -290,7 +290,7 @@ const Surveys: React.FC = () => {
             <Button 
               text="Volver a encuestas" 
               onPress={handleFormClose}
-              containerStyle={styles.successButton}
+              style={styles.successButton}
             />
           </View>
         </View>
@@ -358,7 +358,7 @@ const MultipleChoiceQuestion: React.FC<{
           text={option}
           variant={answer === option ? 'filled' : 'outline'}
           onPress={() => onAnswerChange(option)}
-          containerStyle={styles.multipleChoiceButton}
+          style={styles.multipleChoiceButton}
         />
       ))}
     </View>
@@ -416,13 +416,13 @@ const YesNoQuestion: React.FC<{
         text="Sí"
         variant={answer === 'Sí' ? 'filled' : 'outline'}
         onPress={() => onAnswerChange('Sí')}
-        containerStyle={styles.yesNoButton}
+        style={styles.yesNoButton}
       />
       <Button
         text="No"
         variant={answer === 'No' ? 'filled' : 'outline'}
         onPress={() => onAnswerChange('No')}
-        containerStyle={styles.yesNoButton}
+        style={styles.yesNoButton}
       />
     </View>
   );

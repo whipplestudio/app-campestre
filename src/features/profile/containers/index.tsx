@@ -72,7 +72,7 @@ const ProfileContainer = () => {
               null
             ) : (
               <Button 
-                title={messages.CONTAINER.EDIT}
+                text={messages.CONTAINER.EDIT}
                 onPress={handleEdit}
                 variant="primary"
                 style={styles.editButton}
@@ -96,7 +96,7 @@ const ProfileContainer = () => {
             { isEditing && (
               <View style={styles.editActions}>
                 <Button 
-                  title={messages.CONTAINER.CANCEL}
+                  text={messages.CONTAINER.CANCEL}
                   onPress={handleCancel}
                   variant="secondary"
                   style={[styles.actionButton, styles.cancelButton]}
@@ -104,7 +104,7 @@ const ProfileContainer = () => {
                 />
                 <View style={styles.buttonSpacer} />
                 <Button 
-                  title={messages.CONTAINER.SAVE}
+                  text={messages.CONTAINER.SAVE}
                   onPress={handleSave}
                   variant="primary"
                   style={[styles.actionButton, styles.saveButton]}
@@ -137,7 +137,7 @@ const ProfileContainer = () => {
               null
             ) : (
               <Button 
-                title={messages.CONTAINER.EDIT}
+                text={messages.CONTAINER.EDIT}
                 onPress={handleEditContactEmergency}
                 variant="primary"
                 style={styles.editButton}
@@ -158,7 +158,7 @@ const ProfileContainer = () => {
           { isEditingContactEmergency && (
             <View style={styles.editActions}>
               <Button 
-                title={messages.CONTAINER.CANCEL}
+                text={messages.CONTAINER.CANCEL}
                 onPress={handleCancelContactEmergency}
                 variant="secondary"
                 style={[styles.actionButton, styles.cancelButton]}
@@ -166,7 +166,7 @@ const ProfileContainer = () => {
               />
               <View style={styles.buttonSpacer} />
               <Button 
-                title={messages.CONTAINER.SAVE}
+                text={messages.CONTAINER.SAVE}
                 onPress={handleSaveContactEmergency}
                 variant="primary"
                 style={[styles.actionButton, styles.saveButton]}
@@ -178,7 +178,7 @@ const ProfileContainer = () => {
         {/* Logout Button */}
         <View style={styles.logoutContainer}>
           <Button
-            title={messages.CONTAINER.LOGOUT}
+            text={messages.CONTAINER.LOGOUT}
             onPress={handleLogout}
             variant="danger"
             style={styles.logoutButton}
