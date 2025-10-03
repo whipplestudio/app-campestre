@@ -1,11 +1,31 @@
 import { NavigationProp, RouteProp } from '@react-navigation/native';
 
+// Tipos para el Stack Navigator principal
 export type RootStackParamList = {
   Auth: undefined;
   MainTabs: undefined;
+  // Pantallas dentro del stack de More
+  More: undefined;
   Profile: undefined;
+  Settings: undefined;
+  Help: undefined;
+};
+
+// Tipos para el Tab Navigator
+export type MainTabsParamList = {
+  Home: undefined;
+  Events: undefined;
+  Restaurant: undefined;
+  Surveys: undefined;
+  More: undefined;
+};
+
+// Tipos para el stack de More
+export type MoreStackParamList = {
   MoreOptions: undefined;
-  // Agrega más rutas según sea necesario
+  Profile: undefined;
+  Settings: undefined;
+  Help: undefined;
 };
 
 export type RootStackNavigationProp = NavigationProp<RootStackParamList>;

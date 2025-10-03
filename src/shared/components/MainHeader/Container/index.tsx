@@ -18,6 +18,7 @@ import { COLORS } from '../../../../shared/theme/colors';
 
 const MainHeader: React.FC<MainHeaderProps> = ({
   title,
+  subtitle,
   showNotifications = true,
   onBack
 }) => {
@@ -34,6 +35,9 @@ const MainHeader: React.FC<MainHeaderProps> = ({
       <View style={[styles.titleContainer, onBack && { marginLeft: 40 }]}>
         <Text style={styles.title} numberOfLines={1}>
           {title}
+        </Text>
+        <Text style={styles.subtitle} numberOfLines={1}>
+          {subtitle}
         </Text>
       </View>
       {showNotifications && (

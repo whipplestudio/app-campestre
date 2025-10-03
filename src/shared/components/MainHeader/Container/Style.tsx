@@ -42,6 +42,11 @@ const styles = StyleSheet.create({
       fontWeight: '600',
       color: COLORS.white,
     },
+    subtitle: {
+      fontSize: 14,
+      fontWeight: '400',
+      color: COLORS.white,
+    },
     backButton: {
       position: 'absolute',
       left: 16,

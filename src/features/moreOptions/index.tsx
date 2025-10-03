@@ -1,21 +1,26 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { COLORS } from '../../shared/theme/colors';
 
-type RootStackParamList = {
-  Profile: undefined;
-  Settings: undefined;
-  Help: undefined;
-  Auth: undefined;
-  [key: string]: any;
-};
+// Importar tipos de navegación
+import { RootStackParamList, MoreStackParamList } from '../../navigation/types';
+import { CompositeNavigationProp } from '@react-navigation/native';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+// Usamos 'More' que es el nombre de la pestaña en MainTabsParamList
+// Tipo para la navegación del stack de More
+type MoreOptionsScreenNavigationProp = CompositeNavigationProp<
+  NativeStackNavigationProp<MoreStackParamList, 'MoreOptions'>,
+  BottomTabNavigationProp<RootStackParamList>
+>;
 
 const MoreOptionsScreen = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<MoreOptionsScreenNavigationProp>();
 
   const menuItems = [
     { 

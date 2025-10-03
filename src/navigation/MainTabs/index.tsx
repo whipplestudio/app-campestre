@@ -1,24 +1,95 @@
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import EventsScreen from '../../features/events/containers/EventsContainer';
 import HomeScreen from '../../features/home';
 import MoreOptionsScreen from '../../features/moreOptions';
+import ProfileScreen from '../../features/profile/containers';
 import RestauranteScreen from '../../features/restaurante';
 import SurveysScreen from '../../features/surveys';
 import MainHeader from '../../shared/components/MainHeader/Container';
 import { COLORS } from '../../shared/theme/colors';
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+// Pantallas que se mostrarán en las pestañas
+const HomeStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen 
+      name="HomeScreen" 
+      component={HomeScreen} 
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
+);
+
+const EventsStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen 
+      name="EventsScreen" 
+      component={EventsScreen} 
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
+);
+
+const RestaurantStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen 
+      name="RestaurantScreen" 
+      component={RestauranteScreen} 
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
+);
+
+const SurveysStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen 
+      name="Surveys" 
+      component={SurveysScreen} 
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
+);
+
+
+const MoreStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen 
+      name="MoreOptionsScreen" 
+      component={MoreOptionsScreen} 
+      options={{ headerShown: true }}
+    />
+    <Stack.Screen 
+      name="Profile" 
+      component={ProfileScreen} 
+      options={{ headerShown: true }}
+    />
+    {/* <Stack.Screen 
+      name="Settings" 
+      component={require('../../features/settings').default} 
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen 
+      name="Help" 
+      component={require('../../features/help').default} 
+      options={{ headerShown: false }}
+    /> */}
+  </Stack.Navigator>
+);
 
 const MainTabs = () => {
   const { t } = useTranslation();
   
-  const headerOptions = (title: string) => ({
+  const headerOptions = (title: string, subtitle?: string) => ({
     header: (props: any) => (
       <MainHeader 
         title={title}
+        subtitle={subtitle}
         onBack={props.navigation?.canGoBack?.() ? props.navigation.goBack : undefined}
         showNotifications={true}
       />
@@ -58,57 +129,57 @@ const MainTabs = () => {
     >
       <Tab.Screen 
         name="Home" 
-        component={HomeScreen} 
+        component={HomeStack} 
         options={{
           title: t('home.title'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home-outline" size={size} color={color} />
           ),
-          ...headerOptions(t('home.title')),
+          ...headerOptions(t('home.title'), ''),
         }} 
       />
       <Tab.Screen 
         name="Events" 
-        component={EventsScreen} 
+        component={EventsStack} 
         options={{
           title: t('events.title'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="calendar-outline" size={size} color={color} />
           ),
-          ...headerOptions(t('events.title')),
+          ...headerOptions(t('events.title'), ''),
         }} 
       />
       <Tab.Screen 
         name="Restaurant" 
-        component={RestauranteScreen} 
+        component={RestaurantStack} 
         options={{
           title: t('restaurant.title'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="restaurant-outline" size={size} color={color} />
           ),
-          ...headerOptions(t('restaurant.title')),
+          ...headerOptions(t('restaurant.title'), t('restaurant.openingHours')),
         }} 
       />
       <Tab.Screen 
         name="Surveys" 
-        component={SurveysScreen} 
+        component={SurveysStack} 
         options={{
           title: t('surveys.title'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="chatbubble-ellipses-outline" size={size} color={color} />
           ),
-          ...headerOptions(t('surveys.title')),
+          ...headerOptions(t('surveys.title'), ''),
         }} 
       />
       <Tab.Screen 
         name="More" 
-        component={MoreOptionsScreen}
+        component={MoreStack}
         options={{
           title: t('more.title'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="ellipsis-horizontal" size={size} color={color} />
           ),
-          ...headerOptions(t('more.title')),
+          ...headerOptions(t('more.title'), ''),
         }} 
       />
     </Tab.Navigator>
