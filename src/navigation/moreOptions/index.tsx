@@ -36,7 +36,7 @@ const MoreOptionsScreen = () => {
     },
     { 
       title: t('menus.title'), 
-      icon: 'restaurant-outline' as const,
+      icon: 'nutrition-outline' as const,
       onPress: () => navigation.navigate('Menu')
     },
     { 
