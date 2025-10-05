@@ -139,6 +139,9 @@
   "more": {
     "title": "More"
   },
+  "help": {
+    "title": "Help"
+  },
   "common": {
     "cancel": "Cancel",
     "ok": "OK",

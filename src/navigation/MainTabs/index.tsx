@@ -171,20 +171,9 @@ const MainTabs = () => {
         options={{
           title: t('events.title'),
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar-outline" size={size} color={color} />
+            <Ionicons name="book-outline" size={size} color={color} />
           ),
           ...headerOptions(t('events.title'), 'Descubre y regístrate a nuestras actividades'),
-        }} 
-      />
-      <Tab.Screen 
-        name="Restaurant" 
-        component={RestaurantStack} 
-        options={{
-          title: t('restaurant.title'),
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="restaurant-outline" size={size} color={color} />
-          ),
-          ...headerOptions(t('restaurant.title'), t('restaurant.openingHours')),
         }} 
       />
       {/*<Tab.Screen 
@@ -208,6 +197,17 @@ const MainTabs = () => {
             <Ionicons name="calendar-outline" size={size} color={color} />
           ),
           ...headerOptions(t('reservation.title'), 'Selecciona tu servicio'),
+        }} 
+      />
+      <Tab.Screen 
+        name="Restaurant" 
+        component={RestaurantStack} 
+        options={{
+          title: t('restaurant.title'),
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="restaurant-outline" size={size} color={color} />
+          ),
+          ...headerOptions(t('restaurant.title'), t('restaurant.openingHours')),
         }} 
       />
       <Tab.Screen 

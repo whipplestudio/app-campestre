@@ -41,18 +41,44 @@ const MoreOptionsScreen = () => {
     },
     { 
       title: t('menus.title'), 
-      icon: 'nutrition-outline' as const,
+      icon: 'cafe-outline' as const,
       onPress: () => navigation.navigate('Menu')
     },
     { 
       title: t('settings.title'), 
       icon: 'settings-outline' as const,
-      onPress: () => navigation.navigate('Settings')
+      //onPress: () => navigation.navigate('Settings')
+      onPress: () => {
+        Alert.alert(
+          t('settings.title'),
+          t('Función no disponible por el momento'),
+          [
+            {
+              text: t('common.ok'),
+              style: 'default',
+            },
+          ],
+          { cancelable: true }
+        );
+      }
     },
     { 
       title: t('help.title'), 
       icon: 'help-circle-outline' as const,
-      onPress: () => navigation.navigate('Help')
+      //onPress: () => navigation.navigate('Help')
+      onPress: () => {
+        Alert.alert(
+          t('help.title'),
+          t('Función no disponible por el momento'),
+          [
+            {
+              text: t('common.ok'),
+              style: 'default',
+            },
+          ],
+          { cancelable: true }
+        );
+      }
     },
     { 
       title: t('auth.logout.title'), 

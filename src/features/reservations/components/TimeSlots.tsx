@@ -12,6 +12,7 @@ interface TimeSlotsProps {
   selectedTime: string;
   onTimeChange: (time: string) => void;
   availableTimes: string[];
+  selectedDate?: string; // Fecha seleccionada para deshabilitar horarios pasados
   unavailableMessage?: string;
 }
 
@@ -19,12 +20,38 @@ export const TimeSlots: React.FC<TimeSlotsProps> = ({
   selectedTime, 
   onTimeChange, 
   availableTimes, 
+  selectedDate,
   unavailableMessage = "No hay horarios disponibles" 
 }) => {
+  // Función para verificar si un horario ya pasó
+  const isTimePassed = (time: string, selectedDate?: string): boolean => {
+    if (!selectedDate) return false; // Si no hay fecha seleccionada, ningún horario ha pasado
+    
+    // Convertir la fecha seleccionada a un objeto Date
+    const selectedDateObj = new Date(selectedDate);
+    const today = new Date();
+    
+    // Comparar solo las fechas (día, mes, año) sin la hora
+    const isToday = 
+      selectedDateObj.getDate() === today.getDate() &&
+      selectedDateObj.getMonth() === today.getMonth() &&
+      selectedDateObj.getFullYear() === today.getFullYear();
+    
+    if (!isToday) return false; // Si la fecha seleccionada no es hoy, ningún horario ha pasado
+    
+    // Si es hoy, verificar si el horario ya pasó
+    const [hours, minutes] = time.split(':').map(Number);
+    const currentTime = new Date();
+    const selectedTime = new Date();
+    selectedTime.setHours(hours, minutes, 0, 0); // Establecer la hora seleccionada
+    
+    return selectedTime < currentTime; // Si el horario es anterior a la hora actual, ya pasó
+  };
+
   // Convertir los horarios disponibles en el formato con disponibilidad
   const timeSlots = availableTimes.map(time => ({
     time,
-    available: true
+    available: !isTimePassed(time, selectedDate)
   }));
 
   return (

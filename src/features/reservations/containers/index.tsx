@@ -47,6 +47,42 @@ const ReservationsContainer = () => {
     setSelectedTable('');
   };
 
+  // Manejar el cambio de fecha, limpiando la hora si la fecha seleccionada está inhabilitada
+  const handleDateChange = (newDate: string) => {
+    // Verificar si la fecha seleccionada es en el pasado
+    const selectedDateObj = new Date(newDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Establecer horas a 0 para comparación precisa
+    
+    const isPastDate = selectedDateObj < today;
+    
+    if (isPastDate) {
+      // Si la fecha es pasada, limpiar la hora seleccionada
+      setDate(newDate);
+      setTime('');
+    } else {
+      // Si la fecha es válida, actualizarla normalmente
+      setDate(newDate);
+      
+      // Si la fecha seleccionada es hoy y la hora actual ya pasó, limpiar la hora seleccionada
+      const isToday = 
+        selectedDateObj.getDate() === today.getDate() &&
+        selectedDateObj.getMonth() === today.getMonth() &&
+        selectedDateObj.getFullYear() === today.getFullYear();
+      
+      if(isToday && time) {
+        const [hours, minutes] = time.split(':').map(Number);
+        const selectedTime = new Date();
+        selectedTime.setHours(hours, minutes, 0, 0);
+        
+        // Si la hora seleccionada ya pasó comparada con la hora actual, limpiarla
+        if(selectedTime < new Date()) {
+          setTime('');
+        }
+      }
+    }
+  };
+
   // Obtener canchas disponibles según la fecha y hora seleccionadas
   const getAvailableCourts = () => {
     return mockTennisCourts.filter(court => court.available);
@@ -164,29 +200,12 @@ const ReservationsContainer = () => {
   // Si hay un servicio seleccionado, mostrar la interfaz de reserva
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <View style={styles.leftContainer}>
-            <TouchableOpacity onPress={resetSelection} style={styles.backButton}>
-              <Ionicons name="arrow-back" size={24} color={COLORS.white} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title} numberOfLines={1}>
-              Reservar {selectedService.name}
-            </Text>
-            <Text style={styles.subtitle} numberOfLines={1}>
-              Detalles de reserva
-            </Text>
-          </View>
-          <View style={styles.rightContainer} />
-        </View>
-      </View>
+        
       <ScrollView style={styles.container}>
         {/* Componente de calendario */}
         <CalendarComponent 
           selectedDate={date} 
-          onDateChange={setDate} 
+          onDateChange={handleDateChange} 
         />
         
         {/* Componente de horarios */}
@@ -194,6 +213,7 @@ const ReservationsContainer = () => {
           selectedTime={time}
           onTimeChange={setTime}
           availableTimes={getAvailableTimeSlots()}
+          selectedDate={date}
           unavailableMessage="No hay disponibilidad de horarios"
         />
         
