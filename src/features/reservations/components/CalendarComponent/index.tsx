@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { COLORS } from '../../../shared/theme/colors';
 import { Ionicons } from '@expo/vector-icons';
-
-interface CalendarComponentProps {
-  selectedDate: string;
-  onDateChange: (date: string) => void;
-}
+import React, { useState } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { COLORS } from '../../../../shared/theme/colors';
+import useMessages from '../../hooks/useMessages';
+import { CalendarComponentProps } from '../../interfaces/reservationInterface';
+import styles from './Style';
 
 export const CalendarComponent: React.FC<CalendarComponentProps> = ({ selectedDate, onDateChange }) => {
+  const { messages } = useMessages();
   // Estado para manejar el mes y año actual mostrado en el calendario
   const [displayedMonth, setDisplayedMonth] = useState(new Date().getMonth());
   const [displayedYear, setDisplayedYear] = useState(new Date().getFullYear());
@@ -128,7 +127,7 @@ export const CalendarComponent: React.FC<CalendarComponentProps> = ({ selectedDa
     <View style={styles.container}>
       <View style={styles.header}>
         <Ionicons name="calendar-outline" size={24} color={COLORS.primary} />
-        <Text style={styles.label}>Fecha</Text>
+        <Text style={styles.label}>{messages.CALENDARCOMPONENT.DATE}</Text>
       </View>
       
       <View style={styles.calendarContainer}>
@@ -143,13 +142,13 @@ export const CalendarComponent: React.FC<CalendarComponentProps> = ({ selectedDa
         </View>
         
         <View style={styles.weekDaysHeader}>
-          <Text style={styles.weekDayText}>Dom</Text>
-          <Text style={styles.weekDayText}>Lun</Text>
-          <Text style={styles.weekDayText}>Mar</Text>
-          <Text style={styles.weekDayText}>Mié</Text>
-          <Text style={styles.weekDayText}>Jue</Text>
-          <Text style={styles.weekDayText}>Vie</Text>
-          <Text style={styles.weekDayText}>Sáb</Text>
+          <Text style={styles.weekDayText}>{messages.CALENDARCOMPONENT.SUNDAY}</Text>
+          <Text style={styles.weekDayText}>{messages.CALENDARCOMPONENT.MONDAY}</Text>
+          <Text style={styles.weekDayText}>{messages.CALENDARCOMPONENT.TUESDAY}</Text>
+          <Text style={styles.weekDayText}>{messages.CALENDARCOMPONENT.WEDNESDAY}</Text>
+          <Text style={styles.weekDayText}>{messages.CALENDARCOMPONENT.THURSDAY}</Text>
+          <Text style={styles.weekDayText}>{messages.CALENDARCOMPONENT.FRIDAY}</Text>
+          <Text style={styles.weekDayText}>{messages.CALENDARCOMPONENT.SATURDAY}</Text>
         </View>
         
         <View style={styles.calendarGrid}>
@@ -187,94 +186,3 @@ export const CalendarComponent: React.FC<CalendarComponentProps> = ({ selectedDa
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    marginVertical: 12,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: COLORS.gray700,
-    marginLeft: 8,
-  },
-  calendarContainer: {
-    backgroundColor: COLORS.gray50,
-    borderRadius: 12,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: COLORS.gray300,
-  },
-  monthYearHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  monthYearText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: COLORS.gray800,
-    flex: 1,
-    textAlign: 'center',
-  },
-  navButton: {
-    padding: 4,
-  },
-  weekDaysHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 6,
-  },
-  weekDayText: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 12,
-    fontWeight: '600',
-    color: COLORS.gray600,
-  },
-  calendarGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-  },
-  dayButton: {
-    width: '14.28%', // 100% / 7 days
-    paddingVertical: 6,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyDay: {
-    backgroundColor: 'transparent',
-  },
-  todayButton: {
-    borderColor: 'transparent',
-  },
-  selectedDayButton: {
-    backgroundColor: COLORS.primary,
-    borderRadius: 5,
-  },
-  pastDayButton: {
-    opacity: 0.4,
-  },
-  dayText: {
-    fontSize: 16,
-    color: COLORS.gray700,
-  },
-  todayText: {
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-  selectedDayText: {
-    color: COLORS.white,
-    fontWeight: '600',
-  },
-  pastDayText: {
-    color: COLORS.gray400,
-  },
-});

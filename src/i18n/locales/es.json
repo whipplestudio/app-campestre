@@ -166,7 +166,48 @@
     "thankYou": "¡Gracias por su retroalimentación!"
   },
   "reservation": {
-    "title": "Reservaciones"
+    "title": "Reservaciones",
+    "question": "¿Qué deseas reservar?",
+    "noHoursAvailable": "No hay disponibilidad de horarios",
+    "noCourtsAvailable": "No hay disponibilidad de canchas",
+    "diners": "Comensales",
+    "noTablesAvailable": "No hay disponibilidad de mesas",
+    "confirmReservation": "Confirmar Reservación",
+    "otherSelect": "Seleccionar otro servicio",
+    "calendarComponent":{
+      "date": "Fecha",
+      "sunday": "Dom",
+      "monday": "Lun",
+      "tuesday": "Mar",
+      "wednesday": "Mié",
+      "thursday": "Jue",
+      "friday": "Vie",
+      "saturday": "Sáb"
+    },
+    "confirmationModal":{
+      "title": "¡Reserva confirmada exitosamente!",
+      "message": "Tu reserva ha sido registrada en el sistema. ¡Disfruta de tu servicio!"
+    },
+    "court":{
+      "title": "Canchas",
+      "unavailableMessage": "No hay canchas disponibles"
+    },
+    "summaryCard":{
+      "title": "Resumen de reserva",
+      "service": "Servicio",
+      "date": "Fecha",
+      "time": "Hora",
+      "court": "Cancha",
+      "table": "Mesa",
+      "people": "Personas"
+    },
+    "tableSelector":{
+      "people": "pers."
+    },
+    "timeSlots":{
+      "title": "Horarios",
+      "unavailableMessage": "No hay horarios disponibles"
+    }
   },
   "more": {
     "title": "Más"

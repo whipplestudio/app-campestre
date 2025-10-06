@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ReservationState, Reservation } from '../interfaces/reservation.interface';
+import { Reservation, ReservationState } from '../interfaces/reservationInterface';
 
 export const useReservationStore = create<ReservationState>((set, get) => ({
   reservations: [],

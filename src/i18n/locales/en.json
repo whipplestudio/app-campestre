@@ -14,9 +14,6 @@
     "enableNotifications": "Enable Notifications",
     "language": "Language"
   },
-  "reservations": {
-    "title": "Reservations"
-  },
   "auth": {
     "container": {
       "title": "Member Login"
@@ -155,7 +152,48 @@
     "bookEvent": "Book Event"
   },
   "reservation": {
-    "title": "Reservaciones"
+    "title": "Reservations",
+    "question": "What would you like to reserve?",
+    "noHoursAvailable": "No available time slots",
+    "noCourtsAvailable": "No available courts",
+    "diners": "Diners",
+    "noTablesAvailable": "No available tables",
+    "confirmReservation": "Confirm Reservation",
+    "otherSelect": "Select another service",
+    "calendarComponent": {
+      "date": "Date",
+      "sunday": "Sun",
+      "monday": "Mon",
+      "tuesday": "Tue",
+      "wednesday": "Wed",
+      "thursday": "Thu",
+      "friday": "Fri",
+      "saturday": "Sat"
+    },
+    "confirmationModal": {
+      "title": "Reservation successfully confirmed!",
+      "message": "Your reservation has been recorded in the system. Enjoy your service!"
+    },
+    "court": {
+      "title": "Courts",
+      "unavailableMessage": "No courts available"
+    },
+    "summaryCard": {
+      "title": "Reservation Summary",
+      "service": "Service",
+      "date": "Date",
+      "time": "Time",
+      "court": "Court",
+      "table": "Table",
+      "people": "People"
+    },
+    "tableSelector": {
+      "people": "ppl"
+    },
+    "timeSlots": {
+      "title": "Time Slots",
+      "unavailableMessage": "No time slots available"
+    }
   },
   "surveys": {
     "title": "Voice of the Member",

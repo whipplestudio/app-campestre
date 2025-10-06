@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, ScrollView, Text, View } from 'react-native';
 
 // Components
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import Button from '../../../shared/components/Button/Button';
 import { CalendarComponent } from '../components/CalendarComponent';
 import { ConfirmationModal } from '../components/ConfirmationModal';
@@ -11,6 +10,8 @@ import { ServiceCard } from '../components/ServiceCard';
 import { SummaryCard } from '../components/SummaryCard';
 import { TableSelector } from '../components/TableSelector';
 import { TimeSlots } from '../components/TimeSlots';
+import useMessages from '../hooks/useMessages';
+import styles from './Style';
 
 // Mocks
 import { mockRestaurantTables, mockServices, mockTennisCourts, mockTimeSlots } from '../services/reservationService';
@@ -25,6 +26,7 @@ import { COLORS } from '../../../shared/theme/colors';
 import { Ionicons } from '@expo/vector-icons';
 
 const ReservationsContainer = () => {
+  const { messages } = useMessages();
   // Estados principales
   const [selectedService, setSelectedService] = useState<any>(null);
   const [date, setDate] = useState<string>('');
@@ -182,7 +184,7 @@ const ReservationsContainer = () => {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <Text style={styles.questionText}>¿Qué deseas reservar?</Text>
+          <Text style={styles.questionText}>{messages.CONTAINER.QUESTION}</Text>
           <ScrollView contentContainerStyle={styles.servicesContainer}>
             {mockServices.map((service) => (
               <ServiceCard 
@@ -214,7 +216,7 @@ const ReservationsContainer = () => {
           onTimeChange={setTime}
           availableTimes={getAvailableTimeSlots()}
           selectedDate={date}
-          unavailableMessage="No hay disponibilidad de horarios"
+          unavailableMessage={messages.CONTAINER.NO_HOURS_AVAILABLE}
         />
         
         {/* Componentes adicionales según el servicio */}
@@ -223,7 +225,7 @@ const ReservationsContainer = () => {
             selectedCourt={selectedCourt}
             onCourtChange={setSelectedCourt}
             courts={getAvailableCourts()}
-            unavailableMessage="No hay disponibilidad de canchas"
+            unavailableMessage={messages.CONTAINER.NO_COURTS_AVAILABLE}
           />
         )}
         
@@ -231,7 +233,7 @@ const ReservationsContainer = () => {
           <>
             <View style={styles.numberSelector}>
               <Ionicons name="people-outline" size={24} color={COLORS.gray600} />
-              <Text style={styles.label}>Comensales</Text>
+              <Text style={styles.label}>{messages.CONTAINER.DINERS}</Text>
               <View style={styles.counter}>
                 <Button
                   variant="icon"
@@ -251,7 +253,7 @@ const ReservationsContainer = () => {
               selectedTable={selectedTable}
               onTableChange={setSelectedTable}
               tables={getAvailableTables()}
-              unavailableMessage="No hay disponibilidad de mesas"
+              unavailableMessage={messages.CONTAINER.NO_TABLES_AVAILABLE}
             />
           </>
         )}
@@ -272,7 +274,7 @@ const ReservationsContainer = () => {
         {/* Botón de confirmar */}
         <View style={styles.confirmButton}>
           <Button
-            text="Confirmar Reserva"
+            text={messages.CONTAINER.CONFIRM_RESERVATION}
             onPress={confirmReservation}
             disabled={!date || !time || 
               (selectedService.id === 'tenis' && !selectedCourt) || 
@@ -283,7 +285,7 @@ const ReservationsContainer = () => {
         {/* Botón para seleccionar otro servicio */}
         <View style={styles.changeServiceButton}>
           <Button
-            text="Seleccionar otro servicio"
+            text={messages.CONTAINER.OTHER_SELECT}
             variant="outline"
             onPress={resetSelection}
           />
@@ -301,98 +303,5 @@ const ReservationsContainer = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-    padding: 16,
-  },
-  header: {
-    backgroundColor: COLORS.primary,
-    paddingTop: 10,
-    paddingBottom: 16,
-    paddingHorizontal: 16,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  leftContainer: {
-    width: 50, // Ancho fijo para el botón de atrás
-  },
-  backButton: {
-    padding: 4,
-  },
-  titleContainer: {
-    flex: 1, // Tomar el espacio restante
-    alignItems: 'center',
-    marginHorizontal: 10, // Espacio adicional
-    minWidth: 0,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.white,
-    marginBottom: 4,
-    textAlign: 'center',
-    flexWrap: 'wrap',
-  },
-  subtitle: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.8)',
-    textAlign: 'center',
-    flexWrap: 'wrap',
-  },
-  rightContainer: {
-    width: 50, // Ancho fijo para el espacio derecho
-  },
-  questionText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: COLORS.gray800,
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  servicesContainer: {
-    paddingBottom: 20,
-  },
-  confirmButton: {
-    marginVertical: 16,
-  },
-  changeServiceButton: {
-    marginBottom: 20,
-  },
-  numberSelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 16,
-    backgroundColor: COLORS.gray50,
-    borderRadius: 8,
-    marginVertical: 12,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: COLORS.gray700,
-    flex: 1,
-    marginLeft: 12,
-  },
-  counter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  counterText: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginHorizontal: 15,
-    color: COLORS.gray800,
-  },
-});
 
 export default ReservationsContainer;
