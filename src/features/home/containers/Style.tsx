@@ -1,27 +1,5 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { COLORS } from '../../../shared/theme/colors';
-
-const HomeScreen = () => {
-  const { t } = useTranslation();
-
-  return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{t('home.welcome')}</Text>
-        <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
-      </View>
-      
-      <View style={styles.cardsContainer}>
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>{t('home.quickActions')}</Text>
-          {/* Contenido de la tarjeta */}
-        </View>
-      </View>
-    </ScrollView>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -67,4 +45,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default styles;
