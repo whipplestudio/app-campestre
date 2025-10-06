@@ -5,25 +5,8 @@ import Button from '../../../../shared/components/Button';
 import Card from '../../../../shared/components/Card';
 import { COLORS } from '../../../../shared/theme/colors';
 //import useMessages from '../../hooks/useMessages';
+import { MenuCardProps } from '../../interfaces/menuInterfaces';
 import styles from './Style';
-
-interface Menu {
-  id: string;
-  name: string;
-  description: string;
-  category: 'breakfast' | 'lunch' | 'dinner' | 'drinks' | 'specials';
-  uploadDate: string;
-  fileSize: string;
-  rating: number;
-  isFeatured: boolean;
-  image?: string;
-}
-
-interface MenuCardProps {
-  menu: Menu;
-  onDownloadPress: () => void;
-  onViewPress: () => void;
-}
 
 const MenuCard: React.FC<MenuCardProps> = ({ menu, onDownloadPress, onViewPress }) => {
   //const { messages } = useMessages();

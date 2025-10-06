@@ -1,21 +1,7 @@
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
+import { MenuFilterProps } from '../../interfaces/menuInterfaces';
 import styles from './Style';
-
-interface FilterCounts {
-  all: number;
-  breakfast: number;
-  lunch: number;
-  dinner: number;
-  drinks: number;
-  specials: number;
-}
-
-interface MenuFilterProps {
-  selectedFilter: string;
-  onSelectFilter: (filter: string) => void;
-  counts: FilterCounts;
-}
 
 const MenuFilter: React.FC<MenuFilterProps> = ({ selectedFilter, onSelectFilter, counts }) => {
   const filters = [

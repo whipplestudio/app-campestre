@@ -3,12 +3,8 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import Button from '../../../../shared/components/Button';
 import { COLORS } from '../../../../shared/theme/colors';
+import { MenuHeaderProps } from '../../interfaces/menuInterfaces';
 import styles from './Style';
-
-interface MenuHeaderProps {
-  menuCount: number;
-  onDownloadPress: () => void;
-}
 
 const MenuHeader: React.FC<MenuHeaderProps> = ({ menuCount, onDownloadPress }) => {
   return (
