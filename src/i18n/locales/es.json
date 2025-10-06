@@ -116,6 +116,19 @@
   },
   "events": {
     "title": "Eventos",
+    "titleSingular": "evento",
+    "noEvents": "No hay eventos disponibles en este momento",
+    "noEventsRegistered": "No hay eventos registrados todavía",
+    "placeholderSearch": "Buscar eventos...",
+    "eventCard": {
+        "registered": "inscritos de",
+        "busy": "ocupado",
+        "successRegistered": "¡Te has inscrito exitosamente!",
+        "cancelRegistration": "Cancelar registro",
+        "activateReminder": "Activar recordatorio",
+        "register": "Registrarse"
+    },
+
     "upcomingEvents": "Próximos Eventos",
     "makeReservation": "Hacer Reserva",
     "eventName": "Nombre del Evento",
@@ -123,6 +136,7 @@
     "eventTime": "Hora del Evento",
     "availableSpots": "Lugares Disponibles",
     "bookEvent": "Reservar Evento"
+    
   },
   "surveys": {
     "title": "Voz del Socio",

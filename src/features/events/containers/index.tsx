@@ -12,9 +12,11 @@ import { COLORS } from '../../../shared/theme/colors';
 import { useStore } from '../../../store';
 import EventCard from '../components/EventCard';
 import FilterSection from '../components/FilterSection';
+import useMessages from '../hooks/useMessages';
 import styles from './Style';
 
 const EventsContainer = () => {
+  const { messages } = useMessages();
   const { 
     events, 
     registeredEvents, 
@@ -132,7 +134,7 @@ const EventsContainer = () => {
       </View>*/}
       <View style={styles.searchContainer}>
         <Search
-          placeholder="Buscar eventos..."
+          placeholder={messages.CONTAINER.PLACEHOLDER}
           onSearch={setSearchQuery}
           inputStyle={styles.searchInput}
         />
@@ -176,8 +178,8 @@ const EventsContainer = () => {
       </View>
 
       <View style={styles.eventsHeader}>
-        <Text style={styles.eventsTitle}>Próximos Eventos</Text>
-        <Text style={styles.eventsCount}>{filteredEvents.length} {filteredEvents.length === 1 ? "evento" : "eventos"}</Text>
+        <Text style={styles.eventsTitle}>{messages.CONTAINER.UPCOMINGEVENTS}</Text>
+        <Text style={styles.eventsCount}>{filteredEvents.length} {filteredEvents.length === 1 ? messages.CONTAINER.TITLESINGULAR : messages.CONTAINER.TITLESINGULAR + "s"}</Text>
       </View>
 
       {hasEventsThisMonth ? (
@@ -197,13 +199,13 @@ const EventsContainer = () => {
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <View style={styles.noEventsContainer}>
-              <Text style={styles.noEventsText}>No hay eventos registrados todavía</Text>
+              <Text style={styles.noEventsText}>{messages.CONTAINER.NOEVENTS}</Text>
             </View>
           }
         />
       ) : (
         <View style={styles.noEventsContainer}>
-          <Text style={styles.noEventsText}>No hay eventos registrados todavía</Text>
+          <Text style={styles.noEventsText}>{messages.CONTAINER.NOEVENTSREGISTERED}</Text>
         </View>
       )}
     </View>

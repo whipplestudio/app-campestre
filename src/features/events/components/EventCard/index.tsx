@@ -4,9 +4,9 @@ import { Alert, Text, View } from 'react-native';
 import Button from '../../../../shared/components/Button/Button';
 import Card from '../../../../shared/components/Card/Card';
 import { COLORS } from '../../../../shared/theme/colors';
+import useMessages from '../../hooks/useMessages';
 import { EventCardProps } from '../../interfaces/eventInterface';
 import styles from './Style';
-
 
 const getEventTypeColor = (eventType: string) => {
   switch (eventType) {
@@ -41,6 +41,7 @@ const EventCard: React.FC<EventCardProps> = ({
   onUnregister, 
   onToggleReminder 
 }) => {
+  const { messages } = useMessages();
   const eventTypeColor = getEventTypeColor(event.eventType);
   const progressPercentage = Math.round(((event.totalSpots - event.availableSpots) / event.totalSpots) * 100);
   
@@ -91,7 +92,7 @@ const EventCard: React.FC<EventCardProps> = ({
         <View style={styles.infoItem}>
           <Ionicons name="people" size={16} color={COLORS.gray500} />
           <Text style={styles.infoText}>
-            {event.totalSpots - event.availableSpots} inscritos de {event.totalSpots}
+            {event.totalSpots - event.availableSpots} {messages.EVENTCARD.REGISTERED} {event.totalSpots}
           </Text>
         </View>
       </View>
@@ -108,24 +109,24 @@ const EventCard: React.FC<EventCardProps> = ({
             ]} 
           />
         </View>
-        <Text style={styles.progressText}>{progressPercentage}% ocupado</Text>
+        <Text style={styles.progressText}>{progressPercentage}% {messages.EVENTCARD.BUSY}</Text>
       </View>
       
       {isRegistered ? (
         <View style={styles.registeredContainer}>
           <View style={styles.registeredInfo}>
             <Ionicons name="checkmark-circle" size={18} color={COLORS.success} />
-            <Text style={styles.registeredText}>¡Ya estás registrado!</Text>
+            <Text style={styles.registeredText}>{messages.EVENTCARD.SUCCESSREGISTERED}</Text>
           </View>
           <Button
-            text="Cancelar registro"
+            text={messages.EVENTCARD.CANCELREGISTRATION}
             variant="outline"
             onPress={() => onUnregister(event.id)}
             style={styles.cancelButton}
             titleStyle={styles.cancelButtonText}
           />
           <Button
-            text="Activar Recordatorio"
+            text={messages.EVENTCARD.ACTIVATEREMINDER}
             variant="outline"
             onPress={handleReminderPress}
             style={styles.reminderButton}
@@ -142,7 +143,7 @@ const EventCard: React.FC<EventCardProps> = ({
         </View>
       ) : (
         <Button
-          text="Registrarse"
+          text={messages.EVENTCARD.REGISTER}
           variant="primary"
           onPress={() => onRegister(event.id)}
           disabled={event.availableSpots <= 0}

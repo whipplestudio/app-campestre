@@ -7,6 +7,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
   selectedEventType,
   onEventTypeChange,
 }) => {
+
   const eventTypes = [
     { value: 'Todos', label: 'Todos' },
     { value: 'Deportivo', label: 'Deportivo' },
