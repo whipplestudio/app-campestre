@@ -12,7 +12,9 @@
     "darkMode": "Dark Mode",
     "notifications": "Notifications",
     "enableNotifications": "Enable Notifications",
-    "language": "Language"
+    "language": "Language",
+    "Spanish": "Spanish",
+    "English": "English"
   },
   "auth": {
     "container": {

@@ -12,7 +12,9 @@
     "darkMode": "Modo Oscuro",
     "notifications": "Notificaciones",
     "enableNotifications": "Activar Notificaciones",
-    "language": "Idioma"
+    "language": "Idioma",
+    "Spanish": "Español",
+    "English": "Inglés"
   },
   "reservations": {
     "title": "Reservaciones"

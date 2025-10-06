@@ -1,10 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, Switch, Text, View, useColorScheme } from 'react-native';
+import { ScrollView, Switch, Text, View, useColorScheme } from 'react-native';
 import { Colors } from '../../../../constants/theme';
+import useMessages from '../hooks/useMessages';
+import styles from './Style';
 
 const SettingsScreen = () => {
-  const { t, i18n } = useTranslation();
+  const { messages } = useMessages();
+  const { i18n } = useTranslation();
   const colorScheme = useColorScheme() || 'light';
   const [isDarkMode, setIsDarkMode] = React.useState(colorScheme === 'dark');
   const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
@@ -28,9 +31,9 @@ const SettingsScreen = () => {
   return (
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={[styles.section, { backgroundColor: colors.background, shadowColor: colors.text }]}>
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('settings.appearance')}</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>{messages.CONTAINER.APPEARANCE}</Text>
         <View style={styles.settingItem}>
-          <Text style={[styles.settingText, { color: colors.text }]}>{t('settings.darkMode')}</Text>
+          <Text style={[styles.settingText, { color: colors.text }]}>{messages.CONTAINER.DARK_MODE}</Text>
           <Switch
             trackColor={{ false: '#767577', true: colors.tint }}
             thumbColor={isDarkMode ? colors.tint : colors.background}
@@ -41,9 +44,9 @@ const SettingsScreen = () => {
       </View>
 
       <View style={[styles.section, { backgroundColor: colors.background, shadowColor: colors.text }]}>
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('settings.notifications')}</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>{messages.CONTAINER.NOTIFICATIONS}</Text>
         <View style={styles.settingItem}>
-          <Text style={[styles.settingText, { color: colors.text }]}>{t('settings.enableNotifications')}</Text>
+          <Text style={[styles.settingText, { color: colors.text }]}>{messages.CONTAINER.ENABLE_NOTIFICATIONS}</Text>
           <Switch
             trackColor={{ false: '#767577', true: colors.tint }}
             thumbColor={isDarkMode ? colors.tint : colors.background}
@@ -54,7 +57,7 @@ const SettingsScreen = () => {
       </View>
 
       <View style={[styles.section, { backgroundColor: colors.background, shadowColor: colors.text }]}>
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('settings.language')}</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>{messages.CONTAINER.LANGUAGE}</Text>
         <View style={styles.languageItem}>
           <Text 
             style={[
@@ -64,7 +67,7 @@ const SettingsScreen = () => {
             ]}
             onPress={() => changeLanguage('es')}
           >
-            Español
+            {messages.CONTAINER.SPANISH}
           </Text>
           <Text 
             style={[
@@ -74,54 +77,12 @@ const SettingsScreen = () => {
             ]}
             onPress={() => changeLanguage('en')}
           >
-            English
+            {messages.CONTAINER.ENGLISH}
           </Text>
         </View>
       </View>
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  section: {
-    marginBottom: 24,
-    borderRadius: 12,
-    padding: 16,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 16,
-  },
-  settingItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  settingText: {
-    fontSize: 16,
-  },
-  languageItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 8,
-  },
-  languageText: {
-    fontSize: 16,
-    padding: 8,
-  },
-  selectedLanguage: {
-    fontWeight: '600',
-  },
-});
 
 export default SettingsScreen;

@@ -1,1 +1,2 @@
-export { default } from './containers/SettingsContainer';
+export { default } from './containers';
+
