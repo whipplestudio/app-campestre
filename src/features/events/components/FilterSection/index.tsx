@@ -1,0 +1,71 @@
+import React from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { FilterSectionProps } from '../../interfaces/eventInterface';
+import styles from './Style';
+
+const FilterSection: React.FC<FilterSectionProps> = ({
+  selectedEventType,
+  onEventTypeChange,
+}) => {
+
+  const eventTypes = [
+    { value: 'Todos', label: 'Todos' },
+    { value: 'Deportivo', label: 'Deportivo' },
+    { value: 'Social', label: 'Social' },
+    { value: 'Familiar', label: 'Familiar' },
+    { value: 'Fitness', label: 'Fitness' },
+  ];
+
+  // Dividir los filtros en dos filas
+  const firstRow = eventTypes.slice(0, 3);
+  const secondRow = eventTypes.slice(3);
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.row}>
+        {firstRow.map((eventType) => (
+          <TouchableOpacity
+            key={eventType.value}
+            style={[
+              styles.filterButton,
+              selectedEventType === eventType.value && styles.activeFilterButton,
+            ]}
+            onPress={() => onEventTypeChange(eventType.value as 'Todos' | 'Deportivo' | 'Social' | 'Familiar' | 'Fitness')}
+          >
+            <Text
+              style={[
+                styles.filterButtonText,
+                selectedEventType === eventType.value && styles.activeFilterButtonText,
+              ]}
+            >
+              {eventType.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+      <View style={styles.row}>
+        {secondRow.map((eventType) => (
+          <TouchableOpacity
+            key={eventType.value}
+            style={[
+              styles.filterButton,
+              selectedEventType === eventType.value && styles.activeFilterButton,
+            ]}
+            onPress={() => onEventTypeChange(eventType.value as 'Todos' | 'Deportivo' | 'Social' | 'Familiar' | 'Fitness')}
+          >
+            <Text
+              style={[
+                styles.filterButtonText,
+                selectedEventType === eventType.value && styles.activeFilterButtonText,
+              ]}
+            >
+              {eventType.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
+  );
+};
+
+export default FilterSection;

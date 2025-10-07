@@ -1,0 +1,71 @@
+import React from 'react';
+import { Alert, FlatList, ListRenderItem, Text, View, ViewStyle } from 'react-native';
+import { styles } from './Style';
+import useMessages from '../../hooks/useMessages';
+import { familyMembersProps, familyMembers } from '../../interfaces/interfaces';
+
+const FamilyMembers: React.FC<familyMembersProps> = ({
+  members = [],
+  onAddMember,
+  style,
+}) => {
+  const { messages } = useMessages();
+  const renderItem: ListRenderItem<familyMembers> = ({ item }) => (
+    <View style={styles.memberItem}>
+      <View style={styles.memberInfo}>
+        <Text style={styles.memberName}>{item.name}</Text>
+        <View style={styles.memberDetails}>
+          <Text style={styles.detailText}>{item.relationship}</Text>
+          <Text style={styles.detailText}>• {item.age} {messages.FAMILY.AGE}</Text>
+        </View>
+      </View>
+      <View style={[
+        styles.statusBadge,
+        item.isActive ? styles.activeBadge : styles.inactiveBadge
+      ]}>
+        <Text style={[
+          styles.statusText,
+          item.isActive ? styles.activeText : styles.inactiveText
+        ]}>
+          {item.isActive ? messages.FAMILY.ACTIVE : messages.FAMILY.INACTIVE}
+        </Text>
+      </View>
+    </View>
+  );
+
+  return (
+    <View style={[styles.container, style]}>
+      <FlatList
+        data={members}
+        scrollEnabled={false}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>{messages.FAMILY.NO_FAMILYMEMBERS}</Text>
+          </View>
+        }
+        contentContainerStyle={styles.listContent}
+      />
+      {onAddMember && (
+        <View style={styles.addButtonContainer}>
+          <Text 
+            style={styles.addButton} 
+            onPress={() => {
+              Alert.alert(
+                messages.FAMILY.ADD_MEMBER,
+                'Esta función no está disponible en este momento.',
+                [{ text: 'OK' }]
+              );
+              if (onAddMember) onAddMember();
+            }}
+            /*onPress={onAddMember}*/>
+            + {messages.FAMILY.ADD_MEMBER}
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+export default FamilyMembers;

@@ -1,8 +1,28 @@
 {
   "welcome": "Welcome",
+  "home": {
+    "title": "Home",
+    "welcome": "Welcome",
+    "subtitle": "to Club Campestre Tampico",
+    "quickActions": "Quick Actions"
+  },
+  "settings": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "darkMode": "Dark Mode",
+    "notifications": "Notifications",
+    "enableNotifications": "Enable Notifications",
+    "language": "Language",
+    "Spanish": "Spanish",
+    "English": "English"
+  },
   "auth": {
     "container": {
       "title": "Member Login"
+    },
+    "logout": {
+      "title": "Cerrar Sesión",
+      "confirm": "¿Estás seguro de que deseas cerrar sesión?"
     },
     "logo": {
       "name": "Club Campestre",
@@ -14,26 +34,118 @@
       "password": "Password",
       "loginButton": "Sign In",
       "forgotPassword": "Forgot Password?"
+    },
+    "alert": {
+      "title": "Error",
+      "message": "Invalid email or password",
+      "requiredFields": "Email and password are required"
     }
   },
   "profile": {
     "title": "Member Profile",
     "name": "Name",
+    "nameComplete": "Name Complete",
+    "user": "User",
     "email": "Email",
     "memberSince": "Member Since",
     "membershipType": "Membership Type",
     "save": "Save",
-    "edit": "Edit"
+    "edit": "Edit",
+    "dataUser": "User information could not be found",
+    "noSpecified": "No specified",
+    "relationship": "Relationship",
+    "phone": "Phone",
+    "age": "years old",
+    "address": "Address",
+    "noFamilyMembers": "No family members registered",
+    "addMember": "Add member",
+    "exampleEmail": "email@example.com",
+    "exampleAddress": "Street, number, neighborhood, city",
+    "noVehicles": "No vehicles registered",
+    "addVehicle": "Add vehicle",
+    "sections": {
+      "personalInfo": "Personal Information",
+      "familyMembers": "Family Members",
+      "vehicles": "Vehicles",
+      "emergencyContact": "Emergency Contact"
+    }
+  },
+  "restaurant": {
+    "title": "Restaurant",
+    "headerText": "Restaurant - order from your table",
+    "openingHours": "Hours: 8:00 AM - 10:00 PM",
+    "searchPlaceholder": "Search dishes...",
+    "noDishesAvailable": "No dishes available at the moment",
+    "dishAdded": "Dish added to cart",
+    "dishRemoved": "Dish removed from cart",
+    "add": "Add",
+    "carrito": {
+      "see": "View Cart",
+      "title": "Shopping Cart",
+      "empty": "Your cart is empty",
+      "items": "item",
+      "subtotal": "Subtotal",
+      "tax": "Tax",
+      "total": "Total",
+      "continueShopping": "Continue Shopping",
+      "payment": "Proceed to Payment",
+      "checkout": "Pay",
+      "clearCart": "Clear Cart",
+      "confirmClear": "Are you sure you want to clear the cart?",
+      "cancel": "Cancel",
+      "ok": "OK",
+      "dish": "Dish"
+    },
+    "tags": {
+      "popular": "Popular",
+      "spicy": "Spicy",
+      "vegetarian": "Vegetarian",
+      "glutenFree": "Gluten Free"
+    }
   },
   "menus": {
     "title": "Menus",
-    "dailyMenu": "Daily Menu",
-    "weeklyMenu": "Weekly Menu",
-    "specialMenu": "Special Menu",
-    "viewMenu": "View Menu"
+    "selectMenuType": "Select menu type",
+    "noMenusAvailable": "No menus available at the moment",
+    "noMenusForType": "No menus available for this category",
+    "types": {
+      "daily": "Daily Menu",
+      "weekly": "Weekly Menu",
+      "special": "Special Menu"
+    },
+    "searchPlaceholder": "Search menus...",
+    "allMenus": "All Menus",
+    "menuCard": {
+      "featured": "Featured",
+      "download": "Download"
+    },
+    "menuHeader": {
+      "menu": "menu",
+      "RestaurantClub": "Club Restaurant",
+      "allDownload": "Download All"
+    },
+    "restaurantHours": {
+      "title": "Restaurant Hours",
+      "breakfast": "Breakfast:",
+      "lunch": "Lunch:",
+      "dinner": "Dinner:",
+      "text": "Menus are updated weekly. For reservations call 555-1234 or book through the app."
+    }
   },
   "events": {
-    "title": "Events & Reservations",
+    "title": "Events",
+    "titleSingular": "event",
+    "noEvents": "No events available at the moment",
+    "noEventsRegistered": "No events registered yet",
+    "placeholderSearch": "Search events...",
+    "eventCard": {
+      "registered": "registered of",
+      "busy": "busy",
+      "successRegistered": "You have successfully registered!",
+      "cancelRegistration": "Cancel registration",
+      "activateReminder": "Enable reminder",
+      "register": "Register"
+    },
     "upcomingEvents": "Upcoming Events",
     "makeReservation": "Make Reservation",
     "eventName": "Event Name",
@@ -42,14 +154,88 @@
     "availableSpots": "Available Spots",
     "bookEvent": "Book Event"
   },
+  "reservation": {
+    "title": "Reservations",
+    "question": "What would you like to reserve?",
+    "noHoursAvailable": "No available time slots",
+    "noCourtsAvailable": "No available courts",
+    "diners": "Diners",
+    "noTablesAvailable": "No available tables",
+    "confirmReservation": "Confirm Reservation",
+    "otherSelect": "Select another service",
+    "calendarComponent": {
+      "date": "Date",
+      "sunday": "Sun",
+      "monday": "Mon",
+      "tuesday": "Tue",
+      "wednesday": "Wed",
+      "thursday": "Thu",
+      "friday": "Fri",
+      "saturday": "Sat"
+    },
+    "confirmationModal": {
+      "title": "Reservation successfully confirmed!",
+      "message": "Your reservation has been recorded in the system. Enjoy your service!"
+    },
+    "court": {
+      "title": "Courts",
+      "unavailableMessage": "No courts available"
+    },
+    "summaryCard": {
+      "title": "Reservation Summary",
+      "service": "Service",
+      "date": "Date",
+      "time": "Time",
+      "court": "Court",
+      "table": "Table",
+      "people": "People"
+    },
+    "tableSelector": {
+      "people": "ppl"
+    },
+    "timeSlots": {
+      "title": "Time Slots",
+      "unavailableMessage": "No time slots available"
+    }
+  },
   "surveys": {
-    "title": "Voice of the Member",
+    "title": "Member’s Voice",
     "subtitle": "Help us improve our services",
-    "question1": "How satisfied are you with our club services?",
-    "question2": "What improvements would you like to see?",
-    "question3": "Any other comments?",
-    "submit": "Submit Survey",
-    "thankYou": "Thank you for your feedback!"
+    "loading": "Loading survey...",
+    "question": "Question",
+    "of": "of",
+    "required": "Required",
+    "previous": "Previous",
+    "next": "Next",
+    "submit": "Submit",
+    "thankYou": "Thank you for your response!",
+    "textInformation": "Your survey has been successfully submitted.",
+    "backToSurveys": "Back to surveys",
+    "answerSurvey": "Answer Survey",
+    "message": "Are you sure you want to answer this survey?",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "placeholder": "Write your answer here...",
+    "yes": "Yes",
+    "no": "No",
+    "headerWithStats": {
+      "title": "Surveys",
+      "text": "Your feedback helps us improve",
+      "active": "Active",
+      "completed": "Completed",
+      "average": "Average"
+    },
+    "surveyCard": {
+      "people": "people",
+      "questions": "questions",
+      "start": "Start"
+    }
+  },
+  "more": {
+    "title": "More"
+  },
+  "help": {
+    "title": "Help"
   },
   "common": {
     "cancel": "Cancel",
@@ -59,6 +245,10 @@
     "error": "Error",
     "success": "Success",
     "exampleEmail": "email@clubtampico.com",
-    "examplePassword": "MyPassword"
+    "examplePassword": "MyPassword",
+    "logout": "Logout",
+    "active": "Active",
+    "inactive": "Inactive",
+    "textLogout": "Logout failed"
   }
 }
