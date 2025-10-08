@@ -19,6 +19,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 40,
+  },
   searchContainer: {
     margin: 15,
     marginBottom: 10,

@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import {
   FlatList,
   Text,
-  View
+  View,
+  ScrollView
 } from 'react-native';
 import Button from '../../../shared/components/Button/Button';
 import Search from '../../../shared/components/Search/Search';
@@ -115,7 +116,6 @@ const EventsContainer = () => {
   const handleToggleReminder = (eventId: string) => {
     toggleReminder(eventId);
   };
-
   // Effect to fetch events on mount
   useEffect(() => {
     fetchEvents();
@@ -123,91 +123,82 @@ const EventsContainer = () => {
 
   return (
     <View style={styles.container}>
-      {/*<View style={styles.headerSection}>
-        <View style={styles.headerIcon}>
-          <Ionicons name="calendar-outline" size={32} color={COLORS.primary} />
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.searchContainer}>
+          <Search
+            placeholder={messages.CONTAINER.PLACEHOLDER}
+            onSearch={setSearchQuery}
+            inputStyle={styles.searchInput}
+          />
         </View>
-        <Text style={styles.headerTitle}>Calendario de Eventos</Text>
-        <Text style={styles.headerDescription}>
-          Descubre y regístrate a nuestras actividades
-        </Text>
-      </View>*/}
-      <View style={styles.searchContainer}>
-        <Search
-          placeholder={messages.CONTAINER.PLACEHOLDER}
-          onSearch={setSearchQuery}
-          inputStyle={styles.searchInput}
-        />
-      </View>
-
-      <FilterSection
-        selectedEventType={selectedEventType}
-        onEventTypeChange={setSelectedEventType}
-      />
-
-      <View style={styles.monthSelectorContainer}>
-        <Button
-          variant="icon"
-          onPress={goToPreviousMonth}
-          disabled={!isAfterCurrentMonth}
-          style={styles.navButton}
-          icon={
-            <Ionicons 
-              name="chevron-back-outline" 
-              size={9.5} 
-              color={isAfterCurrentMonth ? COLORS.black : COLORS.gray400} 
-            />
-          }
-        />
         
-        <Text style={styles.monthDisplay}>{displayMonth}</Text>
-        
-        <Button
-          variant="icon"
-          onPress={goToNextMonth}
-          disabled={!hasFutureMonths}
-          style={styles.navButton}
-          icon={
-            <Ionicons 
-              name="chevron-forward-outline" 
-              size={9.5} 
-              color={hasFutureMonths ? COLORS.black : COLORS.gray400} 
-            />
-          }
+        <FilterSection
+          selectedEventType={selectedEventType}
+          onEventTypeChange={setSelectedEventType}
         />
-      </View>
 
-      <View style={styles.eventsHeader}>
-        <Text style={styles.eventsTitle}>{messages.CONTAINER.UPCOMINGEVENTS}</Text>
-        <Text style={styles.eventsCount}>{filteredEvents.length} {filteredEvents.length === 1 ? messages.CONTAINER.TITLESINGULAR : messages.CONTAINER.TITLESINGULAR + "s"}</Text>
-      </View>
-
-      {hasEventsThisMonth ? (
-        <FlatList
-          data={filteredEvents}
-          renderItem={({ item }) => (
-            <EventCard
-              event={item}
-              isRegistered={registeredEvents.includes(item.id)}
-              onRegister={handleRegister}
-              onUnregister={handleUnregister}
-              onToggleReminder={handleToggleReminder}
-            />
-          )}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.eventsList}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={
-            <View style={styles.noEventsContainer}>
-              <Text style={styles.noEventsText}>{messages.CONTAINER.NOEVENTS}</Text>
-            </View>
-          }
-        />
-      ) : (
-        <View style={styles.noEventsContainer}>
-          <Text style={styles.noEventsText}>{messages.CONTAINER.NOEVENTSREGISTERED}</Text>
+        <View style={styles.monthSelectorContainer}>
+          <Button
+            variant="icon"
+            onPress={goToPreviousMonth}
+            disabled={!isAfterCurrentMonth}
+            style={styles.navButton}
+            icon={
+              <Ionicons 
+                name="chevron-back-outline" 
+                size={9.5} 
+                color={isAfterCurrentMonth ? COLORS.black : COLORS.gray400} 
+              />
+            }
+          />
+          
+          <Text style={styles.monthDisplay}>{displayMonth}</Text>
+          
+          <Button
+            variant="icon"
+            onPress={goToNextMonth}
+            disabled={!hasFutureMonths}
+            style={styles.navButton}
+            icon={
+              <Ionicons 
+                name="chevron-forward-outline" 
+                size={9.5} 
+                color={hasFutureMonths ? COLORS.black : COLORS.gray400} 
+              />
+            }
+          />
         </View>
-      )}
+
+        <View style={styles.eventsHeader}>
+          <Text style={styles.eventsTitle}>{messages.CONTAINER.UPCOMINGEVENTS}</Text>
+          <Text style={styles.eventsCount}>
+            {filteredEvents.length} {filteredEvents.length === 1 ? messages.CONTAINER.TITLESINGULAR : messages.CONTAINER.TITLESINGULAR + "s"}
+          </Text>
+        </View>
+
+        {hasEventsThisMonth ? (
+          <View style={styles.eventsList}>
+            {filteredEvents.map((item) => (
+              <EventCard
+                key={item.id}
+                event={item}
+                isRegistered={registeredEvents.includes(item.id)}
+                onRegister={handleRegister}
+                onUnregister={handleUnregister}
+                onToggleReminder={handleToggleReminder}
+              />
+            ))}
+          </View>
+        ) : (
+          <View style={styles.noEventsContainer}>
+            <Text style={styles.noEventsText}>{messages.CONTAINER.NOEVENTSREGISTERED}</Text>
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 };
