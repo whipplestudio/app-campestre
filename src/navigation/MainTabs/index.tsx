@@ -168,7 +168,7 @@ const MainTabs = () => {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home-outline" size={size} color={color} />
           ),
-          ...homeHeaderOptions(),
+          ...headerOptions(t('home.title'), '')
         }} 
       />
       <Tab.Screen 

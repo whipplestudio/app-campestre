@@ -1,29 +1,75 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import styles from './Style';
+
+// Components
+import ActiveOrders from '../components/ActiveOrders';
+import GuestManagement from '../components/GuestManagement';
+import Header from '../components/Header';
+import MyQRCode from '../components/MyQRCode';
+import MyRewards from '../components/MyRewards';
+import QuickActions from '../components/QuickActions';
+
+// Modal from shared components
+import Modal from '../../../shared/components/Modal/Modal';
 
 const HomeScreen = () => {
   const { t } = useTranslation();
+  
+  // State for notification modal
+  const [notificationModalVisible, setNotificationModalVisible] = useState(false);
+  const [notificationTitle, setNotificationTitle] = useState('');
+  const [notificationMessage, setNotificationMessage] = useState('');
+
+  const showNotification = useCallback((title: string, message: string) => {
+    setNotificationTitle(title);
+    setNotificationMessage(message);
+    setNotificationModalVisible(true);
+  }, []);
+
+  const hideNotification = useCallback(() => {
+    setNotificationModalVisible(false);
+  }, []);
+
+  const handleVehicleSelect = useCallback((vehicleId: string, vehicleName: string) => {
+    showNotification("Solicitud exitosa", `Auto "${vehicleName}" solicitado correctamente. Llega en 5 min`);
+  }, [showNotification]);
+
+  const handleCallWaiter = useCallback(() => {
+    showNotification("Mesero llamado", "El mesero llegará en 7 min");
+  }, [showNotification]);
 
   return (
-    <ScrollView 
-      style={styles.scrollView}
-      contentContainerStyle={styles.scrollContent}
-      showsVerticalScrollIndicator={false}
+    <View style={styles.container}>
+      <Header />
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
       >
-      <View style={styles.header}>
-        <Text style={styles.title}>{t('home.welcome')}</Text>
-        <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
-      </View>
-      
-      <View style={styles.cardsContainer}>
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>{t('home.quickActions')}</Text>
-          {/* Contenido de la tarjeta */}
+        <View style={styles.cardsContainer}>
+          <QuickActions 
+            onVehicleSelect={handleVehicleSelect}
+            onWaiterCall={handleCallWaiter}
+          />
+          <ActiveOrders />
+          <MyQRCode />
+          <GuestManagement />
+          <MyRewards />
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+      
+      {/* Notification Modal */}
+      <Modal
+        visible={notificationModalVisible}
+        title={notificationTitle}
+        message={notificationMessage}
+        onConfirm={hideNotification}
+        confirmText="Aceptar"
+        showCancelButton={false}
+      />
+    </View>
   );
 };
 
