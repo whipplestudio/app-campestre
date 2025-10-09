@@ -1,11 +1,11 @@
 import { useAuthStore } from '../features/auth/store/useAuthStore';
-import { useProfileStore } from '../features/profile/store/useProfileStore';
-import { useMenusStore } from '../features/restaurante/store/useMenuStore';
 import { useEventStore } from '../features/events/store/useEventStore';
+import { useProfileStore } from '../features/profile/store/useProfileStore';
 import { useReservationStore } from '../features/reservations/store';
+import { useMenusStore } from '../features/restaurante/store/useMenuStore';
 
 // Re-export store hooks
-export { useAuthStore, useMenusStore, useProfileStore, useEventStore, useReservationStore };
+export { useAuthStore, useEventStore, useMenusStore, useProfileStore, useReservationStore };
 
 // Common types
 export interface SurveyResponse {
@@ -43,7 +43,6 @@ export const useStore = () => {
     
     // Events store
     events: eventStore.events,
-    registeredEvents: eventStore.registeredEvents,
     fetchEvents: eventStore.fetchEvents,
     registerForEvent: eventStore.registerForEvent,
     unregisterFromEvent: eventStore.unregisterFromEvent,

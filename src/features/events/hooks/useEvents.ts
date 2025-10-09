@@ -1,20 +1,21 @@
-
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useStore } from '../../../store';
-import useMessages from '../hooks/useMessages';
+import { useEventStore } from '../store/useEventStore';
+import { useAuthStore } from '../../auth/store/useAuthStore';
 
 export const useEvents = () => {
-  const { messages } = useMessages();
+  const { userId } = useAuthStore();
   const { 
     events, 
-    registeredEvents, 
+    loading,
+    error,
     fetchEvents, 
     registerForEvent, 
     unregisterFromEvent, 
-    toggleReminder 
-  } = useStore();
+    toggleReminder,
+    isUserRegistered
+  } = useEventStore();
   
   const { t } = useTranslation();
   
@@ -27,13 +28,13 @@ export const useEvents = () => {
   const [selectedEventType, setSelectedEventType] = useState<'Todos' | 'Deportivo' | 'Social' | 'Familiar' | 'Fitness'>('Todos');
   
   // Event types filter options
-  const eventTypes = ['Todos', 'Deportivo', 'Social', 'Familiar', 'Fitness'];
+  const eventTypes = ['Todos', 'Deportivo', 'Social', 'Familiar', 'Fitness'] as const;
   
   // Format month and year display
   const monthNames = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-  ];
+  ] as const;
   
   const displayMonth = `${monthNames[currentMonth]} de ${currentYear}`;
   
@@ -94,16 +95,25 @@ export const useEvents = () => {
   };
 
   // Handler functions for registration
-  const handleRegister = (eventId: string) => {
-    registerForEvent(eventId);
+  const handleRegister = async (eventId: string) => {
+    if (!userId) return;
+    await registerForEvent(eventId, userId);
   };
 
-  const handleUnregister = (eventId: string) => {
-    unregisterFromEvent(eventId);
+  const handleUnregister = async (eventId: string) => {
+    if (!userId) return;
+    await unregisterFromEvent(eventId, userId);
   };
 
   const handleToggleReminder = (eventId: string) => {
     toggleReminder(eventId);
+  };
+  
+  // Check if user is registered for an event
+  const checkIfRegistered = (eventId: string): boolean => {
+    if (!userId) return false;
+    const event = events.find(e => e.id === eventId);
+    return event ? event.registeredUsers.includes(userId) : false;
   };
   // Effect to fetch events on mount
   useEffect(() => {
@@ -112,11 +122,13 @@ export const useEvents = () => {
 
   return {
     events,
-    registeredEvents,
+    loading,
+    error,
+    isRegistered: checkIfRegistered,
     fetchEvents,
-    registerForEvent,
-    unregisterFromEvent,
-    toggleReminder,
+    registerForEvent: handleRegister,
+    unregisterFromEvent: handleUnregister,
+    toggleReminder: handleToggleReminder,
     currentMonth,
     currentYear,
     goToPreviousMonth,

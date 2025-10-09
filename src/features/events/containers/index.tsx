@@ -18,15 +18,9 @@ import { useEvents } from '../hooks/useEvents';
 
 const EventsContainer = () => {
   const { messages } = useMessages();
-  const { 
-    events, 
-    registeredEvents, 
-    currentMonth,
-    currentYear,
-    searchQuery,
+  const {
+    isRegistered,
     selectedEventType,
-    eventTypes,
-    monthNames,
     displayMonth,
     filteredEvents,
     hasEventsThisMonth,
@@ -39,11 +33,6 @@ const EventsContainer = () => {
     handleRegister,
     handleUnregister,
     handleToggleReminder,
-    fetchEvents, 
-    registerForEvent, 
-    unregisterFromEvent, 
-    toggleReminder,
-    
   } = useEvents();
   
   return (
@@ -111,7 +100,7 @@ const EventsContainer = () => {
               <EventCard
                 key={item.id}
                 event={item}
-                isRegistered={registeredEvents.includes(item.id)}
+                isRegistered={isRegistered(item.id)}
                 onRegister={handleRegister}
                 onUnregister={handleUnregister}
                 onToggleReminder={handleToggleReminder}

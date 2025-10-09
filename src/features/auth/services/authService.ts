@@ -52,7 +52,7 @@ export const authService = {
     }
 
     // Buscar usuario por email
-    const user = mockUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    const user = mockUsers.find(u => u.email?.toLowerCase() === email.toLowerCase());
 
     // En un caso real, aquí se verificaría la contraseña hasheada
     if (!user || password !== '123456') { // Contraseña hardcodeada para demo

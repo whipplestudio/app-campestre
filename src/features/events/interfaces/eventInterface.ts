@@ -13,12 +13,20 @@ export interface Event {
 }
 
 export interface EventState {
+  // State
   events: Event[];
-  registeredEvents: string[];
-  fetchEvents: () => void;
-  registerForEvent: (eventId: string) => void;
-  unregisterFromEvent: (eventId: string) => void;
+  loading: boolean;
+  error: string | null;
+  selectedEvent: Event | null;
+  reminders: string[];
+
+  // Actions
+  fetchEvents: () => Promise<void>;
+  getEventById: (id: string) => Promise<Event | undefined>;
+  registerForEvent: (eventId: string, userId: string) => Promise<void>;
+  unregisterFromEvent: (eventId: string, userId: string) => Promise<void>;
   toggleReminder: (eventId: string) => void;
+  isUserRegistered: (eventId: string, userId: string) => Promise<boolean>;
 }
 
 export interface EventCardProps {
