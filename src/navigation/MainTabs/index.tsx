@@ -18,6 +18,29 @@ import UserHeader from './UserHeader';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
+const headerOptions = (title: string, subtitle?: string, showBackButton: boolean = false) => ({
+  header: (props: any) => {
+    // Only show back button if explicitly enabled
+    const handleBack = showBackButton ? props.navigation.goBack : undefined;
+    
+    return (
+      <MainHeader 
+        title={title}
+        subtitle={subtitle}
+        onBack={handleBack}
+        showNotifications={!showBackButton} // Hide notifications when showing back button
+      />
+    );
+  },
+  headerShown: true,
+  headerStyle: {
+    backgroundColor: 'transparent',
+    elevation: 0,
+    shadowOpacity: 0,
+  },
+  headerTitleAlign: 'center' as const,
+});
+
 // Pantallas que se mostrarán en las pestañas
 const HomeStack = () => (
   <Stack.Navigator>
@@ -49,16 +72,6 @@ const RestaurantStack = () => (
   </Stack.Navigator>
 );
 
-/*const SurveysStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen 
-      name="Surveys" 
-      component={SurveysScreen} 
-      options={{ headerShown: false }}
-    />
-  </Stack.Navigator>
-);*/
-
 const ReservationStack = () => (
   <Stack.Navigator>
     <Stack.Screen 
@@ -69,7 +82,6 @@ const ReservationStack = () => (
   </Stack.Navigator>
 );
 
-
 const MoreStack = () => (
   <Stack.Navigator>
     <Stack.Screen 
@@ -79,57 +91,33 @@ const MoreStack = () => (
     />
     <Stack.Screen 
       name="Profile" 
-      component={ProfileScreen} 
-      options={{ headerShown: false }}
+      component={ProfileScreen}
+      options={{ headerShown: false }} 
+      // options={({ navigation }) => ({
+      //   ...headerOptions('Perfil', 'Edita tu información personal', true),
+      // })}
     />
-    {/*<Stack.Screen 
-      name="Reservations" 
-      component={ReservationScreen} 
-      options={{ headerShown: false }}
-    />*/}
     <Stack.Screen 
       name="Surveys" 
       component={SurveysScreen} 
-      options={{ headerShown: false }}
+      options={{ headerShown: false }} 
+      // options={({ navigation }) => ({
+      //   ...headerOptions('Encuestas', 'Responde nuestras encuestas', true),
+      // })}
     />
     <Stack.Screen 
       name="Menu" 
       component={MenuScreen} 
-      options={{ headerShown: false }}
+      options={{ headerShown: false }} 
+      // options={({ navigation }) => ({
+      //   ...headerOptions('Menú', 'Nuestro menú del día', true),
+      // })}
     />
-    {/* <Stack.Screen 
-      name="Settings" 
-      component={require('../../features/settings').default} 
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen 
-      name="Help" 
-      component={require('../../features/help').default} 
-      options={{ headerShown: false }}
-    /> */}
   </Stack.Navigator>
 );
 
 const MainTabs = () => {
   const { t } = useTranslation();
-  
-  const headerOptions = (title: string, subtitle?: string) => ({
-    header: (props: any) => (
-      <MainHeader 
-        title={title}
-        subtitle={subtitle}
-        onBack={props.navigation?.canGoBack?.() ? props.navigation.goBack : undefined}
-        showNotifications={true}
-      />
-    ),
-    headerShown: true,
-    headerStyle: {
-      backgroundColor: 'transparent',
-      elevation: 0,
-      shadowOpacity: 0,
-    },
-    headerTitleAlign: 'center' as const,
-  });
 
   const homeHeaderOptions = () => ({
     header: (props: any) => (
@@ -194,18 +182,6 @@ const MainTabs = () => {
           ...headerOptions(t('events.title'), 'Descubre y regístrate a nuestras actividades'),
         }} 
       />
-      {/*<Tab.Screen 
-        name="Surveys" 
-        component={SurveysStack} 
-        options={{
-          title: t('surveys.title'),
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="chatbubble-ellipses-outline" size={size} color={color} />
-          ),
-          ...headerOptions(t('surveys.title'), ''),
-        }} 
-      />*/}
-
       <Tab.Screen 
         name="Reservation" 
         component={ReservationStack} 
