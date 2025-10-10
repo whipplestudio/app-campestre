@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { COLORS } from '../../../../shared/theme/colors';
 import { Ionicons } from '@expo/vector-icons';
-import Button from '../../../../shared/components/Button/Button';
 import styles from './Style';
 
 const GuestManagement: React.FC = () => {
@@ -22,7 +21,7 @@ const GuestManagement: React.FC = () => {
   return (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
-        <Ionicons name="people-outline" size={20} color={COLORS.primary} />
+        <Ionicons name="people-outline" size={24} color={COLORS.primary} />
         <Text style={styles.cardTitle}>Gestión de Invitados</Text>
       </View>
       
@@ -36,23 +35,23 @@ const GuestManagement: React.FC = () => {
         </View>
         
         <View style={styles.buttonContainer}>
-          <Button
-            text="+ Nuevo Pase"
-            variant="filled"
+          <TouchableOpacity
+            style={styles.filledButton}
             onPress={handleNewPass}
-            style={styles.button}
-          />
-          <Button
-            text="Ver invitados"
-            variant="outline"
+          >
+            <Text style={styles.filledButtonText}>+ Nuevo Pase</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.outlineButton}
             onPress={handleViewGuests}
-            style={styles.button}
-          />
+          >
+            <Text style={styles.outlineButtonText}>Ver invitados</Text>
+          </TouchableOpacity>
         </View>
       </View>
       
       <View style={styles.infoLabel}>
-        <Ionicons name="bulb-outline" size={16} color={COLORS.primary} style={styles.infoIcon} />
+        <Ionicons name="bulb-outline" size={18} color="#F59E0B" style={styles.infoIcon} />
         <Text style={styles.infoText}>Los pases temporales son válidos por 24 horas</Text>
       </View>
     </View>

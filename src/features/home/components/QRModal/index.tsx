@@ -34,15 +34,17 @@ const QRModal: React.FC<QRModalProps> = ({
           style={{ 
             width: 200, 
             height: 200, 
-            backgroundColor: COLORS.gray200, 
+            backgroundColor: COLORS.gray100,
             justifyContent: 'center', 
             alignItems: 'center',
             borderRadius: 8,
-            marginBottom: 20
+            marginBottom: 20,
+            borderWidth: 2,
+            borderColor: COLORS.primaryLight,
+            borderStyle: 'dashed',
           }}
         >
-          <Ionicons name="qr-code-outline" size={60} color={COLORS.gray500} />
-          <Text style={{ color: COLORS.gray500, marginTop: 10 }}>Código QR</Text>
+          <Ionicons name="qr-code-outline" size={100} color={COLORS.primary} />
         </View>
         
         {/* Nombre del socio en negrita */}

@@ -3,6 +3,7 @@ import { View, Text, ScrollView } from 'react-native';
 import { COLORS } from '../../../../shared/theme/colors';
 import { Ionicons } from '@expo/vector-icons';
 import { useReservationStore } from '../../../reservations/store/useReservationStore';
+import { mockServices } from '../../../reservations/services/reservationService';
 import styles from './Style';
 
 const ActiveOrders: React.FC = () => {
@@ -15,7 +16,8 @@ const ActiveOrders: React.FC = () => {
     const [hours, minutes] = res.time.split(':').map(Number);
     
     // Crear fecha completa de la reserva considerando la zona horaria local
-    const reservationDate = new Date(year, month - 1, day, hours, minutes);
+    // Se usa UTC para evitar problemas de zona horaria
+    const reservationDate = new Date(Date.UTC(year, month - 1, day, hours, minutes));
     
     // Comparar con la fecha y hora actual
     return reservationDate > new Date();
@@ -28,7 +30,8 @@ const ActiveOrders: React.FC = () => {
     const [hours, minutes] = res.time.split(':').map(Number);
     
     // Crear fecha completa de la reserva considerando la zona horaria local
-    const reservationDate = new Date(year, month - 1, day, hours, minutes);
+    // Se usa UTC para evitar problemas de zona horaria
+    const reservationDate = new Date(Date.UTC(year, month - 1, day, hours, minutes));
     
     // Obtener la fecha y hora actual
     const currentDate = new Date();
@@ -49,23 +52,16 @@ const ActiveOrders: React.FC = () => {
   const formatTimeLeft = (minutes: number) => {
     if (minutes <= 0) {
       return "Ahora";
-    } else if (minutes < 60) {
+    } else {
       return `${minutes} min`;
-    } else if (minutes < 1440) { // Menos de 24 horas
-      const hours = Math.floor(minutes / 60);
-      const remainingMinutes = minutes % 60;
-      return `${hours}h ${remainingMinutes}m`;
-    } else { // 24 horas o más
-      const days = Math.floor(minutes / 1440);
-      const hours = Math.floor((minutes % 1440) / 60);
-      return `${days}d ${hours}h`;
     }
   };
 
   // Función para formatear la fecha de forma más amigable
   const formatDate = (dateStr: string) => {
     const [year, month, day] = dateStr.split('-').map(Number);
-    const date = new Date(year, month - 1, day);
+    // Usar UTC para evitar problemas de zona horaria
+    const date = new Date(Date.UTC(year, month - 1, day));
     const today = new Date();
     const tomorrow = new Date();
     tomorrow.setDate(today.getDate() + 1);
@@ -79,10 +75,67 @@ const ActiveOrders: React.FC = () => {
     }
   };
 
+  // Función para obtener el icono correspondiente al servicio
+  const getServiceIcon = (serviceName: string) => {
+    const normalizedServiceName = serviceName.toLowerCase();
+    
+    if (normalizedServiceName.includes('tenis') || normalizedServiceName.includes('tennis')) {
+      return 'tennisball-outline';
+    } else if (normalizedServiceName.includes('golf')) {
+      return 'golf-outline';
+    } else if (normalizedServiceName.includes('restaurante') || normalizedServiceName.includes('restaurant')) {
+      return 'restaurant-outline';
+    } else if (normalizedServiceName.includes('spa')) {
+      return 'water-outline';
+    } else if (normalizedServiceName.includes('gimnasio') || normalizedServiceName.includes('gym')) {
+      return 'barbell-outline';
+    } else if (normalizedServiceName.includes('locker') || normalizedServiceName.includes('lockers')) {
+      return 'briefcase-outline';
+    }
+    
+    return 'calendar-outline'; // Icono por defecto
+  };
+
+  // Función para obtener el color correspondiente al servicio
+  const getServiceColor = (serviceName: string) => {
+    const normalizedServiceName = serviceName.toLowerCase();
+    
+    // Buscar en los servicios mock para obtener el color
+    const service = mockServices.find(s => 
+      s.name.toLowerCase().includes(normalizedServiceName) || 
+      normalizedServiceName.includes(s.name.toLowerCase()) ||
+      s.id.toLowerCase() === normalizedServiceName
+    );
+    
+    return service ? service.color : COLORS.primary; // Color por defecto si no se encuentra
+  };
+
+  // Función para formatear el detalle del servicio (cancha o mesa)
+  const formatServiceDetail = (serviceName: string, detail: string) => {
+    const normalizedServiceName = serviceName.toLowerCase();
+    
+    if (normalizedServiceName.includes('tenis') || normalizedServiceName.includes('tennis')) {
+      // Convertir 'tc2' a 'Cancha 2'
+      if (detail.startsWith('tc')) {
+        const courtNumber = detail.substring(2); // Obtener el número después de 'tc'
+        return `Cancha ${courtNumber}`;
+      }
+    } else if (normalizedServiceName.includes('restaurante') || normalizedServiceName.includes('restaurant')) {
+      // Convertir 't2' a 'Mesa 2'
+      if (detail.startsWith('t')) {
+        const tableNumber = detail.substring(1); // Obtener el número después de 't'
+        return `Mesa ${tableNumber}`;
+      }
+    }
+    
+    // Si no es un formato conocido, devolver el detalle tal como está
+    return detail;
+  };
+
   return (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
-        <Ionicons name="time-outline" size={20} color={COLORS.primary} />
+        <Ionicons name="time-outline" size={20} color="#6366F1" />
         <Text style={styles.cardTitle}>Pedidos Activos</Text>
       </View>
       
@@ -92,25 +145,33 @@ const ActiveOrders: React.FC = () => {
         <ScrollView style={styles.ordersList}>
           {reservationsWithTimeLeft.map((reservation) => (
             <View key={reservation.id} style={styles.orderItem}>
-              <View style={styles.orderStatusIcon}>
-                {reservation.status === 'confirmed' ? (
-                  <Ionicons name="checkmark-circle-outline" size={20} color={COLORS.success} />
-                ) : (
-                  <Ionicons name="warning-outline" size={20} color={COLORS.warning} />
-                )}
+              <View style={styles.serviceIcon}>
+                <Ionicons 
+                  name={getServiceIcon(reservation.serviceName)} 
+                  size={24} 
+                  color={getServiceColor(reservation.serviceName)} 
+                />
               </View>
               <View style={styles.orderDetails}>
                 <Text style={styles.orderName}>{reservation.serviceName}</Text>
                 <Text style={styles.orderService}>
-                  {reservation.details?.court || reservation.details?.table || 'Servicio'} 
+                  {formatServiceDetail(reservation.serviceName, reservation.details?.court || reservation.details?.table || 'Servicio')} 
                   {" · "} {formatDate(reservation.date)} a las {reservation.time}
                 </Text>
               </View>
               <View style={[
                 styles.timeBadge, 
-                reservation.minutesLeft <= 30 ? styles.timeBadgeWarning : null
+                { 
+                  backgroundColor: reservation.minutesLeft <= 30 ? `${COLORS.warning}40` : `${getServiceColor(reservation.serviceName)}40`, 
+                  borderColor: reservation.minutesLeft <= 30 ? COLORS.warning : getServiceColor(reservation.serviceName)
+                }
               ]}>
-                <Text style={styles.timeText}>{formatTimeLeft(reservation.minutesLeft)}</Text>
+                <Text style={[
+                  styles.timeText,
+                  { color: reservation.minutesLeft <= 30 ? COLORS.warning : getServiceColor(reservation.serviceName) }
+                ]}>
+                  {formatTimeLeft(reservation.minutesLeft)}
+                </Text>
               </View>
             </View>
           ))}

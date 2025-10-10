@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Modal from '../../../../shared/components/Modal/Modal';
+import QRModal from '../QRModal';
 import { COLORS } from '../../../../shared/theme/colors';
 import { useAuthStore } from '../../../auth/store/useAuthStore';
 import { useProfile } from '../../../profile/store/useProfileStore';
@@ -23,6 +23,10 @@ const HomeHeader: React.FC<HeaderProps> = ({ navigation }) => {
   const handleCloseQRModal = () => {
     setShowQRModal(false);
   };
+
+  const memberSinceYear = profile?.memberSince 
+    ? new Date(profile.memberSince.toString()).getFullYear()
+    : '2020';
 
   return (
     <>
@@ -46,27 +50,13 @@ const HomeHeader: React.FC<HeaderProps> = ({ navigation }) => {
         </View>
       </View>
 
-      <Modal
+      <QRModal
         visible={showQRModal}
-        title="Mi código QR"
-        onCancel={handleCloseQRModal}
-        onConfirm={handleCloseQRModal}
-        confirmText="Cerrar"
-        showCancelButton={false}
-      >
-        <View style={styles.modalContent}>
-          {/* Placeholder for QR code */}
-          <View style={styles.qrPlaceholder}>
-            <Ionicons name="qr-code" size={100} color={COLORS.primary} />
-          </View>
-          
-          <Text style={styles.modalName}>{profile?.name || 'Nombre del Socio'}</Text>
-          <Text style={styles.modalMemberId}>Socio {userId || 'N/A'}</Text>
-          <Text style={styles.modalDescription}>
-            Presenta este código en recepción o cualquier área del club
-          </Text>
-        </View>
-      </Modal>
+        onClose={handleCloseQRModal}
+        userName={profile?.name}
+        memberId={userId?.toString()}
+        memberSince={memberSinceYear.toString()}
+      />
     </>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { COLORS } from '../../../../shared/theme/colors';
 import { Ionicons } from '@expo/vector-icons';
 import QRModal from '../QRModal';
@@ -17,24 +17,14 @@ const MyQRCode: React.FC = () => {
   return (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
-        <Ionicons name="qr-code-outline" size={20} color={COLORS.primary} />
+        <Ionicons name="qr-code-outline" size={24} color={COLORS.primary} />
         <Text style={styles.cardTitle}>Mi código QR</Text>
       </View>
       
       <View style={styles.qrContainer}>
         {/* Placeholder para el código QR */}
-        <View 
-          style={{ 
-            width: 100, 
-            height: 100, 
-            backgroundColor: COLORS.gray200, 
-            justifyContent: 'center', 
-            alignItems: 'center',
-            borderRadius: 8,
-            marginBottom: 15
-          }}
-        >
-          <Ionicons name="qr-code-outline" size={40} color={COLORS.gray500} />
+        <View style={styles.qrPlaceholderContainer}>
+          <Ionicons name="qr-code-outline" size={50} color={COLORS.primary} />
         </View>
         
         <Text style={styles.userName}>{profile?.name || 'Nombre del Socio'}</Text>

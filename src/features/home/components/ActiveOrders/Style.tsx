@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.gray200,
   },
-  orderStatusIcon: {
+  serviceIcon: {
     marginRight: 12,
   },
   orderDetails: {
@@ -61,13 +61,10 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   timeBadge: {
-    backgroundColor: COLORS.primaryLight,
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 12,
-  },
-  timeBadgeWarning: {
-    backgroundColor: COLORS.warning,
+    borderWidth: 1,
   },
   timeText: {
     color: COLORS.white,
