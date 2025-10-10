@@ -1,8 +1,8 @@
+import { COLORS } from '@/src/shared/theme/colors';
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import Modal from '../../../../shared/components/Modal/Modal';
 import Select from '../../../../shared/components/Select/Select';
-import { COLORS } from '../../../../shared/theme/colors';
 import { useProfileStore } from '../../../profile/store/useProfileStore';
 
 interface VehicleModalProps {
@@ -26,6 +26,11 @@ const VehicleModal: React.FC<VehicleModalProps> = ({ visible, onClose, onVehicle
     setSelectedVehicle(value.toString());
   };
 
+  const handleClose = () => {
+    setSelectedVehicle(''); // Limpiar la selección al cerrar
+    onClose();
+  };
+
   const handleConfirm = () => {
     if (!selectedVehicle) {
       return;
@@ -36,6 +41,7 @@ const VehicleModal: React.FC<VehicleModalProps> = ({ visible, onClose, onVehicle
     if (selectedVehicleData) {
       onVehicleSelect(selectedVehicle, selectedVehicleData.model);
     }
+    setSelectedVehicle(''); // También limpiar después de confirmar
     onClose();
   };
 
@@ -43,11 +49,43 @@ const VehicleModal: React.FC<VehicleModalProps> = ({ visible, onClose, onVehicle
     <Modal
       visible={visible}
       title="Seleccionar vehículo"
-      onCancel={onClose}
+      onCancel={handleClose}
       onConfirm={handleConfirm}
       confirmText="Solicitar"
       cancelText="Cancelar"
       disableConfirmButton={!selectedVehicle} // Disable confirm button when no vehicle is selected
+      buttonsContainerStyle={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+      }}
+      confirmButtonStyle={{
+        flex: 1,
+        paddingVertical: 15, // Mayor altura
+        backgroundColor: COLORS.primary, // Usar color primario de la app
+        borderRadius: 8,
+        marginRight: 5,
+        alignItems: 'center',
+      }}
+      confirmButtonTextStyle={{
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'white',
+      }}
+      cancelButtonStyle={{
+        flex: 1,
+        paddingVertical: 15, // Mayor altura
+        backgroundColor: COLORS.gray200, // Usar color gris de la app
+        borderRadius: 8,
+        marginLeft: 5,
+        alignItems: 'center',
+      }}
+      cancelButtonTextStyle={{
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: COLORS.primary, // Texto en color primario
+      }}
     >
       <View style={{ padding: 10 }}>
         <Select

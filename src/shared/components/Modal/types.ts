@@ -56,6 +56,22 @@ export interface ModalProps {
    */
   buttonsContainerStyle?: ViewStyle;
   /**
+   * Estilos personalizados para el botón de confirmar
+   */
+  confirmButtonStyle?: ViewStyle;
+  /**
+   * Estilos personalizados para el texto del botón de confirmar
+   */
+  confirmButtonTextStyle?: TextStyle;
+  /**
+   * Estilos personalizados para el botón de cancelar
+   */
+  cancelButtonStyle?: ViewStyle;
+  /**
+   * Estilos personalizados para el texto del botón de cancelar
+   */
+  cancelButtonTextStyle?: TextStyle;
+  /**
    * Mostrar el botón de cancelar
    * @default true
    */

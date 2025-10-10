@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { COLORS } from '../../../../shared/theme/colors';
 import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { COLORS } from '../../../../shared/theme/colors';
+import { useQuickActionStates } from '../../hooks/useQuickActionStates';
 import VehicleModal from '../VehicleModal';
 import WaiterModal from '../WaiterModal';
 import styles from './Style';
-import { useQuickActionStates } from '../../hooks/useQuickActionStates';
 
 interface QuickActionsProps {
   onVehicleSelect: (vehicleId: string, vehicleName: string) => void;

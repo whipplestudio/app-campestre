@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+    justifyContent: 'center',
   },
   carActionItem: {
     backgroundColor: '#E0F2FE', // Pastel blue for car
@@ -72,6 +73,7 @@ const styles = StyleSheet.create({
   quickActionText: {
     fontSize: 14,
     fontWeight: '600',
+    textAlign: 'center',
   },
   carActionText: {
     color: '#0369A1', // Darker blue for car text

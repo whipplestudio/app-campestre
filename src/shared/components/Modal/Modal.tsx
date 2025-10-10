@@ -20,6 +20,10 @@ const Modal: React.FC<ModalProps> = ({
   contentStyle,
   messageStyle,
   buttonsContainerStyle,
+  confirmButtonStyle,
+  confirmButtonTextStyle,
+  cancelButtonStyle,
+  cancelButtonTextStyle,
   showCancelButton = true,
   disableConfirmButton = false,
 }) => {
@@ -60,10 +64,18 @@ const Modal: React.FC<ModalProps> = ({
           <View style={[styles.buttonsContainer, buttonsContainerStyle]}>
             {showCancelButton && (
               <TouchableOpacity
-                style={[styles.button, styles.cancelButton]}
+                style={[
+                  styles.button, 
+                  styles.cancelButton, 
+                  cancelButtonStyle
+                ]}
                 onPress={onCancel}
               >
-                <Text style={[styles.buttonText, styles.cancelButtonText]}>
+                <Text style={[
+                  styles.buttonText, 
+                  styles.cancelButtonText,
+                  cancelButtonTextStyle
+                ]}>
                   {cancelText}
                 </Text>
               </TouchableOpacity>
@@ -74,11 +86,15 @@ const Modal: React.FC<ModalProps> = ({
                 styles.button,
                 styles.confirmButton,
                 disableConfirmButton && styles.disabledButton,
+                confirmButtonStyle
               ]}
               onPress={onConfirm}
               disabled={disableConfirmButton}
             >
-              <Text style={styles.buttonText}>
+              <Text style={[
+                styles.buttonText,
+                confirmButtonTextStyle
+              ]}>
                 {confirmText}
               </Text>
             </TouchableOpacity>

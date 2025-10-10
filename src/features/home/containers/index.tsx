@@ -68,6 +68,14 @@ const HomeScreen = () => {
         onConfirm={hideNotification}
         confirmText="Aceptar"
         showCancelButton={false}
+        confirmButtonStyle={{
+          width: '100%',
+          paddingVertical: 15,
+        }}
+        buttonsContainerStyle={{
+          paddingHorizontal: 10,
+          paddingVertical: 10,
+        }}
       />
     </View>
   );
