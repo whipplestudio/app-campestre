@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, Text } from 'react-native';
+import { Platform, KeyboardAvoidingView, ScrollView, SafeAreaView, View, Text } from 'react-native';
 
 // Styles
 import styles from './Style';
@@ -18,18 +18,33 @@ const LoginContainer = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Logo />
-      <Text style={styles.title}>{messages.CONTAINER.TITLE}</Text>
-      <LoginForm
-        email={email}
-        password={password}
-        onEmailChange={setEmail}
-        onPasswordChange={setPassword}
-        onSubmit={handleLogin}
-        isLoading={isLoading}
-        emailError={emailError}
-      />
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+      >
+        <ScrollView 
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <Logo />
+          <Text style={styles.title}>{messages.CONTAINER.TITLE}</Text>
+          <View style={styles.formContainer}>
+            <LoginForm
+              email={email}
+              password={password}
+              onEmailChange={setEmail}
+              onPasswordChange={setPassword}
+              onSubmit={handleLogin}
+              isLoading={isLoading}
+              emailError={emailError}
+            />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
+
 export default LoginContainer;

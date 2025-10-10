@@ -1,23 +1,7 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from '../../../shared/theme/colors';
+import { COLORS } from '../../../../shared/theme/colors';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.gray50,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: 16,
-    paddingTop: 20,
-    paddingBottom: 40,
-  },
-  cardsContainer: {
-    padding: 0,
-    marginTop: 0,
-  },
   card: {
     backgroundColor: COLORS.white,
     borderRadius: 12,
@@ -39,6 +23,31 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: COLORS.gray800,
     marginLeft: 8,
+  },
+  qrContainer: {
+    alignItems: 'center',
+  },
+  userName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: COLORS.gray800,
+    marginBottom: 5,
+  },
+  memberText: {
+    fontSize: 14,
+    color: COLORS.gray600,
+    marginBottom: 15,
+  },
+  showQrButton: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+    marginTop: 10,
+  },
+  showQrButtonText: {
+    color: COLORS.white,
+    fontWeight: '500',
   },
 });
 
