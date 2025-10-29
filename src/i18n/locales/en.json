@@ -231,6 +231,39 @@
       "start": "Start"
     }
   },
+  "accountStatements": {
+    "title": "Account Statements",
+    "description": "View and download your monthly account statements",
+    "emptyState": "There are no registered account statements",
+    "container": {
+      "noStatements1": "There are no registered account statements yet.",
+      "noStatements2": "There are no registered account statements.",
+      "noStatementsFilters": "No account statements found with the applied filters"
+    },
+    "accountStatementCard": {
+      "status": {
+        "paid": "Paid",
+        "pending": "Pending",
+        "overdue": "Overdue"
+      },
+      "total": "Total to pay",
+      "viewDetails": "View details",
+      "download": "Download"
+    },
+    "accountStatementDetail": {
+      "datePayLimit": "Payment due date",
+      "personalInformation": "Personal information",
+      "memberNumber": "Member number",
+      "name": "Name",
+      "address": "Address",
+      "city": "City",
+      "statementDetails": "Statement details",
+      "concept": "Concept",
+      "charges": "Charges",
+      "credits": "Credits",
+      "summary": "Summary"
+    }
+  },
   "more": {
     "title": "More"
   },

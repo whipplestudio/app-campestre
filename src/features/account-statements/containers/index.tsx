@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
-import { Alert, Modal, SafeAreaView, ScrollView, View } from 'react-native';
 import * as Sharing from 'expo-sharing';
-import { useAccountStatements } from '../hooks';
-import { useAccountStatementStore } from '../store';
-import AccountStatementHeader from '../components/AccountStatementHeader';
+import React, { useState } from 'react';
+import { Alert, Modal, SafeAreaView, ScrollView } from 'react-native';
 import AccountStatementCard from '../components/AccountStatementCard';
-import EmptyState from '../components/EmptyState';
 import AccountStatementDetail from '../components/AccountStatementDetail';
+import AccountStatementHeader from '../components/AccountStatementHeader';
+import EmptyState from '../components/EmptyState';
+import { useAccountStatements } from '../hooks';
+import useMessages from '../hooks/useMessages';
 import { AccountStatement } from '../interfaces';
+import { useAccountStatementStore } from '../store';
 
 const AccountStatementsContainer = () => {
+  const { messages } = useMessages();
+
   const { 
     filteredStatements,
     loading,
@@ -71,12 +74,12 @@ const AccountStatementsContainer = () => {
         {/* List of Account Statements */}
         {!loading && !hasStatements && (
           <EmptyState 
-            message={statements.length > 0 ? "No hay estados de cuenta registrados todav\u00EDa" : "No hay estados de cuenta registrados"} 
+            message={statements.length > 0 ? messages.CONTAINER.NO_STATEMENTS1 : messages.CONTAINER.NO_STATEMENTS2} 
           />
         )}
         
         {hasNoFilteredStatements && (
-          <EmptyState message="No hay estados de cuenta con los filtros aplicados" />
+          <EmptyState message= {messages.CONTAINER.NO_STATEMENTS_FILTERS} />
         )}
         
         {hasStatements && filteredStatements.map((statement) => (

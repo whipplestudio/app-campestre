@@ -3,6 +3,7 @@ import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import Card from '../../../../shared/components/Card';
 import { COLORS } from '../../../../shared/theme/colors';
+import useMessages from '../../hooks/useMessages';
 import { AccountStatementCardProps } from '../../interfaces';
 import styles from './Style';
 
@@ -11,6 +12,8 @@ const AccountStatementCard: React.FC<AccountStatementCardProps> = ({
   onPress,
   onDownload
 }) => {
+  const { messages } = useMessages();
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-MX', {
       style: 'currency',
@@ -34,11 +37,11 @@ const AccountStatementCard: React.FC<AccountStatementCardProps> = ({
   const getStatusText = (status: string) => {
     switch (status) {
       case 'paid':
-        return 'Pagado';
+        return messages.ACCOUNTSTATEMENTCARD.STATUS.PAID;
       case 'pending':
-        return 'Pendiente';
+        return messages.ACCOUNTSTATEMENTCARD.STATUS.PENDING;
       case 'overdue':
-        return 'Vencido';
+        return messages.ACCOUNTSTATEMENTCARD.STATUS.OVERDUE;
       default:
         return status;
     }
@@ -63,13 +66,13 @@ const AccountStatementCard: React.FC<AccountStatementCardProps> = ({
         </View>
         
         <View style={styles.details}>
-          <Text style={styles.totalLabel}>Total a pagar</Text>
+          <Text style={styles.totalLabel}>{messages.ACCOUNTSTATEMENTCARD.TOTAL}</Text>
           <Text style={styles.totalAmount}>{formatCurrency(statement.totalAmount)}</Text>
         </View>
         
         <View style={styles.buttonsContainer}>
           <TouchableOpacity style={styles.viewButton} onPress={() => onPress(statement)}>
-            <Text style={styles.viewButtonText}>Ver Detalles</Text>
+            <Text style={styles.viewButtonText}>{messages.ACCOUNTSTATEMENTCARD.VIEWDETAILS}</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
@@ -77,7 +80,7 @@ const AccountStatementCard: React.FC<AccountStatementCardProps> = ({
             onPress={() => onDownload(statement)}
           >
             <Ionicons name="download-outline" size={16} color={COLORS.white} />
-            <Text style={styles.downloadButtonText}>Descargar</Text>
+            <Text style={styles.downloadButtonText}>{messages.ACCOUNTSTATEMENTCARD.DOWNLOAD}</Text>
           </TouchableOpacity>
         </View>
       </View>

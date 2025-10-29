@@ -237,7 +237,37 @@
     }
   },
   "accountStatements": {
-    "title": "Estados de cuentas"
+    "title": "Estados de cuentas",
+    "description": "Consulta y descarga tus estados de cuenta mensuales",
+    "emptyState": "No hay estados de cuenta registrados",
+    "container": {
+    "noStatements1": "No hay estados de cuenta registrados todavía.",
+    "noStatements2": "No hay estados de cuenta registrados.",
+    "noStatementsFilters": "No hay estados de cuenta con los filtros aplicados"
+    },
+    "accountStatementCard": {
+      "status": {
+        "paid": "Pagado",
+        "pending": "Pendiente",
+        "overdue": "Vencido"
+      },
+      "total": "Total a pagar",
+      "viewDetails": "Ver detalles",
+      "download": "Descargar"
+    },
+    "accountStatementDetail": {
+      "datePayLimit": "Fecha límite de pago",
+      "personalInformation": "Información personal",
+      "memberNumber": "Número de socio",
+      "name": "Nombre",
+      "address": "Dirección",
+      "city": "Ciudad",
+      "statementDetails": "Detalles del estado de cuenta",
+      "concept": "Concepto",
+      "charges": "Cargos",
+      "credits": "Abonos",
+      "summary": "Resumen"
+    }
   },
   "more": {
     "title": "Más"

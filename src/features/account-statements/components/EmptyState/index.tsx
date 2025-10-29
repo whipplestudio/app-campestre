@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { COLORS } from '../../../../shared/theme/colors';
+import useMessages from '../../hooks/useMessages';
 import styles from './Style';
 
 interface EmptyStateProps {
@@ -9,9 +9,11 @@ interface EmptyStateProps {
 }
 
 const EmptyState: React.FC<EmptyStateProps> = ({ 
-  message = 'No hay estados de cuenta registrados', 
+  message, 
   showIcon = true 
 }) => {
+  const { messages } = useMessages();
+  message = messages.EMPTY_STATE;
   return (
     <View style={styles.container}>
       {showIcon && (

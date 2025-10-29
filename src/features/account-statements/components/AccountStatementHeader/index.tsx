@@ -2,13 +2,17 @@ import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Text, View } from 'react-native';
 import { COLORS } from '../../../../shared/theme/colors';
+import useMessages from '../../hooks/useMessages';
 import { AccountStatementHeaderProps } from '../../interfaces';
 import styles from './Style';
 
 const AccountStatementHeader: React.FC<AccountStatementHeaderProps> = ({
-  title = 'Estados de Cuentas',
-  description = 'Consulta y descarga tus estados de cuenta mensuales'
+  title,
+  description
 }) => {
+  const { messages } = useMessages();
+  title = messages.TITLE;
+  description = messages.DESCRIPTION;
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>

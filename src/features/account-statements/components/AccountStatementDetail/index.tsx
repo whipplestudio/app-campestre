@@ -3,6 +3,7 @@ import React from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Card from '../../../../shared/components/Card';
 import { COLORS } from '../../../../shared/theme/colors';
+import useMessages from '../../hooks/useMessages';
 import { AccountStatementDetailProps } from '../../interfaces';
 import styles from './Style';
 
@@ -11,6 +12,9 @@ const AccountStatementDetail: React.FC<AccountStatementDetailProps> = ({
   onClose,
   onDownload
 }) => {
+
+  const { messages } = useMessages();
+
   if (!statement) {
     return null;
   }
@@ -63,11 +67,11 @@ const AccountStatementDetail: React.FC<AccountStatementDetailProps> = ({
   const getStatusText = (status: string) => {
     switch (status) {
       case 'paid':
-        return 'Pagado';
+        return messages.ACCOUNTSTATEMENTCARD.STATUS.PAID;
       case 'pending':
-        return 'Pendiente';
+        return messages.ACCOUNTSTATEMENTCARD.STATUS.PENDING;
       case 'overdue':
-        return 'Vencido';
+        return messages.ACCOUNTSTATEMENTCARD.STATUS.OVERDUE;
       default:
         return status;
     }
@@ -94,37 +98,37 @@ const AccountStatementDetail: React.FC<AccountStatementDetailProps> = ({
 
           <View style={styles.infoContainer}>
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Fecha Límite de Pago:</Text>
+              <Text style={styles.infoLabel}>{messages.ACCOUNTSTATEMENTDETAIL.DATE_PAY_LIMIT}</Text>
               <Text style={styles.infoValue}>{formatDateLong(statement.dueDate)}</Text>
             </View>
           </View>
 
           <View style={styles.personalInfoContainer}>
-            <Text style={styles.personalInfoTitle}>Información Personal</Text>
+            <Text style={styles.personalInfoTitle}>{messages.ACCOUNTSTATEMENTDETAIL.PERSONAL_INFORMATION}</Text>
             <View style={styles.personalInfoRow}>
-              <Text style={styles.infoLabel}>Número de Socio:</Text>
+              <Text style={styles.infoLabel}>{messages.ACCOUNTSTATEMENTDETAIL.MEMBER_NUMBER}</Text>
               <Text style={styles.infoValue}>{statement.userInfo.id}</Text>
             </View>
             <View style={styles.personalInfoRow}>
-              <Text style={styles.infoLabel}>Nombre:</Text>
+              <Text style={styles.infoLabel}>{messages.ACCOUNTSTATEMENTDETAIL.NAME}</Text>
               <Text style={styles.infoValue}>{statement.userInfo.name}</Text>
             </View>
             <View style={styles.personalInfoRow}>
-              <Text style={styles.infoLabel}>Dirección:</Text>
+              <Text style={styles.infoLabel}>{messages.ACCOUNTSTATEMENTDETAIL.ADDRES}:</Text>
               <Text style={styles.infoValue}>{statement.userInfo.address}</Text>
             </View>
             <View style={styles.personalInfoRow}>
-              <Text style={styles.infoLabel}>Ciudad:</Text>
+              <Text style={styles.infoLabel}>{messages.ACCOUNTSTATEMENTDETAIL.CITY}</Text>
               <Text style={styles.infoValue}>{fullCity}</Text>
             </View>
           </View>
 
-          <Text style={styles.detailsTitle}>Detalles del Estado de Cuenta</Text>
+          <Text style={styles.detailsTitle}>{messages.ACCOUNTSTATEMENTDETAIL.STATEMENT_DETAIL}</Text>
           
           <View style={styles.tableHeader}>
-            <Text style={[styles.tableHeaderText, styles.conceptColumn]}>Concepto</Text>
-            <Text style={[styles.tableHeaderText, styles.chargesColumn]}>Cargos</Text>
-            <Text style={[styles.tableHeaderText, styles.creditsColumn]}>Abonos</Text>
+            <Text style={[styles.tableHeaderText, styles.conceptColumn]}>{messages.ACCOUNTSTATEMENTDETAIL.CONCEPT}</Text>
+            <Text style={[styles.tableHeaderText, styles.chargesColumn]}>{messages.ACCOUNTSTATEMENTDETAIL.CHARGES}</Text>
+            <Text style={[styles.tableHeaderText, styles.creditsColumn]}>{messages.ACCOUNTSTATEMENTDETAIL.CREDITS}</Text>
           </View>
           
           <View style={styles.tableBody}>
@@ -141,7 +145,7 @@ const AccountStatementDetail: React.FC<AccountStatementDetailProps> = ({
             ))}
           </View>
 
-          <Text style={styles.summaryTitle}>Resumen</Text>
+          <Text style={styles.summaryTitle}>{messages.ACCOUNTSTATEMENTDETAIL.SUMMARY}</Text>
           
           <View style={styles.summaryContainer}>
             {statement.summary.map((item, index) => (
@@ -155,7 +159,7 @@ const AccountStatementDetail: React.FC<AccountStatementDetailProps> = ({
           </View>
 
           <View style={styles.totalContainer}>
-            <Text style={styles.totalLabel}>Total a pagar</Text>
+            <Text style={styles.totalLabel}>{messages.ACCOUNTSTATEMENTCARD.TOTAL}</Text>
             <Text style={styles.totalAmount}>{formatCurrency(statement.totalAmount)}</Text>
           </View>
 
@@ -164,7 +168,7 @@ const AccountStatementDetail: React.FC<AccountStatementDetailProps> = ({
             onPress={() => onDownload(statement)}
           >
             <Ionicons name="download-outline" size={20} color={COLORS.white} />
-            <Text style={styles.downloadButtonText}>Descargar PDF</Text>
+            <Text style={styles.downloadButtonText}>{messages.ACCOUNTSTATEMENTCARD.DOWNLOAD} PDF</Text>
           </TouchableOpacity>
         </ScrollView>
       </Card>
