@@ -14,6 +14,14 @@ const useMessages = () => {
       USER: t('profile.user'),
       EXAMPLE_EMAIL: t('profile.exampleEmail'),
       EXAMPLE_ADDRESS: t('profile.exampleAddress'),
+      EXAMPLE_STREET: t('profile.exampleStreet'),
+      EXAMPLE_EXTERNAL_NUMBER: t('profile.exampleExternalNumber'),
+      EXAMPLE_INTERNAL_NUMBER: t('profile.exampleInternalNumber'),
+      EXAMPLE_COLONY: t('profile.exampleColony'),
+      EXAMPLE_ZIP_CODE: t('profile.exampleZipCode'),
+      EXAMPLE_CITY: t('profile.exampleCity'),
+      EXAMPLE_STATE: t('profile.exampleState'),
+      EXAMPLE_COUNTRY: t('profile.exampleCountry'),
       TEXT_LOGOUT: t('common.textLogout'),
     },
     HEADER: {
@@ -25,6 +33,7 @@ const useMessages = () => {
     PERSONAL: {
       TITLE: t('profile.sections.personalInfo'),
       NAME: t('profile.name'),
+      LAST_NAME: t('profile.lastName'),
       EMAIL: t('profile.email'),
       PHONE: t('profile.phone'),
       ADDRESS: t('profile.address'),

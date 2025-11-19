@@ -4,9 +4,18 @@ import { EmergencyContact, FamilyMember, UserProfile, Vehicle } from "../../../i
 export interface userProfile extends UserProfile {
   isEditing?: boolean;
   onNameChange?: (text: string) => void;
+  onlastNameChange?: (text: string) => void;
   onEmailChange?: (text: string) => void;
   onPhoneChange?: (text: string) => void;
   onAddressChange?: (text: string) => void;
+  onStreetChange?: (text: string) => void;
+  onexternalNumberChange?: (text: string) => void;
+  oninternalNumberChange?: (text: string) => void;
+  oncolonyChange?: (text: string) => void;
+  onzipCodeChange?: (text: string) => void;
+  oncityChange?: (text: string) => void;
+  onstateChange?: (text: string) => void;
+  oncountryChange?: (text: string) => void;
   style?: ViewStyle;
   rightAction?: React.ReactNode;
   isActive?: boolean;
