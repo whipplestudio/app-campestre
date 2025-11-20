@@ -8,6 +8,7 @@ const ProfileHeader: React.FC<userProfile> = ({
   name,
   lastName,
   id,
+  memberCode,
   membershipType,
   isActive = true,
   photoUrl,
@@ -27,7 +28,7 @@ const ProfileHeader: React.FC<userProfile> = ({
       {avatar}
       <View style={styles.userInfo}>
         <Text style={styles.name}>{name} {lastName}</Text>
-        <Text style={styles.memberId}>ID: {id}</Text>
+        <Text style={styles.memberId}>ID: {memberCode}</Text>
         <View style={styles.row}>
           <Text style={styles.membershipType}>{membershipType}</Text>
           <View style={[styles.statusPill, isActive ? styles.active : styles.inactive]}>

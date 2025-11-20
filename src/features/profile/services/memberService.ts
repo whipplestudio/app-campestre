@@ -69,7 +69,7 @@ export const memberService = {
   /**
    * Obtener la información del miembro del club por ID
    */
-  getMemberById: async (memberId: string | number, token: string): Promise<MemberProfile> => {
+  getMemberById: async (memberId: string | number, token: string): Promise<MemberProfile | null> => {
     if (!token) {
       throw new Error('No authentication token available');
     }
@@ -85,17 +85,17 @@ export const memberService = {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        if (response.status === 404) {
+          alert("Miembro no encontrado");
+          return null;
+        } else {
+          alert(`Ocurrió un error: ${response.status}`);
+        }
       }
 
-      console.log('response memberService.getMemberById: ', response);
       const result = await response.json();
       const data = result.data
-      console.log('result memberService.getMemberById: ', result);
       console.log('data memberService.getMemberById: ', data);
-      // Transformar la respuesta de la API a la interfaz MemberProfile
-      const { user } = result.data;
-      console.log('user data memberService.getMemberById: ', user);
       const memberProfile: userProfile = {
         id: data.id.toString(),
         memberCode: data.memberCode,
@@ -106,9 +106,9 @@ export const memberService = {
         foreignMember: data.foreignMember,
         createdAt: data.createdAt,
         updatedAt: data.updatedAt,
-        userId: data.user.userId,
-        invitedById: user.invitedById,
-        relationship: user.relationship,
+        userId: data.user.id,
+        invitedById: data.invitedById,
+        relationship: data.relationship,
         name: data.user.name,
         lastName: data.user.lastName,
         addressId: data.user.addressId,
@@ -120,7 +120,7 @@ export const memberService = {
         roleId: data.user.roleId,
         email: data.user.email,
         phone: data.user.phone.length > 0 ? data.user.phone[0] : undefined, // Suponiendo que phone es un array
-        address: `${user.address.street}, ${user.address.suburb}, ${user.address.city}, ${user.address.state}, ${user.address.country}`,
+        address: `${data.user.address.street} ${data.user.address.suburb} ${data.user.address.city} ${data.user.address.state} ${data.user.address.country}`,
         street: data.user.address.street,
         externalNumber: data.user.address.externalNumber,
         internalNumber: data.user.address.internalNumber,
@@ -129,8 +129,8 @@ export const memberService = {
         city: data.user.address.city,
         state: data.user.address.state,
         country: data.user.address.country,
-        membershipType: user.type,
-        memberSince: result.data.dateOfAdmission,
+        membershipType: data.user.type,
+        memberSince: data.dateOfAdmission,
         role: data.user.role,
         qrCode: data.user.qrCode,
         invitedBy: data.invitedBy,

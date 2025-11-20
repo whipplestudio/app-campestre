@@ -61,6 +61,7 @@ const ProfileContainer = () => {
           name={profile?.name || messages.CONTAINER.USER}
           lastName={profile?.lastName || ''}
           id={profile?.id || 'N/A'}
+          memberCode={profile?.memberCode || 'N/A'}
           membershipType={profile?.membershipType || 'Premium'}
           isActive={true}
           style={styles.profileHeader}
@@ -89,6 +90,14 @@ const ProfileContainer = () => {
             email={profile?.email}
             phone={profile?.phone}
             address={profile?.address}
+            street={profile?.street}
+            externalNumber={profile?.externalNumber}
+            internalNumber={profile?.internalNumber}
+            colony={profile?.colony}
+            zipCode={profile?.zipCode}
+            city={profile?.city}
+            state={profile?.state}
+            country={profile?.country}
             memberSince={profile?.memberSince || new Date()}
             isEditing={isEditing}
             onNameChange={(text) => handleInputChange('name', text)}

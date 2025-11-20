@@ -26,7 +26,11 @@ export const useProfile = () => {
         if (userId && token) {
           const data = await memberService.getMemberById(userId, token);
           console.log('Loaded member data:', data);
-          updateProfile(data);
+          if (!data) {
+            console.log("Miembro no encontrado");
+          } else {
+            updateProfile(data);
+          }
         }
       } catch (err) {
         console.log('Error loading member:', err);
