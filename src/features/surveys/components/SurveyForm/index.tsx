@@ -96,7 +96,7 @@ export const SurveyForm: React.FC<SurveyFormProps> = ({
               </View>
               
               <View style={styles.answerContainer}>
-                {currentQuestion.type === 'multiple-choice' && currentQuestion.options && (
+                {currentQuestion.type === 'SELECT' && currentQuestion.options && (
                   <MultipleChoiceQuestion 
                     question={currentQuestion}
                     answer={answers[currentQuestion.id] || ''}
@@ -104,7 +104,7 @@ export const SurveyForm: React.FC<SurveyFormProps> = ({
                   />
                 )}
                 
-                {currentQuestion.type === 'rating' && (
+                {currentQuestion.type === 'NUMBER' && (
                   <RatingQuestion 
                     question={currentQuestion}
                     answer={answers[currentQuestion.id] || 0}
@@ -112,7 +112,7 @@ export const SurveyForm: React.FC<SurveyFormProps> = ({
                   />
                 )}
                 
-                {currentQuestion.type === 'text' && (
+                {currentQuestion.type === 'TEXT' && (
                   <TextQuestion 
                     question={currentQuestion}
                     answer={answers[currentQuestion.id] || ''}
@@ -120,7 +120,7 @@ export const SurveyForm: React.FC<SurveyFormProps> = ({
                   />
                 )}
                 
-                {currentQuestion.type === 'yes-no' && (
+                {currentQuestion.type === 'BOOLEAN' && (
                   <YesNoQuestion 
                     question={currentQuestion}
                     answer={answers[currentQuestion.id] || ''}

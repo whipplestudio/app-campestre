@@ -19,7 +19,6 @@ import { useSurveyActions } from '../hooks/useSurveyActions';
 import { SurveyCategory, SurveyQuestion } from '../interfaces';
 import { surveyService } from '../services';
 import { useSurveyStore } from '../store';
-import { useAuthStore } from '../../auth/store/useAuthStore';
 import styles from './Style';
 
 const SurveysScreen: React.FC = () => {
@@ -68,18 +67,18 @@ const SurveysScreen: React.FC = () => {
       const fetchSurveyData = async () => {
         try {
           setLoading(true);
-          const surveyData = await surveyService.getSurveyById(selectedSurveyId);
-
-          // Obtener el token del store de autenticación
-          const { token } = useAuthStore.getState();
-          const questionsData = await surveyService.getQuestionsBySurveyId(selectedSurveyId, token);
-
+          const surveyData = await surveyService.getSurveys(pagination.page, pagination.limit, currentFilter.category)
+console.log('Selected Survey ID:', selectedSurveyId);
+          const questionsData = await surveyService.getQuestionsBySurveyId(selectedSurveyId);
+console.log('Fetched Questions Data:', questionsData);
           if (surveyData && questionsData) {
-            setSurvey(surveyData);
-            setQuestions(questionsData);
+            console.log('Survey Data:', surveyData);
+            setSurvey(questionsData);
+            console.log('Survey Questions:', survey);;
+            setQuestions(questionsData.surveyQuestions);
             // Initialize answers object with empty values
             const initialAnswers: Record<string, any> = {};
-            questionsData.forEach(q => initialAnswers[q.id] = '');
+            questionsData.surveyQuestions.forEach(q => initialAnswers[q.id] = '');
             setAnswers(initialAnswers);
             setCurrentQuestionIndex(0);
           }
@@ -239,7 +238,7 @@ const SurveysScreen: React.FC = () => {
                 </View>
                 
                 <View style={styles.answerContainer}>
-                  {currentQuestion.type === 'multiple-choice' && currentQuestion.options && (
+                  {currentQuestion.type === 'SELECT' && currentQuestion.options && (
                     <MultipleChoiceQuestion 
                       question={currentQuestion}
                       answer={answers[currentQuestion.id] || ''}
@@ -247,7 +246,7 @@ const SurveysScreen: React.FC = () => {
                     />
                   )}
                   
-                  {currentQuestion.type === 'rating' && (
+                  {currentQuestion.type === 'NUMBER' && (
                     <RatingQuestion 
                       question={currentQuestion}
                       answer={answers[currentQuestion.id] || 0}
@@ -255,7 +254,7 @@ const SurveysScreen: React.FC = () => {
                     />
                   )}
                   
-                  {currentQuestion.type === 'text' && (
+                  {currentQuestion.type === 'TEXT' && (
                     <TextQuestion 
                       question={currentQuestion}
                       answer={answers[currentQuestion.id] || ''}
@@ -263,7 +262,7 @@ const SurveysScreen: React.FC = () => {
                     />
                   )}
                   
-                  {currentQuestion.type === 'yes-no' && (
+                  {currentQuestion.type === 'BOOLEAN' && (
                     <YesNoQuestion 
                       question={currentQuestion}
                       answer={answers[currentQuestion.id] || ''}
@@ -499,11 +498,11 @@ const RatingQuestion: React.FC<{
 }> = ({ question, answer, onAnswerChange }) => {
   return (
     <View style={styles.ratingContainer}>
-      {[1, 2, 3, 4, 5].map((star) => (
+      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
         <Ionicons
           key={star}
           name={star <= answer ? "star" : "star-outline"}
-          size={40}
+          size={25}
           color={star <= answer ? COLORS.primary : COLORS.gray400}
           onPress={() => onAnswerChange(star)}
           style={styles.starIcon}

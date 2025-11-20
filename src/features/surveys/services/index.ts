@@ -1,8 +1,5 @@
-import { Survey, SurveyQuestion, SurveyCategory, SurveyPriority } from '../interfaces';
 import { useAuthStore } from '../../auth/store/useAuthStore';
-
-// API base URL
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL;
+import { FullSurvey, Survey, SurveyCategory, SurveyPriority } from '../interfaces';
 
 // Interface para la respuesta de la API
 interface SurveyApiResponse {
@@ -92,10 +89,11 @@ const mapCategory = (category: string): SurveyCategory => {
 // Mapear la prioridad de string a SurveyPriority
 const mapPriority = (priority: string): SurveyPriority => {
   switch (priority.toUpperCase()) {
+    //case 'HIGH':
+    //case 'URGENT': return SurveyPriority.URGENT;
     case 'HIGH':
-    case 'URGENT': return SurveyPriority.URGENT;
-    case 'MEDIUM':
     case 'IMPORTANT': return SurveyPriority.IMPORTANT;
+    case 'MEDIUM':
     case 'NORMAL': return SurveyPriority.NORMAL;
     case 'LOW': return SurveyPriority.LOW;
     default: return SurveyPriority.NORMAL; // Valor por defecto
@@ -124,7 +122,7 @@ export const surveyService = {
 
     try {
       // Construir la URL sin el parámetro category si está vacío
-      let url = `${API_BASE_URL}/survey/${userId}/surveys/?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}&order=${order}`;
+      let url = `${process.env.EXPO_PUBLIC_API_URL}/survey/${userId}/surveys/?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}&order=${order}`;
       if (category) {
         url += `&category=${encodeURIComponent(category)}`;
       }
@@ -198,7 +196,8 @@ export const surveyService = {
   },
 
   // Obtener preguntas de una encuesta específica
-  getQuestionsBySurveyId: async (surveyId: string, token: string): Promise<SurveyQuestion[]> => {
+  getQuestionsBySurveyId: async (surveyId: string): Promise<FullSurvey | null> => {
+    const {token } = useAuthStore.getState();
     if (!token) {
       throw new Error('No authentication token available');
     }
@@ -207,7 +206,7 @@ export const surveyService = {
       // Este endpoint es hipotético, ya que no tenemos información exacta
       // del endpoint para obtener las preguntas de una encuesta específica
       // En la práctica, necesitarías revisar la documentación de la API
-      const response = await fetch(`${API_BASE_URL}/survey/${surveyId}/questions`, {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/survey/${surveyId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -221,26 +220,43 @@ export const surveyService = {
           throw new Error('No autorizado. Por favor inicia sesión nuevamente.');
         } else if (response.status === 400) {
           throw new Error('Petición inválida. Verifica los parámetros.');
-        } else {
+        } else if (response.status === 404) {
+          throw new Error('No se encontró esa encuesta.');
+        }  else {
           throw new Error(`Error en la solicitud: ${response.status}`);
         }
       }
 
       const data = await response.json();
+      console.log('Survey questions data:', data);
 
-      // Mapear las preguntas de la API al formato SurveyQuestion
-      if (data.success && data.data) {
-        return data.data.map((apiQuestion: any) => ({
-          id: apiQuestion.id.toString(),
+      if (!data.success || !data.data) return null;
+
+      const survey = data.data;
+      
+      return {
+        id: survey.id,
+        title: survey.title,
+        description: survey.description,
+        category: survey.category,
+        priority: survey.priority,
+        timeStimed: survey.timeStimed,
+        questionCount: survey.questionCount,
+        participantCount: survey.participantCount,
+        active: survey.active,
+        createdAt: survey.createdAt,
+        updatedAt: survey.updatedAt,
+        _count: survey._count,
+        surveyQuestions: survey.surveyQuestions.map((q: any) => ({
+          id: q.id.toString(),
           surveyId: surveyId,
-          question: apiQuestion.question,
-          type: apiQuestion.type || 'text', // Valor por defecto
-          options: apiQuestion.options,
-          required: apiQuestion.required || false,
-        }));
-      }
+          question: q.question,
+          type: q.type ?? 'text',
+          options: q.options,
+          required: q.required ?? false,
+        }))
+      };
 
-      return [];
     } catch (error) {
       console.error('Error fetching questions:', error);
       throw error;
@@ -254,7 +270,7 @@ export const surveyService = {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/survey/${surveyId}/submit`, {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/survey/${surveyId}/submit`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

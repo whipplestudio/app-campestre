@@ -19,11 +19,30 @@ export interface OptionType {
   label: string;
 }
 
+export interface FullSurvey {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  priority: string;
+  timeStimed: string;
+  questionCount: number;
+  participantCount: number;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+  surveyQuestions: SurveyQuestion[];
+  _count: {
+    responses: number;
+    surveyQuestions: number;
+  };
+}
+
 export interface SurveyQuestion {
   id: string;
   surveyId: string;
   question: string;
-  type: 'multiple-choice' | 'rating' | 'text' | 'yes-no';
+  type: 'SELECT' | 'NUMBER' | 'TEXT' | 'BOOLEAN';
   options?: OptionType[] | string[]; // For multiple-choice questions
   required: boolean;
 }
