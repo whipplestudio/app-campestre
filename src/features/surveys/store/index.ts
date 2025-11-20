@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Survey, SurveyFilter, SurveyCategory } from '../interfaces';
+import { surveyService } from '../services';
 
 interface SurveyStore {
   surveys: Survey[];
@@ -10,7 +11,13 @@ interface SurveyStore {
   currentFilter: SurveyFilter;
   loading: boolean;
   error: string | null;
-  
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+
   setSurveys: (surveys: Survey[]) => void;
   setActiveSurveys: (count: number) => void;
   setCompletedSurveys: (count: number) => void;
@@ -19,11 +26,15 @@ interface SurveyStore {
   setFilter: (filter: SurveyFilter) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
-  fetchSurveys: () => Promise<void>;
+  setPagination: (pagination: any) => void;
+  fetchSurveys: (page?: number) => Promise<void>;
+  fetchNextPage: () => Promise<void>;
+  fetchPreviousPage: () => Promise<void>;
+  goToPage: (page: number) => Promise<void>;
   getFilteredSurveys: () => Survey[];
   updateSurveyStatus: (surveyId: string, status: 'completed' | 'active') => void;
   incrementCompletedSurveys: (surveyId: string) => void;
-  updateAverageRating: (newRating: number) => void;
+  resetPagination: () => void;
 }
 
 export const useSurveyStore = create<SurveyStore>((set, get) => ({
@@ -38,178 +49,184 @@ export const useSurveyStore = create<SurveyStore>((set, get) => ({
   },
   loading: false,
   error: null,
-  
+  pagination: {
+    page: 1,
+    limit: 1,
+    total: 0,
+    totalPages: 1,
+  },
+
   setSurveys: (surveys) => set({ surveys }),
-  
+
   setActiveSurveys: (activeSurveys) => set({ activeSurveys }),
-  
+
   setCompletedSurveys: (completedSurveys) => set({ completedSurveys }),
-  
+
   setUserCompletedSurveys: (completedSurveyIds) => set({ userCompletedSurveys: completedSurveyIds }),
-  
+
   setAverageRating: (averageRating) => set({ averageRating }),
-  
-  setFilter: (currentFilter) => set({ currentFilter }),
-  
+
+  setFilter: (currentFilter) => {
+    // When filter changes, reset to page 1
+    set({
+      currentFilter,
+      pagination: { ...get().pagination, page: 1 }
+    });
+  },
+
   setLoading: (loading) => set({ loading }),
-  
+
   setError: (error) => set({ error }),
-  
-  fetchSurveys: async () => {
+
+  setPagination: (pagination) => set({ pagination }),
+
+  resetPagination: () => {
+    set({
+      pagination: {
+        page: 1,
+        limit: get().pagination.limit,
+        total: 0,
+        totalPages: 1
+      }
+    });
+  },
+
+  fetchSurveys: async (page = 1) => {
     set({ loading: true, error: null });
     try {
-      // In a real app, this would call the API
-      // For now, we'll use mock data
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call
-      
-      // Using mock data - surveys that were originally completed
-      const mockSurveys = [
-        {
-          id: '1',
-          title: 'Satisfacción con Servicios del Club',
-          description: 'Ayúdanos a mejorar nuestros servicios compartiendo tu experiencia.',
-          category: SurveyCategory.SERVICES,
-          priority: 'Importante',
-          estimatedTime: '3-5 min',
-          participantCount: 156,
-          questionCount: 8,
-          isActive: true,
-          imageUrl: '',
-          averageRating: 4.2,
-          dateCreated: '2024-10-01',
-        },
-        {
-          id: '2',
-          title: 'Calidad del Restaurante',
-          description: 'Evalúa la calidad de nuestros alimentos y servicio en el restaurante.',
-          category: SurveyCategory.RESTAURANT,
-          priority: 'Normal',
-          estimatedTime: '4-6 min',
-          participantCount: 89,
-          questionCount: 10,
-          isActive: true,
-          imageUrl: '',
-          averageRating: 4.5,
-          dateCreated: '2024-10-05',
-        },
-        {
-          id: '3',
-          title: 'Instalaciones Deportivas',
-          description: 'Comparte tu opinión sobre nuestras instalaciones deportivas.',
-          category: SurveyCategory.SPORTS,
-          priority: 'Urgente',
-          estimatedTime: '5-7 min',
-          participantCount: 234,
-          questionCount: 12,
-          isActive: true,
-          imageUrl: '',
-          averageRating: 3.8,
-          dateCreated: '2024-09-25',
-        },
-        {
-          id: '4',
-          title: 'Experiencia en Eventos',
-          description: 'Ayúdanos a mejorar nuestros eventos y actividades.',
-          category: SurveyCategory.EVENTS,
-          priority: 'Normal',
-          estimatedTime: '3-5 min',
-          participantCount: 76,
-          questionCount: 7,
-          isActive: true,
-          imageUrl: '',
-          averageRating: 4.7,
-          dateCreated: '2024-10-10',
-        },
-        {
-          id: '5',
-          title: 'Calidad del Servicio General',
-          description: 'Evalúa el servicio general del club.',
-          category: SurveyCategory.SERVICES,
-          priority: 'Baja',
-          estimatedTime: '4-6 min',
-          participantCount: 321,
-          questionCount: 9,
-          isActive: false, // Completed survey
-          imageUrl: '',
-          averageRating: 4.0,
-          dateCreated: '2024-08-15',
-          dateCompleted: '2024-09-15',
-        },
-      ];
-      
-      // Initially, user has completed only survey 5
-      const initialCompletedSurveyIds = ['5'];
-      
-      set({ 
-        surveys: mockSurveys,
-        userCompletedSurveys: initialCompletedSurveyIds
+      // Mapear categoría a string para la API
+      let category = '';
+      if (get().currentFilter.category !== SurveyCategory.ALL) {
+        switch(get().currentFilter.category) {
+          case SurveyCategory.SERVICES:
+            category = 'SERVICES';
+            break;
+          case SurveyCategory.RESTAURANT:
+            category = 'RESTAURANT';
+            break;
+          case SurveyCategory.SPORTS:
+            category = 'SPORTS';
+            break;
+          case SurveyCategory.EVENTS:
+            category = 'EVENTS';
+            break;
+          default:
+            category = '';
+        }
+      }
+      const search = '';
+      const order = 'asc';
+      const limit = get().pagination.limit;
+
+      const result = await surveyService.getSurveys(page, limit, search, order, category);
+
+      // Usar los datos y la paginación correspondiente según el estado actual
+      const { currentFilter } = get();
+      let surveys, meta;
+
+      if (currentFilter.status === 'activas') {
+        surveys = result.unansweredSurveys;
+        meta = result.unansweredMeta;
+      } else if (currentFilter.status === 'completadas') {
+        surveys = result.answeredSurveys;
+        meta = result.answeredMeta;
+      } else {
+        // Por defecto, usar unanswered (encuestas activas)
+        surveys = result.unansweredSurveys;
+        meta = result.unansweredMeta;
+      }
+
+      set({
+        surveys: surveys,
+        pagination: {
+          page: meta.page,
+          limit: meta.limit,
+          total: meta.total,
+          totalPages: meta.totalPages,
+        }
       });
-      
-      // Calculate stats
-      const activeSurveys = mockSurveys.filter(s => s.isActive && !initialCompletedSurveyIds.includes(s.id)).length;
-      const completedSurveys = initialCompletedSurveyIds.length; // Initially only survey 5 is completed by the user
-      const activeRatings = mockSurveys
-        .filter(s => s.isActive && !initialCompletedSurveyIds.includes(s.id) && s.averageRating)
-        .map(s => s.averageRating as number);
-      const averageRating = activeRatings.length > 0 
-        ? activeRatings.reduce((sum, rating) => sum + rating, 0) / activeRatings.length
-        : 0;
-      
-      set({ 
+
+      // Calcular estadísticas usando todos los datos
+      const activeSurveys = result.unansweredSurveys.length;
+      const completedSurveys = result.answeredSurveys.length;
+
+      set({
         activeSurveys,
         completedSurveys,
-        averageRating: parseFloat(averageRating.toFixed(1))
+        averageRating: 0, // Valor por defecto, ya que la API no proporciona este dato
       });
-    } catch (error) {
-      set({ error: 'Error fetching surveys', loading: false });
+    } catch (error: any) {
+      console.error('Error fetching surveys:', error);
+      set({ error: error.message || 'Error fetching surveys', loading: false });
     } finally {
       set({ loading: false });
     }
   },
-  
+
+  fetchNextPage: async () => {
+    const { pagination } = get();
+    if (pagination.page < pagination.totalPages) {
+      await get().fetchSurveys(pagination.page + 1);
+    }
+  },
+
+  fetchPreviousPage: async () => {
+    const { pagination } = get();
+    if (pagination.page > 1) {
+      await get().fetchSurveys(pagination.page - 1);
+    }
+  },
+
+  goToPage: async (page: number) => {
+    const { pagination } = get();
+    if (page >= 1 && page <= pagination.totalPages) {
+      await get().fetchSurveys(page);
+    }
+  },
+
   getFilteredSurveys: () => {
     const { surveys, currentFilter, userCompletedSurveys } = get();
-    
+
     // Create a copy of surveys with updated status based on user completion
     const surveysWithUpdatedStatus = surveys.map(survey => ({
       ...survey,
       // Survey is active if it's originally active AND not completed by user
       isActive: survey.isActive && !userCompletedSurveys.includes(survey.id)
     }));
-    
+
     return surveysWithUpdatedStatus.filter(survey => {
-      const matchesCategory = currentFilter.category === SurveyCategory.ALL || 
+      const matchesCategory = currentFilter.category === SurveyCategory.ALL ||
                               survey.category === currentFilter.category;
-      
-      const matchesStatus = currentFilter.status === 'activas' ? 
-                            survey.isActive : 
+
+      const matchesStatus = currentFilter.status === 'activas' ?
+                            survey.isActive :
                             !survey.isActive;
-      
+
       return matchesCategory && matchesStatus;
     });
   },
-  
+
   updateSurveyStatus: (surveyId, status) => {
     set(state => {
       // In this implementation, we're tracking completed surveys by user in userCompletedSurveys
       const updatedCompletedSurveys = status === 'completed'
         ? [...state.userCompletedSurveys, surveyId]
         : state.userCompletedSurveys.filter(id => id !== surveyId);
-      
-      const updatedActiveSurveys = state.surveys.filter(s => 
+
+      const updatedActiveSurveys = state.surveys.filter(s =>
         s.isActive && !updatedCompletedSurveys.includes(s.id)
       ).length;
-      
+
       const updatedCompletedSurveysCount = updatedCompletedSurveys.length;
-      
+
       // Calculate average from active surveys that are not completed by user
       const activeRatings = state.surveys
-        .filter(s => s.isActive && !updatedCompletedSurveys.includes(s.id) && s.averageRating) 
+        .filter(s => s.isActive && !updatedCompletedSurveys.includes(s.id) && s.averageRating)
         .map(s => s.averageRating as number);
-      const newAverageRating = activeRatings.length > 0 
+      const newAverageRating = activeRatings.length > 0
         ? activeRatings.reduce((sum, rating) => sum + rating, 0) / activeRatings.length
         : state.averageRating;
-      
+
       return {
         userCompletedSurveys: updatedCompletedSurveys,
         activeSurveys: updatedActiveSurveys,
@@ -218,25 +235,25 @@ export const useSurveyStore = create<SurveyStore>((set, get) => ({
       };
     });
   },
-  
+
   incrementCompletedSurveys: (surveyId) => {
     set(state => {
       const updatedCompletedSurveys = [...state.userCompletedSurveys, surveyId];
       const updatedCompletedCount = updatedCompletedSurveys.length;
-      
+
       // Calculate new active surveys count
-      const updatedActiveSurveys = state.surveys.filter(s => 
+      const updatedActiveSurveys = state.surveys.filter(s =>
         s.isActive && !updatedCompletedSurveys.includes(s.id)
       ).length;
-      
+
       // Calculate average from active surveys that are not completed by user
       const activeRatings = state.surveys
-        .filter(s => s.isActive && !updatedCompletedSurveys.includes(s.id) && s.averageRating) 
+        .filter(s => s.isActive && !updatedCompletedSurveys.includes(s.id) && s.averageRating)
         .map(s => s.averageRating as number);
-      const newAverageRating = activeRatings.length > 0 
+      const newAverageRating = activeRatings.length > 0
         ? activeRatings.reduce((sum, rating) => sum + rating, 0) / activeRatings.length
         : state.averageRating;
-      
+
       return {
         userCompletedSurveys: updatedCompletedSurveys,
         completedSurveys: updatedCompletedCount,

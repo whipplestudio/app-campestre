@@ -234,6 +234,96 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
   },
+  loadingMoreContainer: {
+    alignItems: 'center',
+    paddingVertical: 16,
+  },
+  loadingMoreText: {
+    fontSize: 14,
+    color: COLORS.gray600,
+    fontStyle: 'italic',
+  },
+  paginationInfoContainer: {
+    alignItems: 'center',
+    paddingVertical: 16,
+  },
+  paginationInfoText: {
+    fontSize: 14,
+    color: COLORS.gray600,
+  },
+  paginationControlsContainer: {
+    paddingVertical: 20,
+    alignItems: 'center',
+  },
+  paginationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    marginBottom: 16,
+    gap: 12,
+  },
+  paginationArrowButton: {
+    minWidth: 40,
+    height: 40,
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: COLORS.gray200,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  paginationArrowButtonDisabled: {
+    backgroundColor: COLORS.gray100,
+    opacity: 0.6,
+  },
+  paginationArrowButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.gray800,
+  },
+  paginationArrowButtonTextDisabled: {
+    color: COLORS.gray400,
+  },
+  pageNumbersContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+  },
+  pageNumberButton: {
+    minWidth: 36,
+    height: 36,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    marginHorizontal: 2,
+    borderRadius: 18,
+  },
+  pageNumberButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: COLORS.gray700,
+  },
+  currentPageButton: {
+    backgroundColor: COLORS.primary,
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+    borderRadius: 18,
+  },
+  currentPageButtonText: {
+    color: COLORS.white,
+    fontWeight: '600',
+  },
+  noSurveysContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  noSurveysText: {
+    fontSize: 16,
+    color: COLORS.gray600,
+    textAlign: 'center',
+  },
 });
 
 export default styles;

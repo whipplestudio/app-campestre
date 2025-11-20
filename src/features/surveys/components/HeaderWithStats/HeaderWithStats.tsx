@@ -20,11 +20,11 @@ const HeaderWithStats: React.FC<HeaderWithStatsProps> = ({
       <View style={styles.textContainer}>
         <Text style={styles.title}>{messages.HEADERWITHSTATS.TITLE}</Text>
         <Text style={styles.description}>{messages.HEADERWITHSTATS.TEXT}</Text>
-        <View style={styles.statsRow}>
+        {/*<View style={styles.statsRow}>
           <Text style={styles.statText}>{activeSurveys} {messages.HEADERWITHSTATS.ACTIVE}</Text>
           <Text style={styles.statText}>• {completedSurveys} {messages.HEADERWITHSTATS.COMPLETED}</Text>
           <Text style={styles.statText}>• {averageRating.toFixed(1)} {messages.HEADERWITHSTATS.AVERAGE}</Text>
-        </View>
+        </View>*/}
       </View>
     </View>
   );

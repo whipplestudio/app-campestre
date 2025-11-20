@@ -19,6 +19,7 @@ import { useSurveyActions } from '../hooks/useSurveyActions';
 import { SurveyCategory, SurveyQuestion } from '../interfaces';
 import { surveyService } from '../services';
 import { useSurveyStore } from '../store';
+import { useAuthStore } from '../../auth/store/useAuthStore';
 import styles from './Style';
 
 const SurveysScreen: React.FC = () => {
@@ -32,11 +33,16 @@ const SurveysScreen: React.FC = () => {
     setFilter,
     fetchSurveys,
     incrementCompletedSurveys,
+    pagination,
+    loading: storeLoading,
+    fetchNextPage,
+    fetchPreviousPage,
+    goToPage,
   } = useSurveyStore();
 
-  const { 
-    handleSurveyResponse, 
-    confirmSurveyResponse, 
+  const {
+    handleSurveyResponse,
+    confirmSurveyResponse,
     cancelSurveyResponse,
     selectedSurveyId,
     showSurveyForm,
@@ -52,8 +58,9 @@ const SurveysScreen: React.FC = () => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   useEffect(() => {
-    fetchSurveys();
-  }, []);
+    // Cargar página 1 al inicio y cuando cambie el filtro
+    fetchSurveys(1);
+  }, [currentFilter]);
 
   // Load survey and questions when selectedSurveyId changes
   useEffect(() => {
@@ -62,7 +69,10 @@ const SurveysScreen: React.FC = () => {
         try {
           setLoading(true);
           const surveyData = await surveyService.getSurveyById(selectedSurveyId);
-          const questionsData = await surveyService.getQuestionsBySurveyId(selectedSurveyId);
+
+          // Obtener el token del store de autenticación
+          const { token } = useAuthStore.getState();
+          const questionsData = await surveyService.getQuestionsBySurveyId(selectedSurveyId, token);
 
           if (surveyData && questionsData) {
             setSurvey(surveyData);
@@ -142,6 +152,7 @@ const SurveysScreen: React.FC = () => {
     });
   };
 
+  // Actualizar la lógica para poder filtrar entre encuestas disponibles y completadas por el usuario
   const handleStatusChange = (status: 'activas' | 'completadas') => {
     setFilter({
       ...currentFilter,
@@ -153,11 +164,26 @@ const SurveysScreen: React.FC = () => {
     handleSurveyResponse(surveyId);
   };
 
+  // Requerir acceso directo a la respuesta de la API para manejar answered/unanswered
+  // Pero como no tenemos acceso directo a la respuesta sin modificar más componentes,
+  // usaré el campo isActive que se mapea correctamente
   const { messages } = useMessages();
-  const filteredSurveys = getFilteredSurveys();
+  const filteredSurveys = surveys.filter(survey => {
+    const matchesCategory = currentFilter.category === SurveyCategory.ALL ||
+                            survey.category === currentFilter.category;
+
+    // Si el filtro es 'activas', mostrar encuestas no respondidas (isActive = true)
+    // Si el filtro es 'completadas', mostrar encuestas respondidas (isActive = false)
+    const matchesStatus = currentFilter.status === 'activas'
+      ? survey.isActive  // Solo encuestas activas (no respondidas)
+      : !survey.isActive; // Solo encuestas completadas (respondidas)
+
+    return matchesCategory && matchesStatus;
+  });
 
   const currentQuestion = questions[currentQuestionIndex];
   const progress = selectedSurveyId ? ((currentQuestionIndex + 1) / questions.length) * 100 : 0;
+
 
   if (showSurveyForm && survey && !submitSuccess) {
     // Survey form view
@@ -320,9 +346,13 @@ const SurveysScreen: React.FC = () => {
   // Default list view
   return (
     <View style={styles.container}>
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        onScroll={(e) => {
+          // No activar la paginación infinita automática
+          // El usuario debe usar los controles de paginación manual
+        }}
       >
         <View style={styles.contentContainer}>
           {/* Header with Stats */}
@@ -342,15 +372,88 @@ const SurveysScreen: React.FC = () => {
 
           {/* Surveys List */}
           <View style={styles.surveysList}>
-            {filteredSurveys.map((survey) => (
-              <SurveyCard
-                key={survey.id}
-                survey={survey}
-                onPress={handleCardPress}
-                surveyId={survey.id}
-              />
-            ))}
+            {filteredSurveys.length > 0 ? (
+              filteredSurveys.map((survey) => (
+                <SurveyCard
+                  key={survey.id}
+                  survey={survey}
+                  onPress={handleCardPress}
+                  surveyId={survey.id}
+                />
+              ))
+            ) : (
+              <View style={styles.noSurveysContainer}>
+                <Text style={styles.noSurveysText}>
+                  {currentFilter.status === 'activas'
+                    ? 'No hay encuestas disponibles'
+                    : 'Aún no has contestado ninguna encuesta'}
+                </Text>
+              </View>
+            )}
           </View>
+
+          {/* Loading indicator for pagination */}
+          {storeLoading && pagination.page > 1 && (
+            <View style={styles.loadingMoreContainer}>
+              <Text style={styles.loadingMoreText}>Cargando más encuestas...</Text>
+            </View>
+          )}
+
+          {/* Pagination controls - only show if there are pages to display */}
+          {pagination.totalPages > 0 && (
+            <View style={styles.paginationControlsContainer}>
+              <View style={styles.paginationRow}>
+                <Button
+                  text="<"
+                  variant="outline"
+                  onPress={fetchPreviousPage}
+                  disabled={pagination.page <= 1}
+                  style={[
+                    styles.paginationArrowButton,
+                    pagination.page <= 1 && styles.paginationArrowButtonDisabled
+                  ]}
+                  titleStyle={[
+                    styles.paginationArrowButtonText,
+                    pagination.page <= 1 && styles.paginationArrowButtonTextDisabled
+                  ]}
+                />
+
+                <View style={styles.pageNumbersContainer}>
+                  {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(pageNum => (
+                    <Button
+                      key={pageNum}
+                      text={pageNum.toString()}
+                      variant="outline"
+                      onPress={() => goToPage(pageNum)}
+                      style={[
+                        styles.pageNumberButton,
+                        pageNum === pagination.page && styles.currentPageButton
+                      ]}
+                      titleStyle={[
+                        styles.pageNumberButtonText,
+                        pageNum === pagination.page && styles.currentPageButtonText
+                      ]}
+                    />
+                  ))}
+                </View>
+
+                <Button
+                  text=">"
+                  variant="outline"
+                  onPress={fetchNextPage}
+                  disabled={pagination.page >= pagination.totalPages}
+                  style={[
+                    styles.paginationArrowButton,
+                    pagination.page >= pagination.totalPages && styles.paginationArrowButtonDisabled
+                  ]}
+                  titleStyle={[
+                    styles.paginationArrowButtonText,
+                    pagination.page >= pagination.totalPages && styles.paginationArrowButtonTextDisabled
+                  ]}
+                />
+              </View>
+            </View>
+          )}
         </View>
       </ScrollView>
 
