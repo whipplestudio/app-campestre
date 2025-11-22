@@ -264,11 +264,11 @@ const styles = StyleSheet.create({
   },
   paginationArrowButton: {
     paddingHorizontal: 10,
-  paddingVertical: 4,
-  backgroundColor: 'transparent',
-  borderWidth: 0,
-  elevation: 0,
-  shadowOpacity: 0,
+    paddingVertical: 4,
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    elevation: 0,
+    shadowOpacity: 0,
   },
   paginationArrowButtonDisabled: {
     opacity: 0.3,

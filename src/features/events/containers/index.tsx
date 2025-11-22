@@ -110,15 +110,15 @@ const EventsContainer = () => {
 
         <View style={styles.monthSelectorContainer}>
           <Button
-            variant="icon"
+            variant="outline"
             onPress={goToPreviousMonth}
             disabled={!isAfterCurrentMonth}
             style={styles.navButton}
             icon={
               <Ionicons 
-                name="chevron-back-outline" 
-                size={20} 
-                color={isAfterCurrentMonth ? COLORS.black : COLORS.gray400} 
+                name="chevron-back" 
+                size={22} 
+                color={!isAfterCurrentMonth ? COLORS.gray400 : COLORS.primary} 
               />
             }
           />
@@ -126,15 +126,15 @@ const EventsContainer = () => {
           <Text style={styles.monthDisplay}>{displayMonth}</Text>
           
           <Button
-            variant="icon"
+            variant="outline"
             onPress={goToNextMonth}
             disabled={!hasFutureMonths}
             style={styles.navButton}
             icon={
               <Ionicons 
-                name="chevron-forward-outline" 
-                size={20} 
-                color={hasFutureMonths ? COLORS.black : COLORS.gray400} 
+                name="chevron-forward" 
+                size={22} 
+                color={!hasFutureMonths ? COLORS.gray400 : COLORS.primary} 
               />
             }
           />
