@@ -28,7 +28,7 @@ const useMessages = () => {
         NAME: t('accountStatements.accountStatementDetail.name'),
         ADDRES: t('accountStatements.accountStatementDetail.address'),
         CITY: t('accountStatements.accountStatementDetail.city'),
-        STATEMENT_DETAIL: t('accountStatements.accountStatementDetail.statementDetail'),
+        STATEMENT_DETAIL: t('accountStatements.accountStatementDetail.statementDetails'),
         CONCEPT: t('accountStatements.accountStatementDetail.concept'),
         CHARGES: t('accountStatements.accountStatementDetail.charges'),
         CREDITS: t('accountStatements.accountStatementDetail.credits'),
