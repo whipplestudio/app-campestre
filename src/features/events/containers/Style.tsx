@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 16,
-    paddingBottom: 40,
+    paddingBottom: 60,
   },
   searchContainer: {
     margin: 15,
@@ -134,6 +134,70 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: 'bold',
+  },
+  paginationInfoContainer: {
+    alignItems: 'center',
+    paddingVertical: 16,
+  },
+  paginationInfoText: {
+    fontSize: 14,
+    color: COLORS.gray600,
+  },
+  paginationControlsContainer: {
+    paddingVertical: 20,
+    alignItems: 'center',
+  },
+  paginationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    gap: 20,
+  },
+  paginationArrowButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    elevation: 0,
+    shadowOpacity: 0,
+  },
+  paginationArrowButtonDisabled: {
+    opacity: 0.3,
+  },
+  paginationArrowButtonText: {
+    fontSize: 22,
+    fontWeight: '600',
+    color: COLORS.gray700,
+  },
+  paginationArrowButtonTextDisabled: {
+    color: COLORS.gray400,
+  },
+  pageNumbersContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 14,
+  },
+  pageNumberButton: {
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    elevation: 0,
+    shadowOpacity: 0,
+  },
+  pageNumberButtonText: {
+    fontSize: 20,
+    fontWeight: '500',
+    color: COLORS.gray700,
+  },
+  currentPageButton: {
+  },
+  currentPageButtonText: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: COLORS.primary,
   },
 });
 

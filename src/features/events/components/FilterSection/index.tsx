@@ -10,10 +10,10 @@ const FilterSection: React.FC<FilterSectionProps> = ({
 
   const eventTypes = [
     { value: 'Todos', label: 'Todos' },
-    { value: 'Deportivo', label: 'Deportivo' },
-    { value: 'Social', label: 'Social' },
-    { value: 'Familiar', label: 'Familiar' },
-    { value: 'Fitness', label: 'Fitness' },
+    { value: 'SPORT', label: 'Deportivo' },  // Using API format
+    { value: 'SOCIAL', label: 'Social' },    // Using API format
+    { value: 'FAMILY', label: 'Familiar' },  // Using API format
+    { value: 'OTHER', label: 'Otros' },      // Using API format
   ];
 
   // Dividir los filtros en dos filas
@@ -30,7 +30,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
               styles.filterButton,
               selectedEventType === eventType.value && styles.activeFilterButton,
             ]}
-            onPress={() => onEventTypeChange(eventType.value as 'Todos' | 'Deportivo' | 'Social' | 'Familiar' | 'Fitness')}
+            onPress={() => onEventTypeChange(eventType.value as 'Todos' | 'SPORT' | 'SOCIAL' | 'FAMILY' | 'OTHER')}
           >
             <Text
               style={[
@@ -51,7 +51,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
               styles.filterButton,
               selectedEventType === eventType.value && styles.activeFilterButton,
             ]}
-            onPress={() => onEventTypeChange(eventType.value as 'Todos' | 'Deportivo' | 'Social' | 'Familiar' | 'Fitness')}
+            onPress={() => onEventTypeChange(eventType.value as 'Todos' | 'SPORT' | 'SOCIAL' | 'FAMILY' | 'OTHER')}
           >
             <Text
               style={[

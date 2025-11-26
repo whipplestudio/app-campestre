@@ -1,160 +1,247 @@
 // hooks/useEvents.ts
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Alert } from 'react-native';
 import { useAuthStore } from '../../auth/store/useAuthStore';
 import { eventsService } from '../service/eventsService';
 import { useEventStore } from '../store/useEventStore';
 
 export const useEvents = () => {
   const { userId } = useAuthStore();
-  const { t } = useTranslation();
-  const { 
-    events = [], 
-    loading, 
-    error, 
-    setEvents, 
-    setLoading, 
+  const {
+    events,
+    loading,
+    error,
+    setEvents,
+    setLoading,
     setError,
     updateEvent,
-    addEvents
+    pagination,
+    setPagination,
+    searchQuery: storeSearchQuery,
+    selectedEventType: storeSelectedEventType,
+    selectedDate: storeSelectedDate,
+    setSearchQuery: setStoreSearchQuery,
+    setSelectedEventType: setStoreSelectedEventType,
+    setSelectedDate: setStoreSelectedDate,
+    resetEvents
   } = useEventStore();
-  
+
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedEventType, setSelectedEventType] = useState<'Todos' | 'Deportivo' | 'Social' | 'Familiar' | 'Fitness'>('Todos');
+  const [searchQuery, setSearchQuery] = useState(storeSearchQuery);
+  const [selectedEventType, setSelectedEventType] = useState(storeSelectedEventType);
+  const [selectedDate, setSelectedDate] = useState(storeSelectedDate);
   
-  const eventTypes = ['Todos', 'Deportivo', 'Social', 'Familiar', 'Fitness'] as const;
+  // Referencia para evitar múltiples ejecuciones
+  const isInitialLoad = useRef(true);
+  const fetchRef = useRef(false);
+
+  const eventTypes = ['Todos', 'SOCIAL', 'SPORT', 'FAMILY', 'OTHER', 'Deportivo', 'Social', 'Familiar', 'Fitness'];
   const monthNames = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-  ] as const;
+  ];
 
-  // Fetch events on mount
-  useEffect(() => {
-    const loadEvents = async () => {
-      setLoading(true);
-      try {
-        const eventsData = await eventsService.fetchEvents();
-        setEvents(eventsData);
-      } catch (err) {
-        setError('Error al cargar los eventos');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Fetch events with pagination
+  const fetchEvents = useCallback(async (page: number = 1) => {
+    // Evitar múltiples ejecuciones simultáneas
+    if (fetchRef.current) return;
     
-    loadEvents();
-  }, [setEvents, setLoading, setError]);
+    fetchRef.current = true;
+    try {
+      // Format the date as 'yyyy-mm'
+      const dateParam = selectedDate || `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}`;
+      const eventTypeParam = selectedEventType === 'Todos' ? '' : selectedEventType;
+      
+      const result = await eventsService.getEvents(
+        page,
+        searchQuery,
+        eventTypeParam,
+        dateParam
+      );
+      
+      setEvents(result.events);
+      setPagination({
+        page: result.meta.page,
+        limit: result.meta.limit,
+        total: result.meta.total,
+        totalPages: result.meta.totalPages,
+      });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Error al cargar los eventos';
+      setError(errorMessage);
+      Alert.alert('Error', errorMessage);
+      console.error(err);
+    } finally {
+      fetchRef.current = false;
+    }
+  }, [searchQuery, selectedEventType, selectedDate, currentMonth, currentYear, setEvents, setError, setPagination]);
 
-  // Filtered and sorted events
-  const filteredEvents = useMemo(() => {
-    return events
-      .filter(event => {
-        const eventDate = new Date(event.date);
-        const eventMonth = eventDate.getMonth();
-        const eventYear = eventDate.getFullYear();
-        
-        const isCurrentMonth = eventMonth === currentMonth && eventYear === currentYear;
-        const matchesSearch = 
-          event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          event.description.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesType = 
-          selectedEventType === 'Todos' || event.eventType === selectedEventType;
-        const isNotPast = eventDate >= new Date();
-        
-        return isCurrentMonth && matchesSearch && matchesType && isNotPast;
-      })
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  }, [events, currentMonth, currentYear, searchQuery, selectedEventType]);
+  // Fetch events only once on initial load
+  useEffect(() => {
+    if (isInitialLoad.current) {
+      isInitialLoad.current = false;
+      fetchEvents(1);
+    }
+  }, [fetchEvents]);
 
   // Event registration handlers
   const registerForEvent = useCallback(async (eventId: string) => {
-    if (!userId) return { success: false, error: 'Usuario no autenticado' };
-    
-    // setLoading(true);
+    if (!userId) {
+      Alert.alert('Error', 'Usuario no autenticado');
+      return { success: false, error: 'Usuario no autenticado' };
+    }
+
     try {
-      const updatedEvent = await eventsService.registerForEvent(eventId, userId);
+      const result = await eventsService.registerForEvent(eventId, userId);
+      
+      // Actualizar directamente el evento en la lista con los nuevos valores
       updateEvent(eventId, {
-        registeredUsers: [...(updatedEvent.registeredUsers || [])],
-        availableSpots: updatedEvent.availableSpots
+        availableSpots: result.availableSpots,
+        ocupedSpots: (events.find(e => e.id === eventId)?.totalSpots || 0) - result.availableSpots,
       });
+      
       return { success: true };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Error al registrarse';
       setError(errorMessage);
+      Alert.alert('Error', errorMessage);
       return { success: false, error: errorMessage };
-    } finally {
-      setLoading(false);
     }
-  }, [userId, updateEvent, setLoading, setError]);
+  }, [userId, events, updateEvent, setError]);
 
   const unregisterFromEvent = useCallback(async (eventId: string) => {
-    if (!userId) return { success: false, error: 'Usuario no autenticado' };
-    
-    // setLoading(true);
+    if (!userId) {
+      Alert.alert('Error', 'Usuario no autenticado');
+      return { success: false, error: 'Usuario no autenticado' };
+    }
+
     try {
-      const updatedEvent = await eventsService.unregisterFromEvent(eventId, userId);
-      updateEvent(eventId, {
-        registeredUsers: [...(updatedEvent.registeredUsers || [])],
-        availableSpots: updatedEvent.availableSpots
-      });
+      await eventsService.unregisterFromEvent(eventId, userId);
+      
+      // Actualizar directamente el evento en la lista con los nuevos valores
+      const currentEvent = events.find(e => e.id === eventId);
+      if (currentEvent) {
+        updateEvent(eventId, {
+          availableSpots: currentEvent.availableSpots + 1,
+          ocupedSpots: currentEvent.ocupedSpots - 1,
+        });
+      }
+      
       return { success: true };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Error al cancelar registro';
       setError(errorMessage);
+      Alert.alert('Error', errorMessage);
       return { success: false, error: errorMessage };
-    } finally {
-      setLoading(false);
     }
-  }, [userId, updateEvent, setLoading, setError]);
+  }, [userId, events, updateEvent, setError]);
 
   // Navigation
   const goToPreviousMonth = useCallback(() => {
     const prevDate = new Date(currentYear, currentMonth - 1, 1);
-    setCurrentMonth(prevDate.getMonth());
-    setCurrentYear(prevDate.getFullYear());
-  }, [currentMonth, currentYear]);
+    const newMonth = prevDate.getMonth();
+    const newYear = prevDate.getFullYear();
+    setCurrentMonth(newMonth);
+    setCurrentYear(newYear);
+    
+    // Update the selected date to reflect the new month
+    const newDate = `${newYear}-${(newMonth + 1).toString().padStart(2, '0')}`;
+    setSelectedDate(newDate);
+    setStoreSelectedDate(newDate);
+    
+    // Fetch new events for the selected month but don't reset pagination
+    fetchEvents(1);
+  }, [currentMonth, currentYear, setSelectedDate, setStoreSelectedDate, fetchEvents]);
 
   const goToNextMonth = useCallback(() => {
     const nextDate = new Date(currentYear, currentMonth + 1, 1);
-    setCurrentMonth(nextDate.getMonth());
-    setCurrentYear(nextDate.getFullYear());
-  }, [currentMonth, currentYear]);
+    const newMonth = nextDate.getMonth();
+    const newYear = nextDate.getFullYear();
+    setCurrentMonth(newMonth);
+    setCurrentYear(newYear);
+    
+    // Update the selected date to reflect the new month
+    const newDate = `${newYear}-${(newMonth + 1).toString().padStart(2, '0')}`;
+    setSelectedDate(newDate);
+    setStoreSelectedDate(newDate);
+    
+    // Fetch new events for the selected month but don't reset pagination
+    fetchEvents(1);
+  }, [currentMonth, currentYear, setSelectedDate, setStoreSelectedDate, fetchEvents]);
+
+  // Pagination functions
+  const fetchNextPage = useCallback(async () => {
+    if (pagination.page < pagination.totalPages) {
+      await fetchEvents(pagination.page + 1);
+    }
+  }, [pagination, fetchEvents]);
+
+  const fetchPreviousPage = useCallback(async () => {
+    if (pagination.page > 1) {
+      await fetchEvents(pagination.page - 1);
+    }
+  }, [pagination, fetchEvents]);
+
+  const goToPage = useCallback(async (page: number) => {
+    if (page >= 1 && page <= pagination.totalPages) {
+      await fetchEvents(page);
+    }
+  }, [pagination, fetchEvents]);
 
   // Utility functions
   const checkIfRegistered = useCallback((eventId: string): boolean => {
-    if (!userId) return false;
+    // Consider the user as registered if there are fewer available spots than total spots
     const event = events.find(e => e.id === eventId);
-    return event ? (event.registeredUsers || []).includes(userId) : false;
-  }, [events, userId]);
+    if (!event) return false;
+    return event.availableSpots < event.totalSpots;
+  }, [events]);
 
-  const hasEventsThisMonth = useMemo(() => {
-    return events.some(event => {
-      const eventDate = new Date(event.date);
-      return eventDate.getMonth() === currentMonth && 
-             eventDate.getFullYear() === currentYear;
-    });
-  }, [events, currentMonth, currentYear]);
+  const hasEventsThisMonth = events.length > 0;
 
-  const hasFutureMonths = useMemo(() => {
-    return events.some(event => {
-      const eventDate = new Date(event.date);
-      return (eventDate.getFullYear() > currentYear) || 
-             (eventDate.getFullYear() === currentYear && 
-              eventDate.getMonth() > currentMonth);
-    });
-  }, [events, currentMonth, currentYear]);
+  const hasFutureMonths = () => {
+    const currentDate = new Date();
+    const currentMonthYear = currentDate.getMonth() + currentDate.getFullYear() * 12;
+    const thisMonthYear = currentMonth + currentYear * 12;
+    return thisMonthYear >= currentMonthYear;
+  };
 
-  const isAfterCurrentMonth = (currentYear > new Date().getFullYear()) || 
-                            (currentYear === new Date().getFullYear() && 
-                             currentMonth > new Date().getMonth());
+  const isAfterCurrentMonth = () => {
+    const currentDate = new Date();
+    const currentMonthYear = currentDate.getMonth() + currentDate.getFullYear() * 12;
+    const thisMonthYear = currentMonth + currentYear * 12;
+    return thisMonthYear > currentMonthYear;
+  };
+
+  // Update search and type filters with debouncing
+  const handleSearchChange = useCallback((query: string) => {
+    setSearchQuery(query);
+    setStoreSearchQuery(query);
+    // Reset to page 1 when search changes and fetch new data
+    fetchEvents(1);
+  }, [setStoreSearchQuery, fetchEvents]);
+
+  const handleEventTypeChange = useCallback((type: 'Todos' | 'Deportivo' | 'Social' | 'Familiar' | 'Fitness' | 'SOCIAL' | 'SPORT' | 'FAMILY' | 'OTHER') => {
+    // Convertir los nombres antiguos a los nuevos tipos del store
+    const storeType = type === 'Deportivo' ? 'SPORT' :
+              type === 'Social' ? 'SOCIAL' :
+              type === 'Familiar' ? 'FAMILY' :
+              type === 'Fitness' ? 'OTHER' :
+              type === 'Todos' ? 'Todos' :
+              type === 'SOCIAL' ? 'SOCIAL' :
+              type === 'SPORT' ? 'SPORT' :
+              type === 'FAMILY' ? 'FAMILY' : 'OTHER';
+
+    setSelectedEventType(storeType as 'Todos' | 'SOCIAL' | 'SPORT' | 'FAMILY' | 'OTHER');
+    setStoreSelectedEventType(storeType as 'Todos' | 'SOCIAL' | 'SPORT' | 'FAMILY' | 'OTHER');
+    // Reset to page 1 when changing filters and fetch new data
+    fetchEvents(1);
+  }, [setStoreSelectedEventType, fetchEvents]);
 
   return {
     // State
-    events: filteredEvents,
-    loading,
+    events,
+    loading: loading && fetchRef.current, // Show loading only when fetch is in progress
     error,
     currentMonth,
     currentYear,
@@ -163,25 +250,24 @@ export const useEvents = () => {
     eventTypes,
     monthNames,
     hasEventsThisMonth,
-    hasFutureMonths,
-    isAfterCurrentMonth,
+    hasFutureMonths: hasFutureMonths(),
+    isAfterCurrentMonth: isAfterCurrentMonth(),
     displayMonth: `${monthNames[currentMonth]} de ${currentYear}`,
-    
+    pagination,
+
     // Actions
-    setSearchQuery,
-    setSelectedEventType,
+    setSearchQuery: handleSearchChange,
+    setSelectedEventType: handleEventTypeChange,
     goToPreviousMonth,
     goToNextMonth,
     registerForEvent,
     unregisterFromEvent,
     checkIfRegistered,
-    fetchEvents: () => {
-      setLoading(true);
-      eventsService.fetchEvents()
-        .then(setEvents)
-        .catch(err => setError('Error al cargar eventos'))
-        .finally(() => setLoading(false));
-    },
-    handleToggleReminder: () => {}, // Implement if needed
+    fetchEvents,
+    fetchNextPage,
+    fetchPreviousPage,
+    goToPage,
+    handleSearchChange,
+    handleEventTypeChange,
   };
 };

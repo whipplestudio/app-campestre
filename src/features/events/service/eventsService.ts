@@ -1,349 +1,295 @@
-import { Event } from "../interfaces/eventInterface";
+import { useAuthStore } from '../../auth/store/useAuthStore';
+import { Event } from '../interfaces/eventInterface';
 
-// Mock data for events across multiple months
-const mockEvents: Event[] = [
-  // October 2025
-  {
-    id: '1',
-    name: 'Torneo de Tenis Dobles',
-    description: 'Disfruta de un emocionante torneo de tenis en las canchas del club. ¡Trae a tu pareja y diviértanse juntos!',
-    date: '2025-10-14',
-    time: '09:00',
-    location: 'Canchas de Tenis',
-    eventType: 'Deportivo',
-    availableSpots: 24,
-    totalSpots: 32,
-    registeredUsers: Array.from({ length: 8 }, (_, i) => `user${i + 1}`),
-  },
-  {
-    id: '2',
-    name: 'Cena de Gala Primavera',
-    description: 'Evento exclusivo para socios con cena gourmet y música en vivo.',
-    date: '2025-10-18',
-    time: '19:30',
-    location: 'Salón Principal',
-    eventType: 'Social',
-    availableSpots: 15,
-    totalSpots: 40,
-    registeredUsers: Array.from({ length: 25 }, (_, i) => `user${i + 10}`),
-  },
-  {
-    id: '3',
-    name: 'Día de Campo Familiar',
-    description: 'Diversión para toda la familia con actividades recreativas, juegos y comida.',
-    date: '2025-10-25',
-    time: '10:00',
-    location: 'Área de Pícnic',
-    eventType: 'Familiar',
-    availableSpots: 35,
-    totalSpots: 50,
-    registeredUsers: Array.from({ length: 15 }, (_, i) => `user${i + 20}`),
-  },
-  {
-    id: '4',
-    name: 'Maratón de Yoga',
-    description: 'Sesión intensiva de yoga al aire libre para todos los niveles.',
-    date: '2025-10-08',
-    time: '07:00',
-    location: 'Patio Central',
-    eventType: 'Fitness',
-    availableSpots: 42,
-    totalSpots: 50,
-    registeredUsers: Array.from({ length: 8 }, (_, i) => `user${i + 30}`),
-  },
-  
-  // November 2025
-  {
-    id: '5',
-    name: 'Campeonato de Golf',
-    description: 'Participa en el campeonato anual de golf en nuestro hermoso campo de 18 hoyos.',
-    date: '2025-11-05',
-    time: '08:00',
-    location: 'Campo de Golf',
-    eventType: 'Deportivo',
-    availableSpots: 28,
-    totalSpots: 36,
-    registeredUsers: Array.from({ length: 8 }, (_, i) => `user${i + 40}`),
-  },
-  {
-    id: '6',
-    name: 'Fiesta de Disfraces',
-    description: 'Viste tu mejor disfraz y únete a la divertida fiesta de disfraces del club.',
-    date: '2025-11-30',
-    time: '20:00',
-    location: 'Salón Principal',
-    eventType: 'Social',
-    availableSpots: 45,
-    totalSpots: 60,
-    registeredUsers: Array.from({ length: 15 }, (_, i) => `user${i + 50}`),
-  },
-  {
-    id: '7',
-    name: 'Torneo de Fútbol Infantil',
-    description: 'Participa con tus hijos en este divertido torneo para niños de 6 a 12 años.',
-    date: '2025-11-15',
-    time: '09:30',
-    location: 'Cancha de Fútbol',
-    eventType: 'Familiar',
-    availableSpots: 30,
-    totalSpots: 30,
-    registeredUsers: Array.from({ length: 0 }, (_, i) => `user${i + 60}`), // Empty initially
-  },
-  {
-    id: '8',
-    name: 'Clase de CrossFit',
-    description: 'Clase intensiva de CrossFit para mejorar tu condición física.',
-    date: '2025-11-10',
-    time: '06:00',
-    location: 'Gimnasio',
-    eventType: 'Fitness',
-    availableSpots: 18,
-    totalSpots: 25,
-    registeredUsers: Array.from({ length: 7 }, (_, i) => `user${i + 70}`),
-  },
-  
-  // December 2025
-  {
-    id: '9',
-    name: 'Copa de Pádel Navideña',
-    description: 'Torneo amistoso de pádel para celebrar la navidad.',
-    date: '2025-12-20',
-    time: '10:00',
-    location: 'Canchas de Pádel',
-    eventType: 'Deportivo',
-    availableSpots: 16,
-    totalSpots: 20,
-    registeredUsers: Array.from({ length: 4 }, (_, i) => `user${i + 80}`),
-  },
-  {
-    id: '10',
-    name: 'Fiesta de Fin de Año',
-    description: 'Cena de gala para celebrar el fin de año con música, cena y baile.',
-    date: '2025-12-31',
-    time: '21:00',
-    location: 'Salón de Eventos',
-    eventType: 'Social',
-    availableSpots: 65,
-    totalSpots: 80,
-    registeredUsers: Array.from({ length: 15 }, (_, i) => `user${i + 90}`),
-  },
-  {
-    id: '11',
-    name: 'Día de la Familia en el Club',
-    description: 'Actividades recreativas y deportivas para disfrutar en familia.',
-    date: '2025-12-06',
-    time: '11:00',
-    location: 'Área recreativa',
-    eventType: 'Familiar',
-    availableSpots: 50,
-    totalSpots: 60,
-    registeredUsers: Array.from({ length: 10 }, (_, i) => `user${i + 100}`),
-  },
-  {
-    id: '12',
-    name: 'Retiro de Meditación',
-    description: 'Encuentro para practicar meditación y mindfulness en un ambiente relajante.',
-    date: '2025-12-12',
-    time: '08:00',
-    location: 'Jardín Zen',
-    eventType: 'Fitness',
-    availableSpots: 22,
-    totalSpots: 25,
-    registeredUsers: Array.from({ length: 3 }, (_, i) => `user${i + 110}`),
-  },
-  
-  // January 2026
-  {
-    id: '13',
-    name: 'Torneo de Natación',
-    description: 'Competencia de natación en las piscinas del club.',
-    date: '2026-01-17',
-    time: '07:30',
-    location: 'Piscina Principal',
-    eventType: 'Deportivo',
-    availableSpots: 32,
-    totalSpots: 40,
-    registeredUsers: Array.from({ length: 8 }, (_, i) => `user${i + 120}`),
-  },
-  {
-    id: '14',
-    name: 'Noche de Juegos de Mesa',
-    description: 'Reunión para disfrutar de juegos de mesa con otras familias del club.',
-    date: '2026-01-24',
-    time: '18:00',
-    location: 'Sala de Juegos',
-    eventType: 'Social',
-    availableSpots: 12,
-    totalSpots: 20,
-    registeredUsers: Array.from({ length: 8 }, (_, i) => `user${i + 130}`),
-  },
-  {
-    id: '15',
-    name: 'Campamento Infantil de Invierno',
-    description: 'Campamento recreativo para niños durante las vacaciones escolares.',
-    date: '2026-01-05',
-    time: '08:00',
-    location: 'Área recreativa',
-    eventType: 'Familiar',
-    availableSpots: 25,
-    totalSpots: 30,
-    registeredUsers: Array.from({ length: 5 }, (_, i) => `user${i + 140}`),
-  },
-  {
-    id: '16',
-    name: 'Clase de Pilates',
-    description: 'Sesión de Pilates para mejorar la postura y fortalecer el core.',
-    date: '2026-01-14',
-    time: '17:00',
-    location: 'Sala de Yoga',
-    eventType: 'Fitness',
-    availableSpots: 15,
-    totalSpots: 20,
-    registeredUsers: Array.from({ length: 5 }, (_, i) => `user${i + 150}`),
-  },
-  
-  // February 2026
-  {
-    id: '17',
-    name: 'Maratón de Running',
-    description: 'Carrera de 10K por las instalaciones del club y alrededores.',
-    date: '2026-02-08',
-    time: '06:30',
-    location: 'Club y alrededores',
-    eventType: 'Deportivo',
-    availableSpots: 60,
-    totalSpots: 100,
-    registeredUsers: Array.from({ length: 40 }, (_, i) => `user${i + 160}`),
-  },
-  {
-    id: '18',
-    name: 'Fiesta de Carnaval',
-    description: 'Celebra el carnaval con disfraces, música y comida típica.',
-    date: '2026-02-15',
-    time: '19:00',
-    location: 'Salón Principal',
-    eventType: 'Social',
-    availableSpots: 48,
-    totalSpots: 70,
-    registeredUsers: Array.from({ length: 22 }, (_, i) => `user${i + 170}`),
-  },
-  {
-    id: '19',
-    name: 'Día de la Mascota',
-    description: 'Trae a tu mascota y disfruta de actividades especiales para mascotas.',
-    date: '2026-02-22',
-    time: '10:00',
-    location: 'Área de Pícnic',
-    eventType: 'Familiar',
-    availableSpots: 30,
-    totalSpots: 40,
-    registeredUsers: Array.from({ length: 10 }, (_, i) => `user${i + 180}`),
-  },
-  {
-    id: '20',
-    name: 'Taller de Zumba',
-    description: 'Clase especial de Zumba para quemar calorías y divertirse.',
-    date: '2026-02-28',
-    time: '16:00',
-    location: 'Gimnasio',
-    eventType: 'Fitness',
-    availableSpots: 28,
-    totalSpots: 35,
-    registeredUsers: Array.from({ length: 7 }, (_, i) => `user${i + 190}`),
-  },
-];
+// Interface para la respuesta de la API
+interface EventsApiResponse {
+  success: boolean;
+  data: {
+    events: Array<{
+      id: number;
+      type: string;
+      name: string;
+      description: string;
+      date: string;
+      totalSpots: number;
+      location: string;
+      createdAt: string;
+      updatedAt: string;
+      dateISO: string;
+      availableSpots: number;
+      ocupedSpots: number;
+    }>;
+    meta: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
+  };
+  timestamp: string;
+  messageId: string;
+  traceId: string;
+}
 
-// Simular retraso de red
-const simulateNetworkDelay = () => new Promise(resolve => setTimeout(resolve, 500));
+// Interface para la respuesta de la API de registro
+interface EventRegistrationApiResponse {
+  success: boolean;
+  data: {
+    message: string;
+    availableSpots: number;
+  };
+  timestamp: string;
+  messageId: string;
+  traceId: string;
+}
+
+// Interface para la respuesta de la API de cancelación de registro
+interface EventCancellationApiResponse {
+  success: boolean;
+  data: {
+    message: string;
+    eventName: string;
+    memberId: number;
+  };
+  timestamp: string;
+  messageId: string;
+  traceId: string;
+}
+
+// Mapear el tipo de evento de string a tipo definido
+const mapEventType = (type: string): 'SOCIAL' | 'SPORT' | 'FAMILY' | 'OTHER' => {
+  switch (type.toUpperCase()) {
+    case 'SOCIAL': return 'SOCIAL';
+    case 'SPORT':
+    case 'DEPORTIVO': return 'SPORT';
+    case 'FAMILY':
+    case 'FAMILIAR':
+    case 'FAMILIAR': return 'FAMILY';
+    default: return 'OTHER';
+  }
+};
+
+// Parsear la fecha para mostrarla en formato legible
+const parseDate = (dateString: string): string => {
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }).replace(/^\w/, (c) => c.toUpperCase());
+  } catch (error) {
+    return dateString;
+  }
+};
+
+// Parsear la hora de dateISO
+const parseTime = (dateISOString: string): string => {
+  try {
+    const date = new Date(dateISOString);
+    return date.toLocaleTimeString('es-ES', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: false 
+    });
+  } catch (error) {
+    return '00:00';
+  }
+};
 
 export const eventsService = {
   /**
-   * Obtener todos los eventos
+   * Obtener eventos con paginación y filtros
    */
-  
-  async fetchEvents(): Promise<Event[]> {
-    await simulateNetworkDelay();
-    return [...mockEvents];
+  async getEvents(
+    page: number = 1,
+    search: string = '',
+    type: string = '',
+    date: string = '' // formato 'yyyy-mm'
+  ): Promise<{
+    events: Event[];
+    meta: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
+  }> {
+    const { token } = useAuthStore.getState();
+    if (!token) {
+      throw new Error('No authentication token available');
+    }
+
+    try {
+      // Construir la URL con los parámetros
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: '1', // Límite fijo
+        search,
+        order: 'asc', // Orden fijo
+        orderBy: 'name', // Orden por nombre fijo
+      });
+      
+      if (type) {
+        params.append('type', type.toUpperCase());
+      }
+      
+      if (date) {
+        params.append('date', date);
+      }
+
+      const url = `${process.env.EXPO_PUBLIC_API_URL}/events?${params.toString()}`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'accept': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 400) {
+          const errorText = await response.text();
+          throw new Error(`Datos de entrada inválidos. Detalles: ${errorText}`);
+        } else if (response.status === 404) {
+          const errorText = await response.text();
+          throw new Error(`No se encontraron eventos. Detalles: ${errorText}`);
+        } else {
+          const errorText = await response.text();
+          throw new Error(`Error en la solicitud: ${response.status}. Detalles: ${errorText}`);
+        }
+      }
+
+      const result: EventsApiResponse = await response.json();
+
+      // Convertir los datos de la API al formato de Event
+      const events: Event[] = result.data.events.map(apiEvent => ({
+        id: apiEvent.id.toString(),
+        name: apiEvent.name,
+        description: apiEvent.description,
+        date: apiEvent.date, // Fecha legible
+        time: parseTime(apiEvent.dateISO), // Hora extraída de dateISO
+        location: apiEvent.location,
+        eventType: mapEventType(apiEvent.type),
+        availableSpots: apiEvent.availableSpots,
+        totalSpots: apiEvent.totalSpots,
+        registeredUsers: [], // La API no proporciona esta información directamente
+        ocupedSpots: apiEvent.totalSpots - apiEvent.availableSpots,
+      }));
+
+      return {
+        events,
+        meta: result.data.meta,
+      };
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      throw error;
+    }
   },
 
   /**
    * Registrar usuario a un evento
    */
-  async registerForEvent(eventId: string, userId: string): Promise<Event> {
-    await simulateNetworkDelay();
-    
-    const eventIndex = mockEvents.findIndex(e => e.id === eventId);
-    if (eventIndex === -1) {
-      throw new Error('Evento no encontrado');
+  async registerForEvent(eventId: string, clubMemberId: string): Promise<Event> {
+    const { token } = useAuthStore.getState();
+    if (!token) {
+      throw new Error('No authentication token available');
     }
 
-    const event = mockEvents[eventIndex];
-    
-    if (event.registeredUsers.includes(userId)) {
-      return { ...event }; // Ya está registrado
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_API_URL}/events/${eventId}/registration`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            clubMemberId,
+            totalRegistrations: 1,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        if (response.status === 400) {
+          const errorText = await response.text();
+          throw new Error(`Datos de entrada inválidos. Detalles: ${errorText}`);
+        } else if (response.status === 404) {
+          const errorText = await response.text();
+          throw new Error(`Evento o miembro no encontrado. Detalles: ${errorText}`);
+        } else if (response.status === 409) {
+          const errorText = await response.text();
+          throw new Error(`El evento está lleno o el socio ya está registrado. Detalles: ${errorText}`);
+        } else {
+          const errorText = await response.text();
+          throw new Error(`Error en la solicitud: ${response.status}. Detalles: ${errorText}`);
+        }
+      }
+
+      const result: EventRegistrationApiResponse = await response.json();
+
+      // Aquí retornamos un evento actualizado, aunque no tenemos toda la información original
+      // En una implementación más completa, se debería hacer otra llamada para obtener el evento actualizado
+      return {
+        id: eventId,
+        name: '', // No se proporciona en la respuesta
+        description: '',
+        date: '',
+        time: '',
+        location: '',
+        eventType: 'SOCIAL', // Valor por defecto
+        availableSpots: result.data.availableSpots,
+        totalSpots: 0, // No se proporciona en la respuesta
+        registeredUsers: [],
+        ocupedSpots: 0, // Calculado posteriormente
+      };
+    } catch (error) {
+      console.error('Error registering for event:', error);
+      throw error;
     }
-
-    if (event.availableSpots <= 0) {
-      throw new Error('No hay lugares disponibles');
-    }
-
-    // Actualizar el evento
-    const updatedEvent = {
-      ...event,
-      registeredUsers: [...event.registeredUsers, userId],
-      availableSpots: event.availableSpots - 1
-    };
-
-    // En una app real, aquí iría la llamada a la API
-    mockEvents[eventIndex] = updatedEvent;
-    
-    return { ...updatedEvent };
   },
 
   /**
    * Cancelar registro de un evento
    */
-  async unregisterFromEvent(eventId: string, userId: string): Promise<Event> {
-    await simulateNetworkDelay();
-    
-    const eventIndex = mockEvents.findIndex(e => e.id === eventId);
-    if (eventIndex === -1) {
-      throw new Error('Evento no encontrado');
+  async unregisterFromEvent(eventId: string, memberId: string): Promise<void> {
+    const { token } = useAuthStore.getState();
+    if (!token) {
+      throw new Error('No authentication token available');
     }
 
-    const event = mockEvents[eventIndex];
-    const userIndex = event.registeredUsers.indexOf(userId);
-    
-    if (userIndex === -1) {
-      return { ...event }; // No estaba registrado
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_API_URL}/events/${eventId}/registrations/members/${memberId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'accept': '*/*',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          const errorText = await response.text();
+          throw new Error(`Registro no encontrado. Detalles: ${errorText}`);
+        } else {
+          const errorText = await response.text();
+          throw new Error(`Error en la solicitud: ${response.status}. Detalles: ${errorText}`);
+        }
+      }
+
+      const result: EventCancellationApiResponse = await response.json();
+      console.log('Unregistration successful:', result.data.message);
+    } catch (error) {
+      console.error('Error unregistering from event:', error);
+      throw error;
     }
-
-    // Actualizar el evento
-    const updatedEvent = {
-      ...event,
-      registeredUsers: event.registeredUsers.filter(id => id !== userId),
-      availableSpots: event.availableSpots + 1
-    };
-
-    // En una app real, aquí iría la llamada a la API
-    mockEvents[eventIndex] = updatedEvent;
-    
-    return { ...updatedEvent };
   },
-
-  /**
-   * Obtener un evento por ID
-   */
-  async getEventById(eventId: string): Promise<Event | undefined> {
-    await simulateNetworkDelay();
-    return mockEvents.find(event => event.id === eventId);
-  },
-
-  /**
-   * Verificar si un usuario está registrado en un evento
-   */
-  async isUserRegistered(eventId: string, userId: string): Promise<boolean> {
-    const event = await this.getEventById(eventId);
-    return event ? event.registeredUsers.includes(userId) : false;
-  }
 };

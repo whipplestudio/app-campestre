@@ -8,8 +8,32 @@ import useMessages from '../../hooks/useMessages';
 import { EventCardProps } from '../../interfaces/eventInterface';
 import styles from './Style';
 
-const getEventTypeColor = (eventType: string) => {
+const getEventTypeDisplayName = (eventType: string) => {
   switch (eventType) {
+    case 'SPORT':
+      return 'Deportivo';
+    case 'SOCIAL':
+      return 'Social';
+    case 'FAMILY':
+      return 'Familiar';
+    case 'OTHER':
+      return 'Otros';
+    case 'Deportivo':
+      return 'Deportivo';
+    case 'Social':
+      return 'Social';
+    case 'Familiar':
+      return 'Familiar';
+    case 'Fitness':
+      return 'Fitness';
+    default:
+      return eventType;
+  }
+};
+
+const getEventTypeColor = (eventType: string) => {
+  const displayType = getEventTypeDisplayName(eventType);
+  switch (displayType) {
     case 'Deportivo':
       return COLORS.primary;
     case 'Social':
@@ -25,26 +49,27 @@ const getEventTypeColor = (eventType: string) => {
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
-  const options: Intl.DateTimeFormatOptions = { 
-    weekday: 'long', 
-    day: 'numeric', 
-    month: 'long', 
-    year: 'numeric' 
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
   };
   return date.toLocaleDateString('es-ES', options);
 };
 
-const EventCard: React.FC<EventCardProps> = ({ 
-  event, 
-  isRegistered, 
-  onRegister, 
-  onUnregister, 
-  onToggleReminder 
+const EventCard: React.FC<EventCardProps> = ({
+  event,
+  isRegistered,
+  onRegister,
+  onUnregister,
+  onToggleReminder
 }) => {
   const { messages } = useMessages();
   const eventTypeColor = getEventTypeColor(event.eventType);
-  const progressPercentage = Math.round(((event.totalSpots - event.availableSpots) / event.totalSpots) * 100);
-  
+  const eventTypeDisplay = getEventTypeDisplayName(event.eventType);
+  const progressPercentage = event.totalSpots > 0 ? Math.round(((event.totalSpots - event.availableSpots) / event.totalSpots) * 100) : 0;
+
   const handleReminderPress = () => {
     Alert.alert(
       'Funcionalidad no disponible',
@@ -58,37 +83,38 @@ const EventCard: React.FC<EventCardProps> = ({
       <View style={styles.imagePlaceholder}>
         <Text style={styles.imagePlaceholderText}>Imagen del Evento</Text>
       </View>
-      
-      <Text style={styles.eventName}>{event.name}</Text>
-      
-      <View style={styles.badgeContainer}>
-        <View style={[styles.badge, { backgroundColor: eventTypeColor + '20' }]}>
-          <Text style={[styles.badgeText, { color: eventTypeColor }]}>
-            {event.eventType}
-          </Text>
+
+      <View style={styles.eventNameContainer}>
+        <Text style={styles.eventName}>{event.name}</Text>
+        <View style={styles.badgeContainer}>
+          <View style={[styles.badge, { backgroundColor: eventTypeColor + '20' }]}>
+            <Text style={[styles.badgeText, { color: eventTypeColor }]}>
+              {eventTypeDisplay}
+            </Text>
+          </View>
         </View>
       </View>
-      
+
       <Text style={styles.eventDescription} numberOfLines={2}>
         {event.description}
       </Text>
-      
+
       <View style={styles.eventInfo}>
         <View style={styles.infoItem}>
           <Ionicons name="calendar-outline" size={16} color={COLORS.gray500} />
-          <Text style={styles.infoText}>{formatDate(event.date)}</Text>
+          <Text style={styles.infoText}>{event.date}</Text>
         </View>
-        
+
         <View style={styles.infoItem}>
           <Ionicons name="time-outline" size={16} color={COLORS.gray500} />
           <Text style={styles.infoText}>{event.time}</Text>
         </View>
-        
+
         <View style={styles.infoItem}>
           <Ionicons name="location" size={16} color={COLORS.gray500} />
           <Text style={styles.infoText}>{event.location}</Text>
         </View>
-        
+
         <View style={styles.infoItem}>
           <Ionicons name="people" size={16} color={COLORS.gray500} />
           <Text style={styles.infoText}>
@@ -96,22 +122,22 @@ const EventCard: React.FC<EventCardProps> = ({
           </Text>
         </View>
       </View>
-      
+
       <View style={styles.progressBarContainer}>
         <View style={styles.progressBar}>
-          <View 
+          <View
             style={[
-              styles.progressFill, 
-              { 
-                width: `${progressPercentage}%`, 
-                backgroundColor: progressPercentage > 75 ? COLORS.warning : COLORS.primary 
+              styles.progressFill,
+              {
+                width: `${progressPercentage}%`,
+                backgroundColor: progressPercentage > 75 ? COLORS.warning : COLORS.primary
               }
-            ]} 
+            ]}
           />
         </View>
         <Text style={styles.progressText}>{progressPercentage}% {messages.EVENTCARD.BUSY}</Text>
       </View>
-      
+
       {isRegistered ? (
         <View style={styles.registeredContainer}>
           <View style={styles.registeredInfo}>
@@ -132,11 +158,11 @@ const EventCard: React.FC<EventCardProps> = ({
             style={styles.reminderButton}
             titleStyle={styles.reminderButtonText}
             icon={
-              <Ionicons 
-                name="notifications-outline" 
-                size={16} 
-                color={COLORS.info} 
-                style={styles.reminderIcon} 
+              <Ionicons
+                name="notifications-outline"
+                size={16}
+                color={COLORS.info}
+                style={styles.reminderIcon}
               />
             }
           />

@@ -1,13 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import {
-  ActivityIndicator,
   ScrollView,
   Text,
+  TextStyle,
   View,
-  StyleSheet,
-  ViewStyle,
-  TextStyle
+  ViewStyle
 } from 'react-native';
 import Button from '../../../shared/components/Button/Button';
 import Search from '../../../shared/components/Search/Search';
@@ -59,28 +57,57 @@ const EventsContainer = () => {
     hasFutureMonths = false,
     isAfterCurrentMonth = false,
     setSearchQuery = (query: string) => {},
-    setSelectedEventType = (type: 'Todos' | 'Deportivo' | 'Social' | 'Familiar' | 'Fitness') => {},
+    setSelectedEventType = (type: any) => {},
     goToPreviousMonth = () => {},
     goToNextMonth = () => {},
     registerForEvent = async (eventId: string) => ({ success: false, error: 'Not implemented' }),
     unregisterFromEvent = async (eventId: string) => ({ success: false, error: 'Not implemented' }),
     checkIfRegistered = (eventId: string) => false,
+    pagination = {
+      page: 1,
+      totalPages: 1,
+      total: 0,
+      limit: 10
+    },
+    fetchNextPage = async () => {},
+    fetchPreviousPage = async () => {},
+    goToPage = async (page: number) => {},
   } = useEvents();
 
   const displayMonth = `${monthNames?.[currentMonth] || ''} ${currentYear}`;
 
+  const getVisiblePages = () => {
+    const total = pagination.totalPages;
+    const current = pagination.page;
+    const maxVisible = 6;
+
+    if (total <= maxVisible) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+
+    let start = current - Math.floor(maxVisible / 2);
+    if (start < 1) start = 1;
+
+    let end = start + maxVisible - 1;
+    if (end > total) {
+      end = total;
+      start = end - maxVisible + 1;
+    }
+
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  };
+
   // Show loading state
-  if (loading) {
+  if (loading && pagination.page === 1) {
     return (
       <View style={[styles.container, styles.loadingContainer]}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
-        <Text style={styles.loadingText}>Cargando eventos...</Text>
+        {/* Loading indicator removed */}
       </View>
     );
   }
 
   // Show error state
-  if (error) {
+  if (error && pagination.page === 1) {
     return (
       <View style={[styles.container, styles.errorContainer]}>
         <Text style={styles.errorText}>{error || 'Error al cargar los eventos'}</Text>
@@ -98,14 +125,14 @@ const EventsContainer = () => {
         />
       </View>
 
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         <FilterSection
           selectedEventType={selectedEventType}
-          onEventTypeChange={setSelectedEventType}
+          onEventTypeChange={setSelectedEventType as (type: 'Todos' | 'Deportivo' | 'Social' | 'Familiar' | 'Fitness' | 'SPORT' | 'SOCIAL' | 'FAMILY' | 'OTHER') => void}
         />
 
         <View style={styles.monthSelectorContainer}>
@@ -115,26 +142,26 @@ const EventsContainer = () => {
             disabled={!isAfterCurrentMonth}
             style={styles.navButton}
             icon={
-              <Ionicons 
-                name="chevron-back" 
-                size={22} 
-                color={!isAfterCurrentMonth ? COLORS.gray400 : COLORS.primary} 
+              <Ionicons
+                name="chevron-back"
+                size={22}
+                color={!isAfterCurrentMonth ? COLORS.gray400 : COLORS.primary}
               />
             }
           />
-          
+
           <Text style={styles.monthDisplay}>{displayMonth}</Text>
-          
+
           <Button
             variant="outline"
             onPress={goToNextMonth}
             disabled={!hasFutureMonths}
             style={styles.navButton}
             icon={
-              <Ionicons 
-                name="chevron-forward" 
-                size={22} 
-                color={!hasFutureMonths ? COLORS.gray400 : COLORS.primary} 
+              <Ionicons
+                name="chevron-forward"
+                size={22}
+                color={!hasFutureMonths ? COLORS.gray400 : COLORS.primary}
               />
             }
           />
@@ -142,9 +169,9 @@ const EventsContainer = () => {
 
         <View style={styles.eventsHeader}>
           <Text style={styles.eventsTitle}>Próximos Eventos</Text>
-          <Text style={styles.eventsCount}>
+          {/*<Text style={styles.eventsCount}>
             {events?.length || 0} {events?.length === 1 ? 'evento' : 'eventos'}
-          </Text>
+          </Text>*/}
         </View>
 
         {events && events.length > 0 ? (
@@ -162,7 +189,55 @@ const EventsContainer = () => {
           </View>
         ) : (
           <View style={styles.noEventsContainer}>
-            <Text style={styles.noEventsText}>No hay eventos programados para este mes</Text>
+            <Text style={styles.noEventsText}>No se encontraron eventos</Text>
+          </View>
+        )}
+
+        {/* Pagination controls - only show if there are pages to display */}
+        {pagination.totalPages > 1 && (
+          <View style={styles.paginationControlsContainer}>
+            <View style={styles.paginationRow}>
+              <Button
+                icon={<Ionicons name="chevron-back" size={22} color={COLORS.primary} />}
+                variant="outline"
+                onPress={fetchPreviousPage}
+                disabled={pagination.page <= 1}
+                style={[
+                  styles.paginationArrowButton,
+                  pagination.page <= 1 && styles.paginationArrowButtonDisabled
+                ]}
+              />
+
+              <View style={styles.pageNumbersContainer}>
+                {getVisiblePages().map(pageNum => (
+                  <Button
+                    key={pageNum}
+                    text={pageNum.toString()}
+                    variant="outline"
+                    onPress={() => goToPage(pageNum)}
+                    style={[
+                      styles.pageNumberButton,
+                      pageNum === pagination.page && styles.currentPageButton
+                    ]}
+                    titleStyle={[
+                      styles.pageNumberButtonText,
+                      pageNum === pagination.page && styles.currentPageButtonText
+                    ]}
+                  />
+                ))}
+              </View>
+
+              <Button
+                icon={<Ionicons name="chevron-forward" size={22} color={COLORS.primary} />}
+                variant="outline"
+                onPress={fetchNextPage}
+                disabled={pagination.page >= pagination.totalPages}
+                style={[
+                  styles.paginationArrowButton,
+                  pagination.page >= pagination.totalPages && styles.paginationArrowButtonDisabled
+                ]}
+              />
+            </View>
           </View>
         )}
       </ScrollView>

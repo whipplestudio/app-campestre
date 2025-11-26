@@ -23,16 +23,21 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: COLORS.gray800,
+    flex: 1,
+  },
+  eventNameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 6,
   },
   badgeContainer: {
-    alignSelf: 'flex-start',
-    marginBottom: 10,
+    marginLeft: 8,
   },
   badge: {
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 12,
+    borderRadius: 6,
   },
   badgeText: {
     fontSize: 12,
