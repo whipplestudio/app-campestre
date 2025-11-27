@@ -7,6 +7,7 @@ import { useAccountStatementStore } from '../store';
 export const useAccountStatements = () => {
   const { profile } = useProfileStore();
   const [selectedStatement, setSelectedStatement] = useState<any>(null);
+  const [showDetail, setShowDetail] = useState(false);
   const [statements, setStatements] = useState<any[]>([]);
   const { 
     // statements, 
@@ -57,10 +58,8 @@ export const useAccountStatements = () => {
     try {
       setLoading(true);
       const data = await accountStatementService.getAccountStatements(parseInt(profile.id));
-      console.log('data', data.data);  
       data.data.forEach((statement: any) => {
         statement.period = formatDateRange(statement.periodStart, statement.periodEnd);
-        console.log('statement', statement);
       });
       setStatements(data.data);
     } catch (err) {
@@ -76,6 +75,13 @@ export const useAccountStatements = () => {
     fetchStatements();
   }, [fetchStatements]);
 
+  
+  const handleCardPress = async (statement: any) => {
+    const result = await accountStatementService.getAccountStatementById(statement.id);
+    setSelectedStatement(result);
+    setShowDetail(true);
+  };
+
   return {
     statements,
     filteredStatements,
@@ -85,5 +91,8 @@ export const useAccountStatements = () => {
     selectedStatement,
     setSelectedStatement,
     setStatements,
+    handleCardPress,
+    showDetail,
+    setShowDetail
   };
 };

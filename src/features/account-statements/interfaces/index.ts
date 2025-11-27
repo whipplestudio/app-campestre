@@ -33,6 +33,7 @@ export interface AccountStatementUserInfo {
   name: string;
   address: string;
   city: string;
+  memberCode: string;
   postalCode: string;
   memberSince: Date;
   membershipType: string;

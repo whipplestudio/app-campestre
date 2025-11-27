@@ -46,8 +46,6 @@ const AccountStatementCard: React.FC<any> = ({
     }
   };
 
-  console.log('statement', statement);
-
   return (
     <Card style={styles.card}>
       <View style={styles.content}>

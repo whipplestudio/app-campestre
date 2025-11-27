@@ -1,7 +1,8 @@
 import * as Sharing from 'expo-sharing';
-import React, { useState } from 'react';
+import React from 'react';
 import { Alert, Modal, SafeAreaView, ScrollView } from 'react-native';
 import AccountStatementCard from '../components/AccountStatementCard';
+import AccountStatementDetail from '../components/AccountStatementDetail';
 import AccountStatementHeader from '../components/AccountStatementHeader';
 import { useAccountStatements } from '../hooks';
 import useMessages from '../hooks/useMessages';
@@ -9,16 +10,20 @@ import useMessages from '../hooks/useMessages';
 const AccountStatementsContainer = () => {
   const { messages } = useMessages();
 
-  const { 
+  const {
     filteredStatements,
     loading,
     error,
     fetchStatements,
-    setSelectedStatement,
-    selectedStatement,
     statements,
+    handleCardPress,
+    // handleDownload,
+    showDetail,
+    setShowDetail,
+    setSelectedStatement,
+    selectedStatement
   } = useAccountStatements();
-  
+
   // const {
   //   statements,
   //   getFilteredStatements,
@@ -27,24 +32,23 @@ const AccountStatementsContainer = () => {
   //   setError,
   //   setStatements,
   // } = useAccountStatementStore();
-  
-  const [showDetail, setShowDetail] = useState(false);
 
   // if (error) {
   //   Alert.alert('Error', error);
   // }
 
-  const handleCardPress = (statement: any) => {
-    // setSelectedStatement(statement);
-    setShowDetail(true);
-  };
+  // const handleCardPress = (statement: any) => {
+  //   // setSelectedStatement(statement);
+  //   // setShowDetail(true);
+  //   console.log('statement', statement);
+  // };
 
   const handleDownload = async (statement: any) => {
     try {
       // Perform the download - this will copy the PDF to device storage
       // const downloadUri = await downloadStatement(statement.id);
       const downloadUri = 'https://www.wipple.com.mx';
-      
+
       if (downloadUri) {
         // Check if sharing is available and share the file
         if (await Sharing.isAvailableAsync()) {
@@ -66,9 +70,6 @@ const AccountStatementsContainer = () => {
   };
 
   const hasStatements = statements.length > 0;
-  console.log('statements', statements);
-  console.log('hasStatements', hasStatements);
-  console.log('statements.length', statements.length);
   // const hasNoFilteredStatements = statements.length > 0 && filteredStatements.length === 0;
 
   return (
@@ -76,20 +77,19 @@ const AccountStatementsContainer = () => {
       <ScrollView>
         {/* Header */}
         <AccountStatementHeader />
-        
+
         {/* List of Account Statements */}
         {/* {!loading && !hasStatements && (
-          <EmptyState 
-            message={statements.length > 0 ? messages.CONTAINER.NO_STATEMENTS1 : messages.CONTAINER.NO_STATEMENTS2} 
+          <EmptyState
+            message={statements.length > 0 ? messages.CONTAINER.NO_STATEMENTS1 : messages.CONTAINER.NO_STATEMENTS2}
           />
         )} */}
-        
+
         {/* {hasNoFilteredStatements && (
           <EmptyState message= {messages.CONTAINER.NO_STATEMENTS_FILTERS} />
         )} */}
-        
+
         {hasStatements && statements.map((statement) => (
-          console.log('statement en el ciclo', statement),
           <AccountStatementCard
             key={statement.id}
             statement={statement}
@@ -98,7 +98,7 @@ const AccountStatementsContainer = () => {
           />
         ))}
       </ScrollView>
-      
+
       {/* Detail Modal */}
       <Modal
         animationType="slide"
@@ -106,11 +106,11 @@ const AccountStatementsContainer = () => {
         visible={showDetail}
         onRequestClose={handleCloseDetail}
       >
-        {/* <AccountStatementDetail
+        <AccountStatementDetail
           statement={selectedStatement}
           onClose={handleCloseDetail}
           onDownload={handleDownload}
-        /> */}
+        />
       </Modal>
     </SafeAreaView>
   );
