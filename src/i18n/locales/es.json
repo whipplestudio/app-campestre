@@ -283,6 +283,9 @@
   "help": {
     "title": "Centro de ayuda"
   },
+  "files": {
+    "title": "Documentos y reglamentos"
+  },
   "common": {
     "cancel": "Cancelar",
     "ok": "Aceptar",

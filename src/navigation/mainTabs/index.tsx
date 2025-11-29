@@ -16,6 +16,7 @@ import { COLORS } from '../../shared/theme/colors';
 import MoreOptionsScreen from '../moreOptions';
 import UserHeader from './UserHeader';
 import HelpCenterScreen from '../../features/help-center';
+import FilesScreen from '../../features/files';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -142,6 +143,11 @@ const MoreStack = () => (
     <Stack.Screen
       name="HelpCenter"
       component={HelpCenterScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Files"
+      component={FilesScreen}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>

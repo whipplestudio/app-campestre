@@ -45,6 +45,11 @@ const MoreOptionsScreen = () => {
       onPress: () => navigation.navigate('AccountStatements')
     },
     { 
+      title: t('files.title'), 
+      icon: 'newspaper-outline' as const,
+      onPress: () => navigation.navigate('Files')
+    },
+    { 
       title: t('settings.title'), 
       icon: 'settings-outline' as const,
       //onPress: () => navigation.navigate('Settings')

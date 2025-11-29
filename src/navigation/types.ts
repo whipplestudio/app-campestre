@@ -9,6 +9,7 @@ export type RootStackParamList = {
   Profile: undefined;
   Settings: undefined;
   HelpCenter: undefined;
+  Files: undefined;
 };
 
 // Tipos para el Tab Navigator
@@ -32,6 +33,7 @@ export type MoreStackParamList = {
   Surveys: undefined;
   AccountStatements: undefined;
   Notifications: undefined;
+  Files: undefined;
 };
 
 export type RootStackNavigationProp = NavigationProp<RootStackParamList>;

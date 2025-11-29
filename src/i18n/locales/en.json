@@ -278,6 +278,9 @@
   "help": {
     "title": "Help center"
   },
+  "files": {
+    "title": "Documents and regulations"
+  },
   "common": {
     "cancel": "Cancel",
     "ok": "OK",
