@@ -74,6 +74,7 @@ export interface AddFamilyMemberRequest {
   birthDate: string;
   gender: string;
   RFC: string;
+  expireAt?: string; // Optional field for temporary pass
   address: {
     street: string;
     externalNumber: string;
@@ -284,6 +285,7 @@ export const memberService = {
       throw new Error('No authentication token available');
     }
     try {
+      console.log('memberData is: ', memberData);
       const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/club-members`, {
         method: 'POST',
         headers: {

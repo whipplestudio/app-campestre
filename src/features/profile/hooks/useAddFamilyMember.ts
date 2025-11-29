@@ -15,6 +15,7 @@ interface FormDataState extends Omit<AddFamilyMemberRequest, 'birthDate'> {
 export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMemberProps) => {
   const [token] = useState(() => useAuthStore.getState().token);
   const [loading, setLoading] = useState(false);
+  const [tempPass, setTempPass] = useState(false);
   const [formData, setFormData] = useState<FormDataState>({
     email: '',
     active: true,
@@ -24,6 +25,7 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
     birthDate: '', // Fecha vacía inicialmente
     gender: 'MASCULINO',
     RFC: '',
+    expireAt: undefined, // Temporary pass expiration date
     address: {
       street: '123 Main St',
       externalNumber: '123',
@@ -71,6 +73,24 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
           [field]: value
         }
       ]
+    }));
+  };
+
+  const toggleTempPass = () => {
+    setTempPass(!tempPass);
+    // Clear the expiration date when turning off temporary pass
+    if (tempPass) {
+      setFormData(prev => ({
+        ...prev,
+        expireAt: undefined
+      }));
+    }
+  };
+
+  const updateExpireDate = (date: string) => {
+    setFormData(prev => ({
+      ...prev,
+      expireAt: date
     }));
   };
 
@@ -135,6 +155,22 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
       }
     }
 
+    // Validar fecha de expiración si la pasada temporal está activada
+    if (tempPass) {
+      if (!formData.expireAt) {
+        Alert.alert('Error', 'La fecha de expiración es requerida para el pase temporal.');
+        return false;
+      }
+
+      // Validar que la fecha de expiración sea posterior a la fecha actual
+      const now = new Date();
+      const expireDate = new Date(formData.expireAt);
+      if (expireDate <= now) {
+        Alert.alert('Error', 'La fecha de expiración debe ser posterior a la fecha actual.');
+        return false;
+      }
+    }
+
     return true;
   };
 
@@ -151,8 +187,24 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
     setLoading(true);
 
     try {
-      const result = await memberService.addFamilyMember(formData, token);
+      // Prepare the data based on temporary pass status
+      let submitData: AddFamilyMemberRequest;
       
+      if (tempPass && formData.expireAt) {
+        // Include expireAt when temporary pass is enabled and a date is set
+        submitData = {
+          ...formData,
+          expireAt: formData.expireAt
+        };
+      } else {
+        // Exclude expireAt if temporary pass is not enabled
+        const { expireAt, ...dataWithoutExpire } = formData;
+        submitData = dataWithoutExpire;
+      }
+      console.log('submitData is: ', submitData);
+
+      const result = await memberService.addFamilyMember(submitData, token);
+
       Alert.alert(
         'Éxito',
         'Miembro de la familia agregado correctamente.',
@@ -184,6 +236,7 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
   };
 
   const resetForm = () => {
+    setTempPass(false);
     setFormData({
       email: '',
       active: true,
@@ -193,6 +246,7 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
       birthDate: new Date().toISOString().split('T')[0] + 'T00:00:00.000Z',
       gender: 'MASCULINO',
       RFC: '',
+      expireAt: undefined,
       address: {
         street: '123 Main St',
         externalNumber: '123',
@@ -218,6 +272,9 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
   return {
     formData,
     loading,
+    tempPass,
+    toggleTempPass,
+    updateExpireDate,
     updateFormData,
     updateAddressData,
     updatePhoneData,
