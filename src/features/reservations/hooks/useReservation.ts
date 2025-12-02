@@ -1,8 +1,8 @@
 
 import { useState } from 'react';
-import { mockRestaurantTables, mockTimeSlots, facilityService } from '../services/reservationService';
-import { useReservationStore } from '../store';
 import { useAuthStore } from '../../auth/store/useAuthStore';
+import { facilityService, mockRestaurantTables } from '../services/reservationService';
+import { useReservationStore } from '../store';
 
 export const useReservation = () => {
     // Estados principales
@@ -45,30 +45,26 @@ export const useReservation = () => {
       // Cargar las instalaciones para un servicio específico
       const loadFacilitiesForService = async (serviceType: string) => {
         setLoading(true);
-        try {
-          // Obtener el ID del miembro del store de autenticación
-          const memberInfo = useAuthStore.getState();
-          const clubMemberId = memberInfo.userId ? parseInt(memberInfo.userId) : 1; // Default to 1 if needed
 
-          const response = await facilityService.getFacilities({
-            page: 1,
-            limit: 10,
-            type: serviceType.toUpperCase(), // Convert to uppercase as per your requirement
-            status: 'ACTIVE',
-            orderBy: 'name'
-          });
+        // Obtener el ID del miembro del store de autenticación
+        const memberInfo = useAuthStore.getState();
+        const clubMemberId = memberInfo.userId ? parseInt(memberInfo.userId) : 1; // Default to 1 if needed
 
-          if (response.success) {
-            setFacilities(response.data.data);
-          } else {
-            alert(response.message || 'No se encontraron instalaciones');
-          }
-        } catch (error: any) {
-          console.error('Error loading facilities:', error);
-          alert(error.message || 'Error al cargar las instalaciones');
-        } finally {
-          setLoading(false);
+        const response = await facilityService.getFacilities({
+          page: 1,
+          limit: 10,
+          type: serviceType.toUpperCase(), // Convert to uppercase as per your requirement
+          status: 'ACTIVE',
+          orderBy: 'name'
+        });
+
+        if (response.success && response.data) {
+          setFacilities(response.data.data);
+        } else {
+          alert(response.error || 'No se encontraron instalaciones');
         }
+
+        setLoading(false);
       };
     
       // Manejar el cambio de fecha, limpiando la hora si la fecha seleccionada está inhabilitada
@@ -190,67 +186,63 @@ export const useReservation = () => {
         }
 
         setLoadingTimeSlots(true);
-        try {
-          const response = await facilityService.getFacilityAvailability(courtId, date);
+        const response = await facilityService.getFacilityAvailability(courtId, date);
 
-          if (response.success) {
-            // Extraer los horarios disponibles de la respuesta
-            const availableSlots = response.data.availableSlots || [];
-            const reservedSlots = response.data.reservedSlots || [];
+        if (response.success && response.data) {
+          // Extraer los horarios disponibles de la respuesta
+          const availableSlots = response.data.availableSlots || [];
+          const reservedSlots = response.data.reservedSlots || [];
 
-            // Convertir horarios disponibles a strings
-            const availableTimeSlots = availableSlots.map((slot: any) =>
-              `${slot.startTime.substring(0, 5)}-${slot.endTime.substring(0, 5)}`
+          // Convertir horarios disponibles a strings
+          const availableTimeSlots = availableSlots.map((slot: any) =>
+            `${slot.startTime.substring(0, 5)}-${slot.endTime.substring(0, 5)}`
+          );
+
+          // Convertir horarios reservados a strings
+          const reservedTimeSlots = reservedSlots.map((slot: any) =>
+            `${slot.startTime.substring(0, 5)}-${slot.endTime.substring(0, 5)}`
+          );
+
+          // Combinar disponibles con reservados y excluir los reservados
+          let timeSlotStrings = availableTimeSlots;
+
+          // Si hay horarios reservados, excluirlos de la lista
+          if (reservedSlots.length > 0) {
+            timeSlotStrings = availableTimeSlots.filter(timeSlot =>
+              !reservedTimeSlots.includes(timeSlot)
             );
-
-            // Convertir horarios reservados a strings
-            const reservedTimeSlots = reservedSlots.map((slot: any) =>
-              `${slot.startTime.substring(0, 5)}-${slot.endTime.substring(0, 5)}`
-            );
-
-            // Combinar disponibles con reservados y excluir los reservados
-            let timeSlotStrings = availableTimeSlots;
-
-            // Si hay horarios reservados, excluirlos de la lista
-            if (reservedSlots.length > 0) {
-              timeSlotStrings = availableTimeSlots.filter(timeSlot =>
-                !reservedTimeSlots.includes(timeSlot)
-              );
-            }
-
-            // Si es la fecha actual, filtrar también por hora actual
-            const selectedDateObj = new Date(date);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0); // Establecer horas a 0 para comparación precisa
-
-            const isToday =
-              selectedDateObj.getDate() === today.getDate() &&
-              selectedDateObj.getMonth() === today.getMonth() &&
-              selectedDateObj.getFullYear() === today.getFullYear();
-
-            if (isToday) {
-              const currentTime = new Date();
-              timeSlotStrings = timeSlotStrings.filter(timeString => {
-                const [startTime] = timeString.split('-');
-                const [hours, minutes] = startTime.split(':').map(Number);
-                const slotTime = new Date();
-                slotTime.setHours(hours, minutes, 0, 0);
-
-                // Solo mantener horarios que aún no han pasado
-                return slotTime > currentTime;
-              });
-            }
-
-            setAvailableTimeSlots(timeSlotStrings);
-          } else {
-            alert(response.message || 'No se encontraron horarios disponibles');
           }
-        } catch (error: any) {
-          console.error('Error loading time slots:', error);
-          alert(error.message || 'Error al cargar los horarios disponibles');
-        } finally {
-          setLoadingTimeSlots(false);
+
+          // Si es la fecha actual, filtrar también por hora actual
+          const selectedDateObj = new Date(date);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0); // Establecer horas a 0 para comparación precisa
+
+          const isToday =
+            selectedDateObj.getDate() === today.getDate() &&
+            selectedDateObj.getMonth() === today.getMonth() &&
+            selectedDateObj.getFullYear() === today.getFullYear();
+
+          if (isToday) {
+            const currentTime = new Date();
+            timeSlotStrings = timeSlotStrings.filter(timeString => {
+              const [startTime] = timeString.split('-');
+              const [hours, minutes] = startTime.split(':').map(Number);
+              const slotTime = new Date();
+              slotTime.setHours(hours, minutes, 0, 0);
+
+              // Solo mantener horarios que aún no han pasado
+              return slotTime > currentTime;
+            });
+          }
+
+          setAvailableTimeSlots(timeSlotStrings);
+        } else {
+          console.error('Error loading time slots:', response.error);
+          alert(response.error || 'No se encontraron horarios disponibles');
         }
+
+        setLoadingTimeSlots(false);
       };
 
       // Verificar si hay horarios disponibles
