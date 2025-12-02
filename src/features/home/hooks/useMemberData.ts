@@ -1,28 +1,18 @@
 import { useState } from 'react';
 import { Alert } from 'react-native';
-import { useAuthStore } from '../../../store';
+import { getMemberData as getMemberDataFromService } from '../services/homeService';
 
-// Interface for guest data
-interface GuestUser {
+export interface GuestUser {
   id: number;
   name: string;
   lastName: string;
   email: string;
 }
 
-interface Guest {
+export interface Guest {
   id: number;
   relationship: string;
   user: GuestUser;
-}
-
-// Interface for API response
-interface MemberDataResponse {
-  success: boolean;
-  data: {
-    guests: Guest[];
-  };
-  message?: string;
 }
 
 export interface MemberData {
@@ -36,64 +26,19 @@ export const useMemberData = () => {
   const [memberData, setMemberData] = useState<MemberData | null>(null);
 
   const getMemberData = async (memberId: number): Promise<MemberData | null> => {
-    const { token } = useAuthStore.getState();
-    if (!token) {
-      setError('No hay token de autenticación disponible.');
-      Alert.alert('Error', 'No hay token de autenticación disponible.');
-      return null;
-    }
-
     setLoading(true);
     setError(null);
 
-    try {
-      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/club-members/${memberId}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'accept': '*/*',
-        },
-      });
+    const result = await getMemberDataFromService(memberId);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        if (response.status === 404) {
-          const errorMessage = 'Socio no encontrado: ' + (errorData.message || 'El socio no existe');
-          setError(errorMessage);
-          Alert.alert('Error', errorMessage);
-          return null;
-        } else {
-          const errorMessage = errorData.message || `Error en la solicitud: ${response.status}`;
-          setError(errorMessage);
-          Alert.alert('Error', errorMessage);
-          return null;
-        }
-      }
-
-      const result: MemberDataResponse = await response.json();
-      
-      if (result.success) {
-        const data: MemberData = {
-          id: memberId,
-          guests: result.data.guests || [],
-        };
-        setMemberData(data);
-        return data;
-      } else {
-        const errorMessage = result.message || 'Error al obtener los datos del socio';
-        setError(errorMessage);
-        Alert.alert('Error', errorMessage);
-        return null;
-      }
-    } catch (err: any) {
-      console.error('Error fetching member data:', err);
-      const errorMessage = err.message || 'Ocurrió un error al obtener los datos del socio';
-      setError(errorMessage);
-      Alert.alert('Error', errorMessage);
-      return null;
-    } finally {
+    if (result.success && result.data) {
+      setMemberData(result.data);
       setLoading(false);
+      return result.data;
+    } else {
+      Alert.alert('Error', result.error || 'Error al obtener los datos del socio');
+      setLoading(false);
+      return null;
     }
   };
 
