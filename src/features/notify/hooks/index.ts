@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { notificationService, NotificationResponse } from '../services';
+import { notificationService } from '../services';
 
 // Hook to handle notification data and API calls
 export const useNotifications = () => {
@@ -11,23 +11,23 @@ export const useNotifications = () => {
     order: string = 'asc',
     orderBy: string = 'title',
     active: boolean = true
-  ): Promise<NotificationResponse | null> => {
-    try {
-      const response = await notificationService.getNotifications(
-        page,
-        limit,
-        search,
-        order,
-        orderBy,
-        active
-      );
+  ): Promise<any | null> => {
+    const response = await notificationService.getNotifications(
+      page,
+      limit,
+      search,
+      order,
+      orderBy,
+      active
+    );
 
+    if (response.success && response.data) {
       return response;
-    } catch (error: any) {
+    } else {
       // Show error message in an alert
       Alert.alert(
         'Error',
-        error.message || 'Ocurrió un error al obtener las notificaciones',
+        response.error || 'Ocurrió un error al obtener las notificaciones',
         [
           {
             text: 'Aceptar',

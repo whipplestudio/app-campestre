@@ -33,6 +33,18 @@ export interface NotificationResponse {
   traceId: string;
 }
 
+// Interface for service response
+interface ServiceResponse {
+  success: boolean;
+  data?: {
+    notifications: Notification[];
+    meta: PaginationMeta;
+  };
+  message?: string;
+  error?: string;
+  status: number;
+}
+
 // Service class for handling notification API calls
 export class NotificationService {
   private baseUrl: string = `${process.env.EXPO_PUBLIC_API_URL}/notify`;
@@ -45,16 +57,20 @@ export class NotificationService {
     order: string = 'asc',
     orderBy: string = 'title',
     active: boolean = true
-  ): Promise<NotificationResponse> {
+  ): Promise<ServiceResponse> {
     try {
       const {token } = useAuthStore.getState();
         if (!token) {
-          throw new Error('No authentication token available');
+          return {
+            success: false,
+            error: 'No authentication token available',
+            status: 401
+          };
         }
 
       const searchParam = search ? encodeURIComponent(search) : '';
       const url = `${this.baseUrl}?page=${page}&limit=${limit}&search=${searchParam}&order=${order}&orderBy=${orderBy}&active=${active}`;
-      
+
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -65,25 +81,47 @@ export class NotificationService {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        
-        // Handle specific error codes
-        if (response.status === 401) {
-          throw new Error('No autorizado: Por favor inicie sesión para continuar.');
-        } else if (response.status === 403) {
-          throw new Error('Prohibido: No tiene permisos para acceder a esta información.');
-        } else {
-          throw new Error(errorData.message || `Error en la solicitud: ${response.status}`);
+        let errorMessage = 'Error al cargar las notificaciones';
+
+        // Manejar códigos de error específicos en el servicio
+        switch (response.status) {
+          case 401:
+            errorMessage = 'No autorizado: Por favor inicia sesión para continuar';
+            break;
+          case 403:
+            errorMessage = 'Acceso prohibido: No tienes permisos para ver notificaciones';
+            break;
+          case 500:
+            errorMessage = 'Error interno del servidor: Por favor intenta más tarde';
+            break;
+          default:
+            const errorData = await response.json().catch(() => ({}));
+            errorMessage = errorData.message || `Error en la solicitud: ${response.status}`;
         }
+
+        return {
+          success: false,
+          error: errorMessage,
+          status: response.status
+        };
       }
 
       const data = await response.json();
       console.log('Notifications data:', data);
-      return data;
+
+      return {
+        success: true,
+        data: data.data,
+        message: 'Notificaciones cargadas exitosamente',
+        status: response.status
+      };
     } catch (error: any) {
       console.error('Error fetching notifications:', error);
-      // Return error message to be shown in the UI
-      throw new Error(error.message || 'Error desconocido al obtener las notificaciones');
+      return {
+        success: false,
+        error: error.message || 'Error desconocido al obtener las notificaciones',
+        status: 500
+      };
     }
   }
 }
