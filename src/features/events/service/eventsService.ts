@@ -191,18 +191,28 @@ export const eventsService = {
     type: string = '',
     date: string = '' // formato 'yyyy-mm'
   ): Promise<{
-    events: Event[];
-    meta: {
-      total: number;
-      page: number;
-      limit: number;
-      totalPages: number;
+    success: boolean;
+    data?: {
+      events: Event[];
+      meta: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+      };
     };
+    message?: string;
+    status: number;
+    error?: string;
   }> {
     console.log('HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
     const { token } = useAuthStore.getState();
     if (!token) {
-      throw new Error('No authentication token available');
+      return {
+        success: false,
+        error: 'No authentication token available',
+        status: 401
+      };
     }
 
     try {
@@ -236,12 +246,16 @@ export const eventsService = {
       if (!response.ok) {
         let errorMessage = 'Error al cargar los eventos';
 
+        // Manejar códigos de error específicos en el servicio
         switch (response.status) {
           case 400:
             errorMessage = 'Solicitud incorrecta: Verifica los parámetros proporcionados';
             break;
           case 401:
             errorMessage = 'No autorizado: Por favor inicia sesión para continuar';
+            break;
+          case 403:
+            errorMessage = 'Acceso prohibido: No tienes permisos para ver eventos';
             break;
           case 404:
             errorMessage = 'No se encontraron eventos';
@@ -254,7 +268,11 @@ export const eventsService = {
             errorMessage = `Error en la solicitud: ${response.status}. Detalles: ${errorText}`;
         }
 
-        throw new Error(errorMessage);
+        return {
+          success: false,
+          error: errorMessage,
+          status: response.status
+        };
       }
 
       const result: EventsApiResponse = await response.json();
@@ -274,23 +292,43 @@ export const eventsService = {
         ocupedSpots: apiEvent.totalSpots - apiEvent.availableSpots,
       }));
       console.log('EVENTOS:', events);
+
       return {
-        events,
-        meta: result.data.meta,
+        success: true,
+        data: {
+          events,
+          meta: result.data.meta,
+        },
+        message: 'Eventos cargados exitosamente',
+        status: response.status
       };
     } catch (error) {
       console.error('Error fetching events:', error);
-      throw error;
+      return {
+        success: false,
+        error: 'Error desconocido al cargar los eventos',
+        status: 500
+      };
     }
   },
 
   /**
    * Obtener detalles de un miembro del club
    */
-  async getMemberDetails(memberId: number): Promise<MemberDetailsResponse> {
+  async getMemberDetails(memberId: number): Promise<{
+    success: boolean;
+    data?: MemberDetailsResponse;
+    message?: string;
+    status: number;
+    error?: string;
+  }> {
     const { token } = useAuthStore.getState();
     if (!token) {
-      throw new Error('No authentication token available');
+      return {
+        success: false,
+        error: 'No authentication token available',
+        status: 401
+      };
     }
 
     try {
@@ -308,7 +346,17 @@ export const eventsService = {
       if (!response.ok) {
         let errorMessage = 'Error al cargar los detalles del miembro';
 
+        // Manejar códigos de error específicos en el servicio
         switch (response.status) {
+          case 400:
+            errorMessage = 'Solicitud incorrecta: Verifica los datos proporcionados';
+            break;
+          case 401:
+            errorMessage = 'No autorizado: Por favor inicia sesión para continuar';
+            break;
+          case 403:
+            errorMessage = 'Acceso prohibido: No tienes permisos para ver detalles de miembros';
+            break;
           case 404:
             errorMessage = 'Miembro no encontrado';
             break;
@@ -320,24 +368,48 @@ export const eventsService = {
             errorMessage = `Error en la solicitud: ${response.status}. Detalles: ${errorText}`;
         }
 
-        throw new Error(errorMessage);
+        return {
+          success: false,
+          error: errorMessage,
+          status: response.status
+        };
       }
 
       const result: ApiResponse<MemberDetailsResponse> = await response.json();
-      return result.data;
+
+      return {
+        success: true,
+        data: result.data,
+        message: 'Detalles del miembro cargados exitosamente',
+        status: response.status
+      };
     } catch (error) {
       console.error('Error fetching member details:', error);
-      throw error;
+      return {
+        success: false,
+        error: 'Error desconocido al cargar los detalles del miembro',
+        status: 500
+      };
     }
   },
 
   /**
    * Registrar usuario a un evento
    */
-  async registerForEvent(eventId: string, clubMemberId: string, totalRegistrations: number = 1): Promise<Event> {
+  async registerForEvent(eventId: string, clubMemberId: string, totalRegistrations: number = 1): Promise<{
+    success: boolean;
+    data?: Event;
+    message?: string;
+    status: number;
+    error?: string;
+  }> {
     const { token } = useAuthStore.getState();
     if (!token) {
-      throw new Error('No authentication token available');
+      return {
+        success: false,
+        error: 'No authentication token available',
+        status: 401
+      };
     }
     console.log('REGISTRANDO EVENTO:', { eventId, clubMemberId, totalRegistrations });
     try {
@@ -360,9 +432,16 @@ export const eventsService = {
       if (!response.ok) {
         let errorMessage = 'Error al registrar en el evento';
 
+        // Manejar códigos de error específicos en el servicio
         switch (response.status) {
           case 400:
             errorMessage = 'Solicitud incorrecta: Verifica los datos proporcionados';
+            break;
+          case 401:
+            errorMessage = 'No autorizado: Por favor inicia sesión para continuar';
+            break;
+          case 403:
+            errorMessage = 'Acceso prohibido: No tienes permisos para registrarte en eventos';
             break;
           case 404:
             errorMessage = 'Evento o Miembro no encontrado';
@@ -378,14 +457,18 @@ export const eventsService = {
             errorMessage = `Error en la solicitud: ${response.status}. Detalles: ${errorText}`;
         }
 
-        throw new Error(errorMessage);
+        return {
+          success: false,
+          error: errorMessage,
+          status: response.status
+        };
       }
 
       const result: EventRegistrationApiResponse = await response.json();
 
       // Aquí retornamos un evento actualizado, aunque no tenemos toda la información original
       // En una implementación más completa, se debería hacer otra llamada para obtener el evento actualizado
-      return {
+      const event: Event = {
         id: eventId,
         name: '', // No se proporciona en la respuesta
         description: '',
@@ -398,9 +481,20 @@ export const eventsService = {
         registeredUsers: [],
         ocupedSpots: 0, // Calculado posteriormente
       };
+
+      return {
+        success: true,
+        data: event,
+        message: 'Registro completado exitosamente',
+        status: response.status
+      };
     } catch (error) {
       console.error('Error registering for event:', error);
-      throw error;
+      return {
+        success: false,
+        error: 'Error desconocido al registrar en el evento',
+        status: 500
+      };
     }
   },
 

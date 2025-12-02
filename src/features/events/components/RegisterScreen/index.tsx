@@ -13,7 +13,6 @@ import {
 import Button from '../../../../shared/components/Button/Button';
 import ModalComponent from '../../../../shared/components/Modal/Modal';
 import { COLORS } from '../../../../shared/theme/colors';
-import { eventsService } from '../../service/eventsService';
 
 interface RegisterScreenProps {
   memberId: number;
@@ -23,6 +22,8 @@ interface RegisterScreenProps {
   onRegistrationComplete: () => void;
   toggleParticipantSelection: (id: number) => void;
   selectedParticipants: number[];
+  registerParticipants: (memberId: number, totalRegistrations: number) => Promise<boolean>;
+  getMemberDetails: (memberId: number) => Promise<any>;
 }
 
 const RegisterScreen: React.FC<RegisterScreenProps> = ({
@@ -33,6 +34,8 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({
   onRegistrationComplete,
   toggleParticipantSelection,
   selectedParticipants,
+  registerParticipants,
+  getMemberDetails,
 }) => {
   const [memberDetails, setMemberDetails] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -51,12 +54,11 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({
       setLoading(true);
       setError(null);
 
-      const response = await eventsService.getMemberDetails(memberId);
+      const response = await getMemberDetails(memberId);
       setMemberDetails(response);
     } catch (err: any) {
       const errorMessage = err.message || 'Error al cargar los detalles del miembro';
       setError(errorMessage);
-      Alert.alert('Error', errorMessage);
     } finally {
       setLoading(false);
     }
@@ -79,12 +81,11 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({
   const confirmRegistration = async () => {
     setShowConfirmationModal(false);
     try {
-      await eventsService.registerForEvent(eventId, memberId.toString(), selectedParticipants.length);
-      Alert.alert('Éxito', 'Registro completado exitosamente');
-      onRegistrationComplete();
+      const success = await registerParticipants(memberId, selectedParticipants.length);
+      if (success) {
+        onRegistrationComplete();
+      }
     } catch (err: any) {
-      const errorMessage = err.message || 'Error al registrar evento';
-      Alert.alert('Error', errorMessage);
     }
   };
 

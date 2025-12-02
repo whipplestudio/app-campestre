@@ -15,8 +15,8 @@ import FilterSection from '../components/FilterSection';
 import RegisterScreen from '../components/RegisterScreen';
 import baseStyles from './Style';
 // Hooks
-import { useEvents } from '../hooks/useEvents';
 import { useAuthStore } from '../../auth/store/useAuthStore';
+import { useEvents } from '../hooks/useEvents';
 
 // Extend the base styles with additional styles
 const styles = {
@@ -81,19 +81,27 @@ const EventsContainer = () => {
     closeRegistrationScreen,
     handleRegistrationComplete,
     toggleParticipantSelection,
+    registerParticipants,
+    getMemberDetails,
   } = useEvents();
 
   // Si se está mostrando la pantalla de registro, solo mostrarla
   if (showRegistrationScreen) {
+    const userId = useAuthStore.getState().userId;
+    // Convertir userId a número si es necesario
+    const memberId = userId ? parseInt(userId, 10) : 0;
+
     return (
       <RegisterScreen
         visible={true}
-        memberId={useAuthStore.getState().userId}
+        memberId={memberId}
         eventId={currentEventId}
         onClose={closeRegistrationScreen} // Esta función cierra la pantalla de registro
         onRegistrationComplete={handleRegistrationComplete}
         toggleParticipantSelection={toggleParticipantSelection}
         selectedParticipants={selectedParticipants}
+        registerParticipants={registerParticipants}
+        getMemberDetails={getMemberDetails}
       />
     );
   }
@@ -206,7 +214,11 @@ const EventsContainer = () => {
                 key={event.id}
                 event={event}
                 isRegistered={checkIfRegistered(event.id)}
-                onOpenRegisterScreen={() => openRegistrationScreen(event.id, useAuthStore.getState().userId)}
+                onOpenRegisterScreen={() => {
+                  const userId = useAuthStore.getState().userId;
+                  const memberId = userId ? parseInt(userId as string, 10) : 0;
+                  openRegistrationScreen(event.id, memberId);
+                }}
               />
             ))}
           </View>

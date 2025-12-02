@@ -2,9 +2,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert } from 'react-native';
 import { useAuthStore } from '../../auth/store/useAuthStore';
+import { Guest, Member } from '../interfaces/eventInterface';
 import { eventsService } from '../service/eventsService';
 import { useEventStore } from '../store/useEventStore';
-import { Guest, Member } from '../interfaces/eventInterface';
 
 export const useEvents = () => {
   const { userId } = useAuthStore();
@@ -74,18 +74,20 @@ export const useEvents = () => {
         dateParam
       );
 
-      setEvents(result.events);
-      setPagination({
-        page: result.meta.page,
-        limit: result.meta.limit,
-        total: result.meta.total,
-        totalPages: result.meta.totalPages,
-      });
+      if (result.success && result.data) {
+        setEvents(result.data.events);
+        setPagination({
+          page: result.data.meta.page,
+          limit: result.data.meta.limit,
+          total: result.data.meta.total,
+          totalPages: result.data.meta.totalPages,
+        });
+      } else {
+        Alert.alert('Error', result.error || 'Error al cargar los eventos');
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Error al cargar los eventos';
-      setError(errorMessage);
       Alert.alert('Error', errorMessage);
-      console.error(err);
     } finally {
       fetchRef.current = false;
     }
@@ -237,14 +239,25 @@ export const useEvents = () => {
     });
   }, []);
 
+  // Function to get member details
+  const getMemberDetails = useCallback(async (memberId: number) => {
+    const result = await eventsService.getMemberDetails(memberId);
+
+    if (result.success && result.data) {
+      return result.data;
+    } else {
+      Alert.alert('Error', result.error || 'Error al cargar los detalles del miembro');
+    }
+  }, []);
+
   // Function to register participants to an event
   const registerParticipants = useCallback(async (memberId: number, totalRegistrations: number) => {
-    try {
-      await eventsService.registerForEvent(currentEventId, memberId.toString(), totalRegistrations);
+    const result = await eventsService.registerForEvent(currentEventId, memberId.toString(), totalRegistrations);
+
+    if (result.success) {
       return true;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Error al registrar en el evento';
-      Alert.alert('Error', errorMessage);
+    } else {
+      Alert.alert('Error', result.error || 'Error al registrar en el evento');
       return false;
     }
   }, [currentEventId]);
@@ -297,5 +310,6 @@ export const useEvents = () => {
     handleRegistrationComplete,
     toggleParticipantSelection,
     registerParticipants,
+    getMemberDetails,
   };
 };
