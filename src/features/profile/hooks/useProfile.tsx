@@ -23,17 +23,14 @@ export const useProfile = () => {
 
   useEffect(() => {
     const loadMember = async () => {
-      try {
-        if (userId && token) {
-          const data = await memberService.getMemberById(userId, token);
-          if (!data) {
-            console.log("Miembro no encontrado");
-          } else {
-            updateProfile(data);
-          }
+      if (userId && token) {
+        const response = await memberService.getMemberById(userId, token);
+
+        if (response.success && response.data) {
+          updateProfile(response.data);
+        } else {
+          console.log('Error loading member:', response.error);
         }
-      } catch (err) {
-        console.log('Error loading member:', err);
       }
     };
 
@@ -136,25 +133,24 @@ export const useProfile = () => {
 
   // Función para recargar los datos del perfil
   const refreshProfile = useCallback(async () => {
-    try {
-      if (userId && token) {
-        const data = await memberService.getMemberById(userId, token);
-        if (data) {
-          updateProfile(data);
-        }
+    if (userId && token) {
+      const response = await memberService.getMemberById(userId, token);
+
+      if (response.success && response.data) {
+        updateProfile(response.data);
+      } else {
+        console.error('Error reloading member:', response.error);
+        Alert.alert(
+          'Error',
+          response.error || 'Ocurrió un error al cargar la información del perfil.',
+          [
+            {
+              text: 'Aceptar',
+              style: 'default'
+            }
+          ]
+        );
       }
-    } catch (err: any) {
-      console.error('Error reloading member:', err);
-      Alert.alert(
-        'Error',
-        err.message || 'Ocurrió un error al cargar la información del perfil.',
-        [
-          {
-            text: 'Aceptar',
-            style: 'default'
-          }
-        ]
-      );
     }
   }, [userId, token, updateProfile]);
 

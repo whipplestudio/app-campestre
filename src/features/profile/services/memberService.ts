@@ -190,13 +190,26 @@ export interface GetMemberResponse {
   traceId: string;
 }
 
+// Interface for service responses
+interface ServiceResponse<T = any> {
+  success: boolean;
+  data?: T;
+  message?: string;
+  error?: string;
+  status: number;
+}
+
 export const memberService = {
   /**
    * Obtener la información del miembro del club por ID
    */
-  getMemberById: async (memberId: string | number, token: string): Promise<MemberProfile | null> => {
+  getMemberById: async (memberId: string | number, token: string): Promise<ServiceResponse<MemberProfile>> => {
     if (!token) {
-      throw new Error('No authentication token available');
+      return {
+        success: false,
+        error: 'No authentication token available',
+        status: 401
+      };
     }
 
     try {
@@ -210,12 +223,25 @@ export const memberService = {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        if (response.status === 404) {
-          throw new Error(errorData.message || 'Miembro no encontrado');
-        } else {
-          throw new Error(errorData.message || `Error en la solicitud: ${response.status}`);
+        let errorMessage = 'Error al cargar los datos del miembro';
+
+        // Manejar códigos de error específicos en el servicio
+        switch (response.status) {
+          case 404:
+            errorMessage = 'Socio no encontrado';
+            break;
+          case 500:
+            errorMessage = 'Error interno del servidor: Por favor intenta más tarde';
+            break;
+          default:
+            errorMessage = 'Error al cargar los datos del miembro';
         }
+
+        return {
+          success: false,
+          error: errorMessage,
+          status: response.status
+        };
       }
 
       const result: GetMemberResponse = await response.json();
@@ -270,20 +296,34 @@ export const memberService = {
         })),
       };
 
-      return memberProfile;
-    } catch (error) {
+      return {
+        success: true,
+        data: memberProfile,
+        message: 'Datos del miembro cargados exitosamente',
+        status: response.status
+      };
+    } catch (error: any) {
       console.error('Error fetching member data:', error);
-      throw error;
+      return {
+        success: false,
+        error: error.message || 'Error desconocido al cargar los datos del miembro',
+        status: 500
+      };
     }
   },
 
   /**
    * Agregar un nuevo miembro de la familia
    */
-  addFamilyMember: async (memberData: AddFamilyMemberRequest, token: string): Promise<AddFamilyMemberResponse> => {
+  addFamilyMember: async (memberData: AddFamilyMemberRequest, token: string): Promise<ServiceResponse<AddFamilyMemberResponse>> => {
     if (!token) {
-      throw new Error('No authentication token available');
+      return {
+        success: false,
+        error: 'No authentication token available',
+        status: 401
+      };
     }
+
     try {
       console.log('memberData is: ', memberData);
       const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/club-members`, {
@@ -297,22 +337,46 @@ export const memberService = {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        if (response.status === 400) {
-          throw new Error(errorData.message || 'Datos de entrada inválidos');
-        } else if (response.status === 409) {
-          throw new Error(errorData.message || 'El correo electrónico ya está en uso');
-        } else {
-          throw new Error(errorData.message || `Error en la solicitud: ${response.status}`);
+        let errorMessage = 'Error al agregar miembro de la familia';
+
+        // Manejar códigos de error específicos en el servicio
+        switch (response.status) {
+          case 400:
+            errorMessage = 'Datos de entrada inválidos';
+            break;
+          case 409:
+            errorMessage = 'El correo electrónico ya está en uso';
+            break;
+          case 500:
+            errorMessage = 'Error interno del servidor: Por favor intenta más tarde';
+            break;
+          default:
+            errorMessage = 'Error al agregar invitado';
         }
+
+        return {
+          success: false,
+          error: errorMessage,
+          status: response.status
+        };
       }
 
       const result: AddFamilyMemberResponse = await response.json();
       console.log('result al agregar familiar: ', result);
-      return result;
-    } catch (error) {
+
+      return {
+        success: true,
+        data: result,
+        message: 'Miembro de la familia agregado exitosamente',
+        status: response.status
+      };
+    } catch (error: any) {
       console.error('Error adding family member:', error);
-      throw error;
+      return {
+        success: false,
+        error: error.message || 'Error desconocido al agregar miembro de la familia',
+        status: 500
+      };
     }
   },
 };
