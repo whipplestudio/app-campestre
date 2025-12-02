@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, Text, View, Alert } from 'react-native';
+import { SafeAreaView, ScrollView, Text, View } from 'react-native';
 import Button from '../../../shared/components/Button/Button';
 import { useAuthStore } from '../../../store';
 
@@ -7,13 +7,11 @@ import { useAuthStore } from '../../../store';
 import styles from './Style';
 
 // Components
-import EmergencyContact from '../components/EmergencyContact';
+import AddFamilyMemberForm from '../components/AddFamilyMemberForm';
 import FamilyMembers from '../components/FamilyMembers';
 import PersonalInfo from '../components/PersonalInfo';
 import ProfileHeader from '../components/ProfileHeader';
 import SectionCard from '../components/SectionCard';
-import Vehicles from '../components/Vehicles';
-import AddFamilyMemberForm from '../components/AddFamilyMemberForm';
 
 import useMessages from '../hooks/useMessages';
 import useProfile from '../hooks/useProfile';
@@ -164,15 +162,15 @@ const ProfileContainer = () => {
         </SectionCard>
 
         {/* Vehículos */}
-        <SectionCard title={messages.VEHICLES.TITLE}>
+       {/* <SectionCard title={messages.VEHICLES.TITLE}>
           <Vehicles
             vehicles={currentUser?.vehicles || []}
             onAddVehicle={handleAddVehicle}
           />
-        </SectionCard>
+        </SectionCard>*/}
 
         {/* Contacto de emergencia */}
-        <SectionCard title={messages.EMERGENCY.TITLE}
+         {/*<SectionCard title={messages.EMERGENCY.TITLE}
           rightAction={
             isEditingContactEmergency ? (
               null
@@ -214,7 +212,7 @@ const ProfileContainer = () => {
               />
             </View>
           )}
-        </SectionCard>
+        </SectionCard>*/}
 
         {/* Logout Button */}
         <View style={styles.logoutContainer}>
