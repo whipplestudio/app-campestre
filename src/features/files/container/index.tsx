@@ -1,12 +1,12 @@
-import React from 'react';
-import { SafeAreaView, ScrollView, View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import { SafeAreaView, ScrollView, Text, View } from 'react-native';
+import Button from '../../../shared/components/Button';
 import Search from '../../../shared/components/Search/Search';
+import { COLORS } from '../../../shared/theme/colors';
 import FileHeader from '../components/FileHeader';
 import FileList from '../components/FileList';
-import Button from '../../../shared/components/Button';
 import { useFileActions } from '../hooks/useFileActions';
-import { COLORS } from '../../../shared/theme/colors';
 import styles from './Style';
 
 const FilesContainer: React.FC = () => {
@@ -64,7 +64,7 @@ const FilesContainer: React.FC = () => {
           </View>
         )}
 
-        {/* Pagination controls - only show if there are pages to display */}
+        {/* Pagination controls - back inside scroll */}
         {pagination.totalPages > 1 && (
           <View style={styles.paginationControlsContainer}>
             <View style={styles.paginationRow}>

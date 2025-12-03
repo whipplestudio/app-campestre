@@ -1,11 +1,11 @@
 export interface File {
   id: number;
   name: string;
-  description: string;
-  type: string;
-  url: string;
-  createdAt: string;
-  updatedAt: string;
+  description?: string;  // Add missing properties
+  type?: string;
+  url?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface FileApiResponse {

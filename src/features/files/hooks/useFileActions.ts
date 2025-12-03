@@ -1,19 +1,26 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
-import { useFileStore } from '../store';
+import { File } from '../interfaces';
+import { fileService } from '../services';
+
+interface PaginationInfo {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
 
 export const useFileActions = () => {
-  const {
-    files,
-    loading,
-    error,
-    pagination,
-    search,
-    fetchFiles,
-    downloadFile,
-    setSearch,
-    setError
-  } = useFileStore();
+  const [files, setFiles] = useState<File[]>([]); // Initialize as empty array
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [pagination, setPagination] = useState<PaginationInfo>({
+    page: 1,
+    limit: 5,
+    total: 0,
+    totalPages: 0,
+  });
+  const [search, setSearch] = useState('');
 
   // Show error as an alert when error state changes
   useEffect(() => {
@@ -22,27 +29,79 @@ export const useFileActions = () => {
     }
   }, [error]);
 
+  // Fetch files from service
+  const fetchFiles = async (page: number = 1) => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fileService.getFiles(
+        page,
+        pagination.limit,
+        search,
+        'asc',
+        'name'
+      );
+      
+      const filesData = response?.files || [];
+      const paginationData = response?.meta || {
+        page,
+        limit: pagination.limit,
+        total: filesData.length,
+        totalPages: Math.ceil(filesData.length / pagination.limit),
+      };
+      
+      // Mapea los datos para asegurar que coincidan con la interfaz File
+      const mappedFiles = filesData.map((file: File) => ({
+        id: Number(file.id), // Convierte id a número
+        name: file.name,
+        description: file.description || `Archivo ${file.name}`,
+        type: file.type || 'document',
+        url: file.url || `/files/download/${file.id}`,
+        createdAt: file.createdAt || new Date().toISOString(),
+        updatedAt: file.updatedAt || new Date().toISOString(),
+      }));
+      
+      setFiles(mappedFiles);
+      setPagination(paginationData);
+    } catch (err: any) {
+      console.error('Error fetching files:', err);
+      setError(err.message || 'Error al cargar los archivos');
+      setFiles([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Fetch files on initial load
   useEffect(() => {
     fetchFiles(1);
   }, []);
 
-  // Handle search change
+  // Handle search change with debounce
   const handleSearch = (searchValue: string) => {
     setSearch(searchValue);
-    fetchFiles(1); // Reset to page 1 when search changes
   };
 
+  // Debounced search effect
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (search !== undefined) {
+        fetchFiles(1); // Reset to page 1 when search changes
+      }
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [search]);
+
   // Handle download
-  const handleDownload = async (fileId: number) => {
+  const handleDownload = async (fileId: number) => {  // Change from string to number
     try {
-      await downloadFile(fileId);
-      // The download service will handle the file retrieval
-      // We can show a success message or handle the downloaded file as needed
+      await fileService.downloadFile(fileId.toString()); // Convert to string for the service
       Alert.alert('Éxito', 'El archivo se ha descargado correctamente.');
     } catch (err: any) {
       console.error('Download error:', err);
-      // Error is already handled by setError in the store
+      Alert.alert('Error', err.message || 'Error al descargar el archivo');
     }
   };
 

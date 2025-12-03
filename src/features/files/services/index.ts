@@ -1,15 +1,14 @@
 import { useAuthStore } from '../../auth/store/useAuthStore';
-import { FileApiResponse } from '../interfaces';
 
+// In src/features/files/services/index.ts
 export const fileService = {
-  // Obtener archivos paginados con búsqueda
   getFiles: async (
     page: number = 1,
     limit: number = 10,
     search: string = '',
     order: string = 'asc',
     orderBy: string = 'name'
-  ): Promise<FileApiResponse> => {
+  ): Promise<any> => {
     const { token } = useAuthStore.getState();
     if (!token) {
       throw new Error('No authentication token available');
@@ -26,7 +25,7 @@ export const fileService = {
           'accept': '*/*',
         },
       });
-
+      
       if (!response.ok) {
         const errorText = await response.text();
         if (response.status === 400) {
@@ -40,27 +39,30 @@ export const fileService = {
         }
       }
 
-      const result: FileApiResponse = await response.json();
-      return result;
+      // Parse the JSON response
+      const result = await response.json();
+      
+      return result.data;
     } catch (error) {
       console.error('Error fetching files:', error);
       throw error;
     }
   },
 
-  // Descargar archivo
   downloadFile: async (fileId: string): Promise<void> => {
+    const { token } = useAuthStore.getState();
+    if (!token) {
+      throw new Error('No authentication token available');
+    }
 
     try {
       const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/files/download/${fileId}`, {
         method: 'GET',
         headers: {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${useAuthStore.getState().token}`,
         },
       });
-
-      console.log('Response:', response);
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -77,15 +79,15 @@ export const fileService = {
       const contentDisposition = response.headers.get('content-disposition');
       let filename = `file_${fileId}`;
       if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(/filename="?(.+)"?/i);
-        if (filenameMatch) {
+        const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/i);
+        if (filenameMatch && filenameMatch[1]) {
           filename = filenameMatch[1];
         }
       }
 
       // Get the blob content
       const blob = await response.blob();
-
+      
       // For now, we just return void since the actual file handling will be done in the hook
       // In a real implementation, we would use Expo FileSystem and Sharing APIs
     } catch (error) {
