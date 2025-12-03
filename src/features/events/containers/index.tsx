@@ -83,6 +83,7 @@ const EventsContainer = () => {
     toggleParticipantSelection,
     registerParticipants,
     getMemberDetails,
+    cancelRegistration,
   } = useEvents();
 
   // Si se está mostrando la pantalla de registro, solo mostrarla
@@ -213,12 +214,13 @@ const EventsContainer = () => {
               <EventCard
                 key={event.id}
                 event={event}
-                isRegistered={checkIfRegistered(event.id)}
+                isRegistered={event.isRegistered}
                 onOpenRegisterScreen={() => {
                   const userId = useAuthStore.getState().userId;
                   const memberId = userId ? parseInt(userId as string, 10) : 0;
                   openRegistrationScreen(event.id, memberId);
                 }}
+                onUnregister={cancelRegistration}
               />
             ))}
           </View>

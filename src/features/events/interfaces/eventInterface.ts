@@ -9,7 +9,7 @@ export interface Event {
   availableSpots: number;
   totalSpots: number;
   ocupedSpots: number; // Number of occupied spots
-  registeredUsers: string[]; // Array of user IDs who registered
+  isRegistered: boolean; // Array of user IDs who registered
   image?: string;
 }
 

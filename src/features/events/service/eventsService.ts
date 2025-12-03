@@ -18,6 +18,7 @@ interface EventsApiResponse {
       dateISO: string;
       availableSpots: number;
       ocupedSpots: number;
+      isRegistered: boolean;
     }>;
     meta: {
       total: number;
@@ -288,7 +289,7 @@ export const eventsService = {
         eventType: mapEventType(apiEvent.type),
         availableSpots: apiEvent.availableSpots,
         totalSpots: apiEvent.totalSpots,
-        registeredUsers: [], // La API no proporciona esta información directamente
+        isRegistered: apiEvent.isRegistered, // La API no proporciona esta información directamente
         ocupedSpots: apiEvent.totalSpots - apiEvent.availableSpots,
       }));
       console.log('EVENTOS:', events);
@@ -466,8 +467,6 @@ export const eventsService = {
 
       const result: EventRegistrationApiResponse = await response.json();
 
-      // Aquí retornamos un evento actualizado, aunque no tenemos toda la información original
-      // En una implementación más completa, se debería hacer otra llamada para obtener el evento actualizado
       const event: Event = {
         id: eventId,
         name: '', // No se proporciona en la respuesta
@@ -478,7 +477,7 @@ export const eventsService = {
         eventType: 'SOCIAL', // Valor por defecto
         availableSpots: result.data.availableSpots,
         totalSpots: 0, // No se proporciona en la respuesta
-        registeredUsers: [],
+        isRegistered: true,
         ocupedSpots: 0, // Calculado posteriormente
       };
 
@@ -493,6 +492,82 @@ export const eventsService = {
       return {
         success: false,
         error: 'Error desconocido al registrar en el evento',
+        status: 500
+      };
+    }
+  },
+
+  /**
+   * Cancelar el registro de un usuario en un evento
+   */
+  async cancelEventRegistration(eventId: string, clubMemberId: string): Promise<{
+    success: boolean;
+    data?: {
+      message: string;
+      eventName: string;
+      memberId: number;
+    };
+    message?: string;
+    status: number;
+    error?: string;
+  }> {
+    const { token } = useAuthStore.getState();
+    if (!token) {
+      return {
+        success: false,
+        error: 'No authentication token available',
+        status: 401
+      };
+    }
+
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_API_URL}/events/${eventId}/registrations/members/${clubMemberId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'accept': '*/*',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        let errorMessage = 'Error al cancelar el registro';
+
+        // Manejar códigos de error específicos en el servicio
+        switch (response.status) {
+          case 404:
+            errorMessage = 'Registro no encontrado';
+            break;
+          case 500:
+            errorMessage = 'Error interno del servidor: Por favor intenta más tarde';
+            break;
+          default:
+            const errorText = await response.text();
+            errorMessage = `Error en la solicitud: ${response.status}. Detalles: ${errorText}`;
+        }
+
+        return {
+          success: false,
+          error: errorMessage,
+          status: response.status
+        };
+      }
+
+      const result: EventCancellationApiResponse = await response.json();
+
+      return {
+        success: true,
+        data: result.data,
+        message: result.data.message,
+        status: response.status
+      };
+    } catch (error) {
+      console.error('Error canceling event registration:', error);
+      return {
+        success: false,
+        error: 'Error desconocido al cancelar el registro',
         status: 500
       };
     }

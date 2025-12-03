@@ -29,6 +29,8 @@ const ReservationCard = ({ reservation, onCancel }: ReservationCardProps) => {
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
+    console.log('dateString: ', dateString);
+    console.log('date: ', date);
     return date.toLocaleTimeString('es-ES', {
       hour: '2-digit',
       minute: '2-digit',

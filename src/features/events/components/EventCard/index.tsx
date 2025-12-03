@@ -61,7 +61,8 @@ const formatDate = (dateString: string) => {
 const EventCard: React.FC<EventCardProps> = ({
   event,
   isRegistered,
-  onOpenRegisterScreen
+  onOpenRegisterScreen,
+  onUnregister
 }) => {
   const { messages } = useMessages();
   const eventTypeColor = getEventTypeColor(event.eventType);
@@ -145,11 +146,11 @@ const EventCard: React.FC<EventCardProps> = ({
           <Button
             text={messages.EVENTCARD.CANCELREGISTRATION}
             variant="outline"
-            onPress={() => {}}
+            onPress={() => onUnregister && onUnregister(event.id)}
             style={styles.cancelButton}
             titleStyle={styles.cancelButtonText}
           />
-          <Button
+          {/*<Button
             text={messages.EVENTCARD.ACTIVATEREMINDER}
             variant="outline"
             onPress={handleReminderPress}
@@ -163,7 +164,7 @@ const EventCard: React.FC<EventCardProps> = ({
                 style={styles.reminderIcon}
               />
             }
-          />
+          />*/}
         </View>
       ) : (
         <Button

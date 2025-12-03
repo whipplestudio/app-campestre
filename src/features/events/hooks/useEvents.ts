@@ -262,6 +262,25 @@ export const useEvents = () => {
     }
   }, [currentEventId]);
 
+  // Function to cancel registration from an event
+  const cancelRegistration = useCallback(async (eventId: string) => {
+    const userId = useAuthStore.getState().userId;
+    if (!userId) {
+      Alert.alert('Error', 'No se pudo obtener el ID de usuario');
+      return false;
+    }
+
+    const result = await eventsService.cancelEventRegistration(eventId, userId);
+
+    if (result.success) {
+      await fetchEvents(1);
+      return true;
+    } else {
+      Alert.alert('Error', result.error || 'Error al cancelar el registro');
+      return false;
+    }
+  }, [fetchEvents]);
+
   return {
     // State
     events,
@@ -311,5 +330,6 @@ export const useEvents = () => {
     toggleParticipantSelection,
     registerParticipants,
     getMemberDetails,
+    cancelRegistration,
   };
 };
