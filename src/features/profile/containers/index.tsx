@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, Text, View } from 'react-native';
 import Button from '../../../shared/components/Button/Button';
+import Modal from '../../../shared/components/Modal/Modal';
 import { useAuthStore } from '../../../store';
 
 //Style
@@ -43,7 +44,8 @@ const ProfileContainer = () => {
   } = useProfile();
 
   const [showAddFamilyForm, setShowAddFamilyForm] = useState(false);
-
+  const [showGuestRestrictionModal, setShowGuestRestrictionModal] = useState(false);
+console.log('el profile esssssssssss: ', profile);
   if (!currentUser) {
     return (
       <SafeAreaView style={styles.container}>
@@ -157,7 +159,13 @@ const ProfileContainer = () => {
         <SectionCard title={messages.FAMILY.TITLE}>
           <FamilyMembers
             members={currentUser?.familyMembers || []}
-            onAddMember={() => setShowAddFamilyForm(true)}
+            onAddMember={() => {
+              if (profile?.type === 'SOCIO') {
+                setShowAddFamilyForm(true);
+              } else {
+                setShowGuestRestrictionModal(true);
+              }
+            }}
           />
         </SectionCard>
 
@@ -224,6 +232,24 @@ const ProfileContainer = () => {
           />
         </View>
       </ScrollView>
+
+      {/* Modal for guest restriction */}
+      <Modal
+        visible={showGuestRestrictionModal}
+        title="Acceso Restringido"
+        message="Un invitado no puede agregar familiares. Solo los socios tienen este privilegio."
+        onConfirm={() => setShowGuestRestrictionModal(false)}
+        confirmText="Aceptar"
+        showCancelButton={false}
+        confirmButtonStyle={{
+          width: '100%',
+          paddingVertical: 15,
+        }}
+        buttonsContainerStyle={{
+          paddingHorizontal: 10,
+          paddingVertical: 10,
+        }}
+      />
     </SafeAreaView>
   );
 };

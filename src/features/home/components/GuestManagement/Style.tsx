@@ -127,6 +127,41 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     flex: 1,
   },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContainer: {
+    backgroundColor: COLORS.white,
+    borderRadius: 16,
+    padding: 20,
+    width: '90%',
+    maxWidth: 400,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: COLORS.gray900,
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  modalMessage: {
+    fontSize: 16,
+    color: COLORS.gray700,
+    textAlign: 'center',
+    marginBottom: 20,
+    lineHeight: 22,
+  },
+  modalButtonContainer: {
+    width: '100%',
+  },
+  modalButton: {
+    width: '100%',
+  },
 });
 
 export default styles;
