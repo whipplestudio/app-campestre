@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
     borderBottomColor: COLORS.gray200,
   },
   input: {
-    marginBottom: 0,
+    marginBottom: 5,
     paddingHorizontal: 0,
     borderWidth: 0,
     borderBottomWidth: 1,
@@ -37,5 +37,6 @@ export const styles = StyleSheet.create({
     minHeight: 80,
     textAlignVertical: 'top',
     paddingTop: 8,
+    marginBottom: 5,
   },
 });

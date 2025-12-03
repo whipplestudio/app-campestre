@@ -103,19 +103,19 @@ const ProfileContainer = () => {
         >
           <PersonalInfo
             id={profile?.id || ''}
-            name={profile?.name || ''}
-            lastName={profile?.lastName || ''}
-            email={profile?.email}
-            phone={profile?.phone}
-            address={profile?.address}
-            street={profile?.street}
-            externalNumber={profile?.externalNumber}
-            internalNumber={profile?.internalNumber}
-            colony={profile?.colony}
-            zipCode={profile?.zipCode}
-            city={profile?.city}
-            state={profile?.state}
-            country={profile?.country}
+            name={isEditing ? formData.name : (profile?.name || '')}
+            lastName={isEditing ? formData.lastName : (profile?.lastName || '')}
+            email={isEditing ? formData.email : profile?.email}
+            phone={isEditing ? formData.phone : profile?.phone}
+            address={isEditing ? formData.address : profile?.address}
+            street={isEditing ? formData.street : profile?.street}
+            externalNumber={isEditing ? formData.externalNumber : profile?.externalNumber}
+            internalNumber={isEditing ? formData.internalNumber : profile?.internalNumber}
+            colony={isEditing ? formData.colony : profile?.colony}
+            zipCode={isEditing ? formData.zipCode : profile?.zipCode}
+            city={isEditing ? formData.city : profile?.city}
+            state={isEditing ? formData.state : profile?.state}
+            country={isEditing ? formData.country : profile?.country}
             memberSince={profile?.memberSince || new Date()}
             isEditing={isEditing}
             onNameChange={(text) => handleInputChange('name', text)}

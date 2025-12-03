@@ -270,7 +270,7 @@ export const memberService = {
         RFC: data.user.RFC,
         roleId: data.user.roleId,
         email: data.user.email,
-        phone: data.user.phone.length > 0 ? data.user.phone[0] : undefined,
+        phone: data.user.phone.length > 0 ? data.user.phone[0].number : undefined,
         address: `${data.user.address.street} ${data.user.address.suburb} ${data.user.address.city} ${data.user.address.state} ${data.user.address.country}`,
         street: data.user.address.street,
         externalNumber: data.user.address.externalNumber,
@@ -420,5 +420,109 @@ const translateRelationship = (relationship: string): string => {
       return 'Otro';
     default:
       return relationship; // Devolver el valor original si no se encuentra traducción
+  }
+};
+
+export interface UpdateUserRequest {
+  email?: string;
+  name?: string;
+  lastName?: string;
+  phone?: {
+    number: string;
+    alias: string;
+    type: string;
+  }[];
+  address?: {
+    street: string;
+    externalNumber: string;
+    internalNumber: string;
+    suburb: string;
+    city: string;
+    zipCode: string;
+    state: string;
+    country: string;
+  };
+}
+
+export interface UpdateUserResponse {
+  success: boolean;
+  data: any;
+  timestamp: string;
+  messageId: string;
+  traceId: string;
+}
+
+// Interface for service responses
+interface ServiceResponse<T = any> {
+  success: boolean;
+  data?: T;
+  message?: string;
+  error?: string;
+  status: number;
+}
+
+export const updateUser = async (userId: number, userData: UpdateUserRequest, token: string): Promise<ServiceResponse<UpdateUserResponse>> => {
+  if (!token) {
+    return {
+      success: false,
+      error: 'No authentication token available',
+      status: 401
+    };
+  }
+console.log('data para actualizaaaaaaar: ', userData)
+  try {
+    const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/users/${userId}`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'accept': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+    console.log('response al actualizar: ', response)
+    if (!response.ok) {
+      let errorMessage = 'Error al actualizar el perfil';
+
+      // Manejar códigos de error específicos
+      switch (response.status) {
+        case 400:
+          errorMessage = 'Datos de entrada inválidos';
+          break;
+        case 404:
+          errorMessage = 'Usuario no encontrado';
+          break;
+        case 409:
+          errorMessage = 'Ya existe un usuario con este correo electrónico';
+          break;
+        case 500:
+          errorMessage = 'Error interno del servidor: Por favor intenta más tarde';
+          break;
+        default:
+          errorMessage = `Error al actualizar el perfil: ${response.status}`;
+      }
+
+      return {
+        success: false,
+        error: errorMessage,
+        status: response.status
+      };
+    }
+
+    const result: UpdateUserResponse = await response.json();
+    console.log('result al actualizar: ', result)
+    return {
+      success: true,
+      data: result,
+      message: 'Perfil actualizado exitosamente',
+      status: response.status
+    };
+  } catch (error: any) {
+    console.error('Error updating user profile:', error);
+    return {
+      success: false,
+      error: error.message || 'Error desconocido al actualizar el perfil',
+      status: 500
+    };
   }
 };

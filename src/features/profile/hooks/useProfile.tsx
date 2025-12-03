@@ -5,7 +5,7 @@ import useLogout from '../../../hooks/useLogout';
 import { useAuthStore } from '../../../store';
 import useMessages from '../hooks/useMessages';
 import { updateProfileData, userProfile } from '../interfaces/interfaces';
-import { memberService } from '../services/memberService';
+import { memberService, updateUser } from '../services/memberService';
 import { useProfileStore } from '../store/useProfileStore';
 
 export const useProfile = () => {
@@ -40,9 +40,18 @@ export const useProfile = () => {
 
   const [formData, setFormData] = useState({
     name: currentUser?.name || '',
+    lastName: currentUser?.lastName || '',
     email: currentUser?.email || '',
     phone: currentUser?.phone || '',
     address: currentUser?.address || '',
+    street: currentUser?.street || '',
+    externalNumber: currentUser?.externalNumber || '',
+    internalNumber: currentUser?.internalNumber || '',
+    colony: currentUser?.colony || '',
+    zipCode: currentUser?.zipCode || '',
+    city: currentUser?.city || '',
+    state: currentUser?.state || '',
+    country: currentUser?.country || '',
     membershipType: currentUser?.membershipType || 'Premium',
   });
   const [emergencyContactFormData, setEmergencyContactFormData] = useState({
@@ -58,16 +67,54 @@ export const useProfile = () => {
     }));
   }, []);
 
-  const handleSave = useCallback(() => {
+  const handleSave = useCallback(async () => {
     if (currentUser) {
-      const updateData: updateProfileData = {
-        ...formData,
-        memberSince: currentUser.memberSince ? new Date(currentUser.memberSince) : new Date()
+      // Prepare update data
+      const updateData = {
+        name: formData.name,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone ? [{ number: formData.phone, alias: 'Mobile', type: 'MOVIL' }] : [],
+        address: {
+          street: formData.street || '',
+          externalNumber: formData.externalNumber || '',
+          internalNumber: formData.internalNumber || '',
+          suburb: formData.colony || '',
+          city: formData.city || '',
+          zipCode: formData.zipCode || '',
+          state: formData.state || '',
+          country: formData.country || '',
+        }
       };
-      updateProfile(updateData);
-      setIsEditing(false);
+
+      // Call the update service
+      if (token && currentUser.userId) {
+        const response = await updateUser(currentUser.userId, updateData, token);
+
+        if (response.success) {
+          // Reload profile data after successful update
+          if (userId && token) {
+            const reloadResponse = await memberService.getMemberById(userId, token);
+            if (reloadResponse.success && reloadResponse.data) {
+              updateProfile(reloadResponse.data);
+            }
+          }
+          setIsEditing(false);
+        } else {
+          Alert.alert(
+            'Error',
+            response.error || 'Ocurrió un error al actualizar el perfil.',
+            [
+              {
+                text: 'Aceptar',
+                style: 'default'
+              }
+            ]
+          );
+        }
+      }
     }
-  }, [currentUser, formData, updateProfile]);
+  }, [currentUser, formData, token, userId, updateProfile]);
 
   const handleEmergencyContactChange = useCallback((field: string, value: string) => {
     setEmergencyContactFormData(prev => ({
@@ -102,10 +149,19 @@ export const useProfile = () => {
   const handleCancel = useCallback(() => {
     setFormData({
       name: currentUser?.name || '',
+      lastName: currentUser?.lastName || '',
       email: currentUser?.email || '',
-      membershipType: currentUser?.membershipType || 'Premium',
       phone: currentUser?.phone || '',
       address: currentUser?.address || '',
+      street: currentUser?.street || '',
+      externalNumber: currentUser?.externalNumber || '',
+      internalNumber: currentUser?.internalNumber || '',
+      colony: currentUser?.colony || '',
+      zipCode: currentUser?.zipCode || '',
+      city: currentUser?.city || '',
+      state: currentUser?.state || '',
+      country: currentUser?.country || '',
+      membershipType: currentUser?.membershipType || 'Premium',
     });
     setIsEditing(false);
   }, [currentUser]);
@@ -122,13 +178,13 @@ export const useProfile = () => {
   //-------------------------------------------------------
   // La lógica de logout ahora está centralizada en el hook useLogout
 
-  const handleAddVehicle = useCallback(() => {
-    // Navigation to add vehicle screen will be implemented here
-  }, []);
-
   const handleAddFamilyMember = useCallback(() => {
     // Esta función se llamará desde el contenedor para mostrar el formulario
     // La implementación se hará en el contenedor
+  }, []);
+
+  const handleAddVehicle = useCallback(() => {
+    // Navigation to add vehicle screen will be implemented here
   }, []);
 
   // Función para recargar los datos del perfil
