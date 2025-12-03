@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Modal,
   FlatList,
+  Switch,
 } from 'react-native';
 import Button from '../../../../shared/components/Button/Button';
 import { Ionicons } from '@expo/vector-icons';
@@ -35,6 +36,8 @@ const AddFamilyMemberForm: React.FC<AddFamilyMemberFormProps> = ({
     submitForm,
     resetForm,
     validateForm,
+    tempPass,
+    setTemporaryPass,
   } = useAddFamilyMember({
     memberId,
     onAddSuccess
@@ -208,7 +211,62 @@ const AddFamilyMemberForm: React.FC<AddFamilyMemberFormProps> = ({
             </TouchableOpacity>
           </View>
 
-          
+          {/* Toggle para pase temporal */}
+          <View style={styles.toggleContainer}>
+            <Text style={styles.label}>Pase Temporal</Text>
+            <View style={styles.toggleRow}>
+              <Text style={styles.toggleText}>No</Text>
+              <Switch
+                trackColor={{ false: '#767577', true: '#10B981' }}
+                thumbColor={tempPass ? '#ffffff' : '#f4f3f4'}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={(value) => {
+                  setTemporaryPass(value);
+                  if (!value) {
+                    updateFormData('expireAt', ''); // Clear expireAt when switching off
+                  }
+                }}
+                value={tempPass}
+              />
+              <Text style={styles.toggleText}>Sí</Text>
+            </View>
+          </View>
+
+          {/* Campo de fecha de expiración (solo visible si es pase temporal) */}
+          {tempPass && (
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Fecha de Expiración <Text style={styles.requiredIndicator}>*</Text></Text>
+              <TextInput
+                style={styles.input}
+                value={(() => {
+                  if (!formData.expireAt) return '';
+                  // Mostrar solo la parte de fecha (AAAA-MM-DD), sin el tiempo
+                  if (formData.expireAt.length >= 10) {
+                    return formData.expireAt.substring(0, 10); // Solo AAAA-MM-DD
+                  }
+                  return formData.expireAt;
+                })()}
+                onChangeText={(text) => {
+                  // Limpiar texto para aceptar solo dígitos y guiones
+                  const cleanText = text.replace(/[^0-9-]/g, '');
+
+                  // Aplicar formato automático si tiene 8 dígitos (AAAAMMDD)
+                  if (/^\d{8}$/.test(cleanText)) {
+                    const formatted = `${cleanText.substring(0, 4)}-${cleanText.substring(4, 6)}-${cleanText.substring(6, 8)}`;
+                    updateFormData('expireAt', formatted);
+                  } else {
+                    // Actualizar con el texto limpio
+                    updateFormData('expireAt', cleanText);
+                  }
+                }}
+                placeholder="YYYY-MM-DD"
+                keyboardType="numeric"
+                maxLength={10}
+                placeholderTextColor="#9ca3af"
+              />
+            </View>
+          )}
+
         </View>
 
         {/* Sección de contacto */}

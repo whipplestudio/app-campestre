@@ -22,9 +22,10 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
     name: '',
     lastName: '',
     type: 'INVITADO',
-    birthDate: '', 
+    birthDate: '',
     gender: 'MASCULINO',
     RFC: '',
+    expireAt: '', // Optional field for temporary pass
     address: {
       street: 'N/A',
       externalNumber: 'N/A',
@@ -43,7 +44,7 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
       }
     ],
     invitedById: memberId,
-    relationship: 'WIFE' 
+    relationship: 'WIFE'
   });
 
   const updateFormData = (field: keyof FormDataState, value: any) => {
@@ -125,6 +126,27 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
         return false;
       }
     }
+
+    // Validar fecha de expiración para pase temporal
+    if (tempPass && !formData.expireAt?.trim()) {
+      Alert.alert('Error', 'La fecha de expiración es requerida para el pase temporal.');
+      return false;
+    }
+
+    if (tempPass && formData.expireAt?.trim()) {
+      const expirationDate = new Date(formData.expireAt);
+      // Validar que la fecha sea válida
+      if (isNaN(expirationDate.getTime())) {
+        Alert.alert('Error', 'La fecha de expiración es inválida. Por favor ingrese una fecha válida.');
+        return false;
+      }
+      const currentDate = new Date();
+      if (expirationDate <= currentDate) {
+        Alert.alert('Error', 'La fecha de expiración debe ser posterior a la fecha actual.');
+        return false;
+      }
+    }
+
     return true;
   };
 
@@ -141,26 +163,49 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
     setLoading(true);
 
     try {
+      // Construir submitData según si es pase temporal o no
       let submitData: AddFamilyMemberRequest;
-      submitData = formData;
+      if (tempPass) {
+        // Incluir expireAt para pase temporal
+        submitData = {
+          ...formData,
+          expireAt: formData.expireAt
+        };
+      } else {
+        // Excluir expireAt para invitado normal
+        const { expireAt, ...dataWithoutExpireAt } = formData;
+        submitData = dataWithoutExpireAt;
+      }
 
       const result = await memberService.addFamilyMember(submitData, token);
 
-      Alert.alert(
-        'Éxito',
-        'Miembro de la familia agregado correctamente.',
-        [
-          {
-            text: 'Aceptar',
-            onPress: () => {
-              if (onAddSuccess) onAddSuccess();
+      if (result.success && result.data) {
+        Alert.alert(
+          'Éxito',
+          'Miembro de la familia agregado correctamente.',
+          [
+            {
+              text: 'Aceptar',
+              onPress: () => {
+                if (onAddSuccess) onAddSuccess();
+              }
             }
-          }
-        ],
-        { cancelable: false }
-      );
+          ],
+          { cancelable: false }
+        );
+      } else {
+          Alert.alert(
+            'Error',
+            result.error || 'Ocurrió un error al cargar la información del perfil.',
+            [
+              {
+                text: 'Aceptar',
+                style: 'default'
+              }
+            ]
+          );
+      }
     } catch (error: any) {
-      console.error('Error adding family member:', error);
       Alert.alert(
         'Error',
         error.message || 'Ocurrió un error al agregar el miembro de la familia.',
@@ -187,7 +232,7 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
       birthDate: new Date().toISOString().split('T')[0] + 'T00:00:00.000Z',
       gender: 'MASCULINO',
       RFC: '',
-      expireAt: undefined,
+      expireAt: '', // Optional field for temporary pass
       address: {
         street: 'N/A',
         externalNumber: 'N/A',
@@ -210,6 +255,10 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
     });
   };
 
+  const setTemporaryPass = (enabled: boolean) => {
+    setTempPass(enabled);
+  };
+
   return {
     formData,
     loading,
@@ -218,5 +267,7 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
     submitForm,
     resetForm,
     validateForm,
+    tempPass,
+    setTemporaryPass,
   };
 };

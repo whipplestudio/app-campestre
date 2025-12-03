@@ -325,7 +325,7 @@ export const memberService = {
     }
 
     try {
-      console.log('memberData is: ', memberData);
+      console.log('memberData issssssssssssssssssssss: ', memberData);
       const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/club-members`, {
         method: 'POST',
         headers: {
@@ -335,7 +335,7 @@ export const memberService = {
         },
         body: JSON.stringify(memberData),
       });
-
+      console.log('response issssssssssssssssssssss: ', response);
       if (!response.ok) {
         let errorMessage = 'Error al agregar miembro de la familia';
 

@@ -241,6 +241,23 @@ const styles = StyleSheet.create({
     color: COLORS.gray700,
     flex: 1,
   },
+  toggleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingVertical: 8,
+  },
+  toggleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  toggleText: {
+    fontSize: 15,
+    color: COLORS.gray700,
+    fontWeight: '500',
+  },
 });
 
 export default styles;
