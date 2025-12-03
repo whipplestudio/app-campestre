@@ -4,12 +4,12 @@ import { useAuthStore } from '../../../store';
 import { memberService, AddFamilyMemberRequest } from '../services/memberService';
 
 interface UseAddFamilyMemberProps {
-  memberId: number; // ID del miembro logueado
-  onAddSuccess?: () => void; // Callback para cuando se agregue exitosamente
+  memberId: number; 
+  onAddSuccess?: () => void; 
 }
 
 interface FormDataState extends Omit<AddFamilyMemberRequest, 'birthDate'> {
-  birthDate: string; // Mantenemos como string para manejarlo en el formato requerido por la API
+  birthDate: string;
 }
 
 export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMemberProps) => {
@@ -22,19 +22,18 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
     name: '',
     lastName: '',
     type: 'INVITADO',
-    birthDate: '', // Fecha vacía inicialmente
+    birthDate: '', 
     gender: 'MASCULINO',
     RFC: '',
-    expireAt: undefined, // Temporary pass expiration date
     address: {
-      street: '123 Main St',
-      externalNumber: '123',
-      internalNumber: '123',
-      suburb: 'Downtown',
-      city: 'Monterrey',
-      zipCode: '64000',
-      state: 'Nuevo León',
-      country: 'Mexico'
+      street: 'N/A',
+      externalNumber: 'N/A',
+      internalNumber: 'N/A',
+      suburb: 'N/A',
+      city: 'N/A',
+      zipCode: 'N/A',
+      state: 'N/A',
+      country: 'N/A'
     },
     phone: [
       {
@@ -44,23 +43,13 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
       }
     ],
     invitedById: memberId,
-    relationship: 'WIFE' // Valor por defecto
+    relationship: 'WIFE' 
   });
 
   const updateFormData = (field: keyof FormDataState, value: any) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
-    }));
-  };
-
-  const updateAddressData = (field: keyof AddFamilyMemberRequest['address'], value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      address: {
-        ...prev.address,
-        [field]: value
-      }
     }));
   };
 
@@ -73,24 +62,6 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
           [field]: value
         }
       ]
-    }));
-  };
-
-  const toggleTempPass = () => {
-    setTempPass(!tempPass);
-    // Clear the expiration date when turning off temporary pass
-    if (tempPass) {
-      setFormData(prev => ({
-        ...prev,
-        expireAt: undefined
-      }));
-    }
-  };
-
-  const updateExpireDate = (date: string) => {
-    setFormData(prev => ({
-      ...prev,
-      expireAt: date
     }));
   };
 
@@ -154,23 +125,6 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
         return false;
       }
     }
-
-    // Validar fecha de expiración si la pasada temporal está activada
-    if (tempPass) {
-      if (!formData.expireAt) {
-        Alert.alert('Error', 'La fecha de expiración es requerida para el pase temporal.');
-        return false;
-      }
-
-      // Validar que la fecha de expiración sea posterior a la fecha actual
-      const now = new Date();
-      const expireDate = new Date(formData.expireAt);
-      if (expireDate <= now) {
-        Alert.alert('Error', 'La fecha de expiración debe ser posterior a la fecha actual.');
-        return false;
-      }
-    }
-
     return true;
   };
 
@@ -187,21 +141,8 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
     setLoading(true);
 
     try {
-      // Prepare the data based on temporary pass status
       let submitData: AddFamilyMemberRequest;
-      
-      if (tempPass && formData.expireAt) {
-        // Include expireAt when temporary pass is enabled and a date is set
-        submitData = {
-          ...formData,
-          expireAt: formData.expireAt
-        };
-      } else {
-        // Exclude expireAt if temporary pass is not enabled
-        const { expireAt, ...dataWithoutExpire } = formData;
-        submitData = dataWithoutExpire;
-      }
-      console.log('submitData is: ', submitData);
+      submitData = formData;
 
       const result = await memberService.addFamilyMember(submitData, token);
 
@@ -248,14 +189,14 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
       RFC: '',
       expireAt: undefined,
       address: {
-        street: '123 Main St',
-        externalNumber: '123',
-        internalNumber: '123',
-        suburb: 'Downtown',
-        city: 'Monterrey',
-        zipCode: '64000',
-        state: 'Nuevo León',
-        country: 'Mexico'
+        street: 'N/A',
+        externalNumber: 'N/A',
+        internalNumber: 'N/A',
+        suburb: 'N/A',
+        city: 'N/A',
+        zipCode: 'N/A',
+        state: 'N/A',
+        country: 'N/A'
       },
       phone: [
         {
@@ -272,11 +213,7 @@ export const useAddFamilyMember = ({ memberId, onAddSuccess }: UseAddFamilyMembe
   return {
     formData,
     loading,
-    tempPass,
-    toggleTempPass,
-    updateExpireDate,
     updateFormData,
-    updateAddressData,
     updatePhoneData,
     submitForm,
     resetForm,

@@ -16,23 +16,6 @@ import { Ionicons } from '@expo/vector-icons';
 import styles from './Style';
 import { useAddFamilyMember } from '../../hooks/useAddFamilyMember';
 
-// Simple debounce utility
-const useDebounce = (value: string, delay: number) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
-};
-
 interface AddFamilyMemberFormProps {
   memberId: number;
   onCancel: () => void;
@@ -47,11 +30,7 @@ const AddFamilyMemberForm: React.FC<AddFamilyMemberFormProps> = ({
   const {
     formData,
     loading,
-    tempPass,
-    toggleTempPass,
-    updateExpireDate,
     updateFormData,
-    updateAddressData,
     updatePhoneData,
     submitForm,
     resetForm,
@@ -61,22 +40,10 @@ const AddFamilyMemberForm: React.FC<AddFamilyMemberFormProps> = ({
     onAddSuccess
   });
 
-
-
-  // State for expiration date input field
-  const [expireDateInput, setExpireDateInput] = React.useState<string>(() =>
-    formData.expireAt ? new Date(formData.expireAt).toISOString().split('T')[0] : ''
-  );
-
   const [showCancelModal, setShowCancelModal] = React.useState(false);
   const [showSubmitModal, setShowSubmitModal] = React.useState(false);
   const [showGenderPicker, setShowGenderPicker] = React.useState(false);
   const [showRelationshipPicker, setShowRelationshipPicker] = React.useState(false);
-
-  // Update local state when form data changes
-  React.useEffect(() => {
-    setExpireDateInput(formData.expireAt ? new Date(formData.expireAt).toISOString().split('T')[0] : '');
-  }, [formData.expireAt, tempPass]);
 
   const handleSelectGender = (value: string) => {
     updateFormData('gender', value);
@@ -241,58 +208,7 @@ const AddFamilyMemberForm: React.FC<AddFamilyMemberFormProps> = ({
             </TouchableOpacity>
           </View>
 
-          {/* Checkbox para pasada temporal */}
-          <View style={styles.checkboxContainer}>
-            <TouchableOpacity
-              style={[styles.checkbox, tempPass && styles.checkboxChecked]}
-              onPress={toggleTempPass}
-            >
-              {tempPass && <Ionicons name="checkmark" size={16} color="#FFFFFF" />}
-            </TouchableOpacity>
-            <Text style={styles.checkboxLabel}>Pase temporal</Text>
-          </View>
-
-          {/* Campo de fecha de expiración si la casilla está marcada */}
-          {tempPass && (
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Fecha de expiración <Text style={styles.requiredIndicator}>*</Text></Text>
-              <TextInput
-                style={styles.input}
-                value={expireDateInput}
-                onChangeText={(text) => {
-                  // Update the local input state immediately for better UX
-                  setExpireDateInput(text);
-
-                  // Format to YYYY-MM-DD if 8 digits are entered
-                  let processedText = text;
-                  if (/^\d{8}$/.test(text)) {
-                    // Convert AAAAMMDD to AAAA-MM-DD
-                    processedText = `${text.substring(0, 4)}-${text.substring(4, 6)}-${text.substring(6, 8)}`;
-                    // Update the local state with formatted value too
-                    setExpireDateInput(processedText);
-                  }
-
-                  // Update the form state with the processed text - same as birthDate but with date validation
-                  if (processedText && /^\d{4}-\d{2}-\d{2}$/.test(processedText)) {
-                    // Validate that it's a real date
-                    const date = new Date(processedText);
-                    const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-
-                    if (dateStr === processedText && !isNaN(date.getTime())) {
-                      // It's a valid date, so update the form state
-                      updateExpireDate(processedText + 'T00:00:00.000Z');
-                    }
-                  } else if (text === '') {
-                    updateExpireDate('');
-                  }
-                }}
-                placeholder="YYYY-MM-DD"
-                keyboardType="numeric"
-                maxLength={10}
-                placeholderTextColor="#9ca3af"
-              />
-            </View>
-          )}
+          
         </View>
 
         {/* Sección de contacto */}
