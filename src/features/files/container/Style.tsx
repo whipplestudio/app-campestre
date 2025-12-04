@@ -8,24 +8,23 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: 20,
+    paddingBottom: 120, // Espacio suficiente para la paginación y moreOptions
   },
   contentContainer: {
-    flex: 1,
     marginTop: 16,
   },
   loadingContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 40,
+    minHeight: 200,
   },
   noFilesContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 60,
     paddingHorizontal: 20,
+    minHeight: 300,
   },
   noFilesText: {
     fontSize: 16,
@@ -45,6 +44,21 @@ const styles = StyleSheet.create({
   paginationControlsContainer: {
     paddingVertical: 20,
     alignItems: 'center',
+  },
+  fixedPaginationContainer: {
+    backgroundColor: COLORS.gray50,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.gray200,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   paginationRow: {
     flexDirection: 'row',
