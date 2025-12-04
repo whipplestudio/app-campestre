@@ -39,6 +39,7 @@ const FilesContainer: React.FC = () => {
             placeholder="Buscar documentos..."
             onSearch={handleSearch}
             debounceTime={500}
+            inputStyle={styles.searchInput}
           />
         </View>
 

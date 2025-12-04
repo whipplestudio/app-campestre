@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: 120, // Espacio suficiente para la paginación y moreOptions
+    paddingBottom: 70, // Espacio suficiente para la paginación y moreOptions
   },
   contentContainer: {
     marginTop: 16,
@@ -112,9 +112,21 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: COLORS.primary,
   },
+  searchInput: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    fontSize: 16,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
   searchContainer: {
-    marginHorizontal: 16,
-    marginBottom: 16,
+    margin: 15,
+    marginBottom: 10,
   },
 });
 
