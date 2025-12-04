@@ -1,4 +1,5 @@
 import { useAuthStore } from '../../auth/store/useAuthStore';
+import { ServiceResponse } from '../interfaces';
 
 // In src/features/files/services/index.ts
 export const fileService = {
@@ -8,15 +9,19 @@ export const fileService = {
     search: string = '',
     order: string = 'asc',
     orderBy: string = 'name'
-  ): Promise<any> => {
+  ): Promise<ServiceResponse<any>> => {
     const { token } = useAuthStore.getState();
     if (!token) {
-      throw new Error('No authentication token available');
+      return {
+        success: false,
+        error: 'No authentication token available',
+        status: 401
+      };
     }
 
     try {
       const url = `${process.env.EXPO_PUBLIC_API_URL}/files?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}&order=${order}&orderBy=${orderBy}`;
-      
+
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -27,32 +32,54 @@ export const fileService = {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        if (response.status === 400) {
-          throw new Error(`Petición inválida. Verifica los parámetros. Detalles: ${errorText}`);
-        } else if (response.status === 401) {
-          throw new Error('No autorizado. Por favor inicia sesión nuevamente.');
-        } else if (response.status === 404) {
-          throw new Error('No encontrado. Detalles: ' + errorText);
-        } else {
-          throw new Error(`Error en la solicitud: ${response.status}. Detalles: ${errorText}`);
+        let errorMessage = 'Error al cargar los archivos';
+
+        // Manejar códigos de error específicos
+        switch (response.status) {
+          case 400:
+            errorMessage = 'Petición inválida. Verifica los parámetros.';
+            break;
+          case 500:
+            errorMessage = 'Error interno del servidor. Detalles: ' + (await response.text());
+            break;
+          default:
+            errorMessage = `Error en la solicitud: ${response.status}`;
         }
+
+        return {
+          success: false,
+          error: errorMessage,
+          status: response.status
+        };
       }
 
       // Parse the JSON response
       const result = await response.json();
-      
-      return result.data;
-    } catch (error) {
+
+      return {
+        success: true,
+        data: result.data,
+        message: result.message || 'Archivos cargados exitosamente',
+        status: response.status
+      };
+    } catch (error: any) {
       console.error('Error fetching files:', error);
-      throw error;
+      return {
+        success: false,
+        error: error.message || 'Error desconocido al obtener los archivos',
+        status: 500
+      };
     }
   },
 
-  downloadFile: async (fileId: number): Promise<string> => {
+  downloadFile: async (fileId: number): Promise<ServiceResponse<any>> => {
     const { token } = useAuthStore.getState();
     if (!token) {
-      throw new Error('No authentication token available');
+      return {
+        success: false,
+        error: 'No authentication token available',
+        status: 401
+      };
     }
 
     try {
@@ -65,36 +92,75 @@ export const fileService = {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        if (response.status === 500) {
-          throw new Error('Error interno del servidor. Detalles: ' + errorText);
-        } else if (response.status === 401) {
-          throw new Error('No autorizado. Por favor inicia sesión nuevamente.');
-        } else {
-          throw new Error(`Error en la solicitud: ${response.status}. Detalles: ${errorText}`);
+        let errorMessage = 'Error al descargar el archivo';
+
+        // Manejar códigos de error específicos
+        switch (response.status) {
+          case 404:
+            errorMessage = 'Archivo no encontrado.';
+            break;
+          case 500:
+            errorMessage = 'Error interno del servidor. Detalles: ' + (await response.text());
+            break;
+          default:
+            errorMessage = `Error en la solicitud: ${response.status}`;
         }
+
+        return {
+          success: false,
+          error: errorMessage,
+          status: response.status
+        };
       }
 
       // Parse the JSON response to get the signed URL
       const result = await response.json();
       console.log('Download API response:', result);
-       
+
       // Return the signed URL from the response
       if (result.data && result.data.signedUrl) {
-        return result.data.signedUrl;
+        return {
+          success: true,
+          data: result.data.signedUrl,
+          message: 'URL de descarga obtenida exitosamente',
+          status: response.status
+        };
       } else if (result.data && result.data.url) {
-        return result.data.url;
+        return {
+          success: true,
+          data: result.data.url,
+          message: 'URL de descarga obtenida exitosamente',
+          status: response.status
+        };
       } else if (result.signedUrl) {
-        return result.signedUrl;
+        return {
+          success: true,
+          data: result.signedUrl,
+          message: 'URL de descarga obtenida exitosamente',
+          status: response.status
+        };
       } else if (result.url) {
-        return result.url;
+        return {
+          success: true,
+          data: result.url,
+          message: 'URL de descarga obtenida exitosamente',
+          status: response.status
+        };
       } else {
         console.log('Response structure:', JSON.stringify(result, null, 2));
-        throw new Error('No se encontró la URL de descarga en la respuesta');
+        return {
+          success: false,
+          error: 'No se encontró la URL de descarga en la respuesta',
+          status: 500
+        };
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error downloading file:', error);
-      throw error;
+      return {
+        success: false,
+        error: error.message || 'Error desconocido al descargar el archivo',
+        status: 500
+      };
     }
   },
 };

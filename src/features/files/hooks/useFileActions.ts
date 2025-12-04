@@ -33,8 +33,7 @@ export const useFileActions = () => {
   // Fetch files from service
   const fetchFiles = async (page: number = 1) => {
     setLoading(true);
-    setError(null);
-    
+
     try {
       const response = await fileService.getFiles(
         page,
@@ -43,15 +42,21 @@ export const useFileActions = () => {
         'asc',
         'name'
       );
-      
-      const filesData = response?.files || [];
-      const paginationData = response?.meta || {
+
+      if (!response.success) {
+        Alert.alert('Error', response.error || 'Error al cargar los archivos');
+        setFiles([]);
+        return;
+      }
+
+      const filesData = response.data?.files || [];
+      const paginationData = response.data?.meta || {
         page,
         limit: pagination.limit,
         total: filesData.length,
         totalPages: Math.ceil(filesData.length / pagination.limit),
       };
-      
+
       // Mapea los datos para asegurar que coincidan con la interfaz File
       const mappedFiles = filesData.map((file: File) => ({
         id: Number(file.id), // Convierte id a número
@@ -62,12 +67,11 @@ export const useFileActions = () => {
         createdAt: file.createdAt || new Date().toISOString(),
         updatedAt: file.updatedAt || new Date().toISOString(),
       }));
-      
+
       setFiles(mappedFiles);
       setPagination(paginationData);
     } catch (err: any) {
-      console.error('Error fetching files:', err);
-      setError(err.message || 'Error al cargar los archivos');
+      Alert.alert('Error', err.message || 'Error desconocido al cargar los archivos');
       setFiles([]);
     } finally {
       setLoading(false);
@@ -99,12 +103,18 @@ export const useFileActions = () => {
   const handleDownload = async (fileId: number) => {
     try {
       // Get the signed URL from the service
-      const downloadUrl = await fileService.downloadFile(fileId);
+      const response = await fileService.downloadFile(fileId);
 
-      console.log("downloadUrl", downloadUrl) 
-      
+      if (!response.success) {
+        Alert.alert('Error', response.error || 'Error al descargar el archivo');
+        return;
+      }
+
+      const downloadUrl = response.data;
+
+      console.log("downloadUrl", downloadUrl)
+
       if (!downloadUrl) {
-        console.error('No se pudo obtener la URL de descarga');
         Alert.alert('Error', 'No se pudo obtener la URL de descarga del archivo');
         return;
       }
@@ -125,7 +135,6 @@ export const useFileActions = () => {
         }
       }
     } catch (err: any) {
-      console.error('Download error:', err);
       Alert.alert('Error', err.message || 'Error al descargar el archivo');
     }
   };

@@ -52,3 +52,11 @@ export interface FileHeaderProps {
   description: string;
   icon?: string;
 }
+
+export interface ServiceResponse<T = any> {
+  success: boolean;
+  data?: T;
+  message?: string;
+  error?: string;
+  status: number;
+}
