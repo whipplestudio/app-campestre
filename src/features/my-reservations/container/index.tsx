@@ -11,7 +11,11 @@ import { useMyReservations } from '../hooks';
 import { Reservation } from '../interfaces';
 import styles from './Style';
 
-const MyReservationsContainer = () => {
+interface MyReservationsContainerProps {
+  navigation?: any;
+}
+
+const MyReservationsContainer: React.FC<MyReservationsContainerProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const { userId } = useAuthStore.getState();
   const { getReservations, cancelReservation } = useMyReservations();
@@ -68,6 +72,15 @@ const MyReservationsContainer = () => {
     return success;
   };
 
+  const handleGoBack = () => {
+    if (navigation) {
+      navigation.goBack(); // This will go back to the previous screen
+    } else {
+      // Fallback if navigation is not provided
+      console.log('Navigation not available');
+    }
+  };
+
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
@@ -75,6 +88,7 @@ const MyReservationsContainer = () => {
           <Header
             title={t('reservations.myReservations') || 'Mis Reservaciones'}
             subtitle={'Consulta y gestiona todas tus reservaciones activas'}
+            onBack={handleGoBack}
           />
           <View style={styles.loadingContainer}>
             <View style={styles.loadingContent}>
@@ -90,8 +104,9 @@ const MyReservationsContainer = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.contentContainer}>
         <Header
-          title={t('reservations.myReservations') || 'Mis reservaciones'}
+          title={t('reservations.myReservations') || 'Mis Reservaciones'}
           subtitle={'Consulta y gestiona todas tus reservaciones activas'}
+          onBack={handleGoBack}
         />
 
         <ScrollView

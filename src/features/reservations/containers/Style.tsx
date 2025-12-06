@@ -11,6 +11,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
     padding: 16,
+    paddingBottom: 120,
   },
   header: {
     backgroundColor: COLORS.primary,
@@ -92,6 +93,16 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginHorizontal: 15,
     color: COLORS.gray800,
+  },
+  myReservationsButton: {
+    marginTop: 16,
+  },
+  fixedBottomButton: {
+    position: 'absolute',
+    bottom: 90, // Ajustar para dejar espacio para el menú inferior (82px + algo de margen)
+    left: 16,
+    right: 16,
+    zIndex: 10,
   },
 });
 

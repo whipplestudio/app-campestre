@@ -1,21 +1,31 @@
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS } from '../../../../shared/theme/colors';
 
 interface HeaderProps {
   title: string;
   subtitle: string;
+  onBack?: () => void; // Prop opcional para la función de retroceso
 }
 
-const Header = ({ title, subtitle }: HeaderProps) => {
+const Header = ({ title, subtitle, onBack }: HeaderProps) => {
   return (
     <View style={styles.container}>
-      <View style={styles.iconContainer}>
-        <Ionicons name="calendar-outline" size={40} color={COLORS.primary} />
-      </View>
-      <View style={styles.textContainer}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.subtitle}>{subtitle}</Text>
+      <View style={styles.headerContent}>
+        {onBack && (
+          <TouchableOpacity style={styles.backButton} onPress={onBack}>
+            <Ionicons name="chevron-back" size={24} color={COLORS.primary} />
+          </TouchableOpacity>
+        )}
+        <View style={styles.contentContainer}>
+          <View style={styles.iconContainer}>
+            <Ionicons name="calendar-outline" size={40} color={COLORS.primary} />
+          </View>
+          <View style={styles.textContainer}>
+            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.subtitle}>{subtitle}</Text>
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -29,14 +39,24 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     marginTop: 16,
     marginHorizontal: 16,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
     elevation: 3,
     shadowColor: COLORS.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backButton: {
+    padding: 8,
+    marginRight: 8,
+  },
+  contentContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
   iconContainer: {
     marginRight: 12,

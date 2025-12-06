@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, Text, View } from 'react-native';
 
 // Components
@@ -20,6 +20,9 @@ import styles from './Style';
 
 // Mocks
 import { mockServices } from '../services/reservationService';
+
+// My Reservations component
+import MyReservationsScreen from '../../my-reservations';
 
 // Store
 
@@ -61,14 +64,30 @@ const ReservationsContainer = () => {
     resetSelection,
     loadTimeSlotsForCourt
   } = useReservation();
- 
+
+  const [showMyReservations, setShowMyReservations] = useState(false);
+
+  // Si showMyReservations es true, mostrar la pantalla de mis reservaciones
+  if (showMyReservations) {
+    return (
+      <MyReservationsScreen
+        navigation={{
+          goBack: () => setShowMyReservations(false)
+        }}
+      />
+    );
+  }
+
   // Si no hay servicio seleccionado, mostrar la lista de servicios (solo Padel)
   if (!selectedService) {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
           <Text style={styles.questionText}>{messages.CONTAINER.QUESTION}</Text>
-          <ScrollView contentContainerStyle={styles.servicesContainer}>
+          <ScrollView
+            contentContainerStyle={styles.servicesContainer}
+            showsVerticalScrollIndicator={false}
+          >
             {mockServices.map((service) => (
               <ServiceCard
                 key={service.id}
@@ -77,6 +96,15 @@ const ReservationsContainer = () => {
               />
             ))}
           </ScrollView>
+
+          {/* Botón fijo de ver mis reservaciones en la parte inferior */}
+          <View style={styles.fixedBottomButton}>
+            <Button
+              text="Ver mis reservaciones"
+              variant="outline"
+              onPress={() => setShowMyReservations(true)}
+            />
+          </View>
         </View>
       </SafeAreaView>
     );
