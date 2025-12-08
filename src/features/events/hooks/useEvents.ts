@@ -93,13 +93,23 @@ export const useEvents = () => {
     }
   }, [searchQuery, selectedEventType, selectedDate, currentMonth, currentYear, setEvents, setError, setPagination]);
 
-  // Fetch events only once on initial load
+  // Set up auto-refresh every 30 minutes (1800000 ms)
   useEffect(() => {
+    const autoRefreshInterval = setInterval(() => {
+      fetchEvents();
+    }, 1800000); // 30 minutes = 1800000 ms
+
+    // Initial load
     if (isInitialLoad.current) {
       isInitialLoad.current = false;
       fetchEvents(1);
     }
-  }, [fetchEvents]);
+
+    // Cleanup interval on unmount
+    return () => {
+      clearInterval(autoRefreshInterval);
+    };
+  }, [searchQuery, selectedEventType, selectedDate, currentMonth, currentYear, fetchEvents]);
 
   // Navigation
   const goToPreviousMonth = useCallback(() => {

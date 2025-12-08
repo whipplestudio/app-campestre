@@ -10,6 +10,11 @@ const styles = StyleSheet.create({
   imageContainer: {
     marginBottom: 12,
   },
+  image: {
+    width: '100%',
+    height: 120,
+    borderRadius: 8,
+  },
   imagePlaceholder: {
     width: '100%',
     height: 120,

@@ -8,7 +8,8 @@ export interface Survey {
   participantCount: number; // e.g. 156 people
   questionCount: number; // e.g. 8 questions
   isActive: boolean;
-  imageUrl?: string; // Placeholder for image URL
+  image?: string; // Image URL (replaces imageUrl)
+  showResponseCount?: boolean; // Whether to show response count
   averageRating?: number; // Average rating for completed surveys
   dateCreated?: string;
   dateCompleted?: string;

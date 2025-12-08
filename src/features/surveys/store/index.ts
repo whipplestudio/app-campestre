@@ -1,6 +1,5 @@
 import { create } from 'zustand';
-import { Survey, SurveyFilter, SurveyCategory } from '../interfaces';
-import { surveyService } from '../services';
+import { Survey, SurveyCategory, SurveyFilter } from '../interfaces';
 
 interface SurveyStore {
   surveys: Survey[];
@@ -27,7 +26,7 @@ interface SurveyStore {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   setPagination: (pagination: any) => void;
-  fetchSurveys: (page?: number) => Promise<void>;
+  fetchSurveys: (page?: number) => Promise<void>; // Mantenida para compatibilidad, pero ahora se llama desde el hook
   fetchNextPage: () => Promise<void>;
   fetchPreviousPage: () => Promise<void>;
   goToPage: (page: number) => Promise<void>;
@@ -92,82 +91,14 @@ export const useSurveyStore = create<SurveyStore>((set, get) => ({
   },
 
   fetchSurveys: async (page = 1) => {
-    set({ loading: true, error: null });
-    try {
-      // Mapear categoría a string para la API
-      let category = '';
-      if (get().currentFilter.category !== SurveyCategory.ALL) {
-        switch(get().currentFilter.category) {
-          case SurveyCategory.SERVICES:
-            category = 'SERVICES';
-            break;
-          case SurveyCategory.RESTAURANT:
-            category = 'RESTAURANT';
-            break;
-          case SurveyCategory.SPORTS:
-            category = 'SPORTS';
-            break;
-          case SurveyCategory.EVENTS:
-            category = 'EVENTS';
-            break;
-          default:
-            category = '';
-        }
+    set({ loading: true });
+    set({
+      pagination: {
+        ...get().pagination,
+        page: page
       }
-      const search = '';
-      const order = 'asc';
-      const limit = get().pagination.limit;
-
-      const response = await surveyService.getSurveys(page, limit, search, order, category);
-
-      if (response.success && response.data) {
-        // Usar los datos y la paginación correspondiente según el estado actual
-        const { currentFilter } = get();
-        let surveys, meta;
-
-        if (currentFilter.status === 'activas') {
-          surveys = response.data.unansweredSurveys;
-          meta = response.data.unansweredMeta;
-        } else if (currentFilter.status === 'completadas') {
-          surveys = response.data.answeredSurveys;
-          meta = response.data.answeredMeta;
-        } else {
-          // Por defecto, usar unanswered (encuestas activas)
-          surveys = response.data.unansweredSurveys;
-          meta = response.data.unansweredMeta;
-        }
-
-        set({
-          surveys: surveys,
-          pagination: {
-            page: meta.page,
-            limit: meta.limit,
-            total: meta.total,
-            totalPages: meta.totalPages,
-          }
-        });
-
-        // Calcular estadísticas usando todos los datos
-        const activeSurveys = response.data.unansweredSurveys.length;
-        const completedSurveys = response.data.answeredSurveys.length;
-
-        set({
-          activeSurveys,
-          completedSurveys,
-          averageRating: 0, // Valor por defecto, ya que la API no proporciona este dato
-        });
-      } else {
-        set({
-          error: response.error || 'Error al cargar las encuestas',
-          loading: false
-        });
-      }
-    } catch (error: any) {
-      console.error('Error fetching surveys:', error);
-      set({ error: error.message || 'Error fetching surveys', loading: false });
-    } finally {
-      set({ loading: false });
-    }
+    });
+    set({ loading: false });
   },
 
   fetchNextPage: async () => {

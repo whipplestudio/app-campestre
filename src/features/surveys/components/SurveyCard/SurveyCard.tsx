@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View, Image } from 'react-native';
 import Card from '../../../../shared/components/Card';
 import { COLORS } from '../../../../shared/theme/colors';
 import useMessages from '../../hooks/useMessage';
@@ -44,11 +44,19 @@ const SurveyCard: React.FC<SurveyCardProps> = ({ survey, onPress, surveyId }) =>
 
   return (
     <Card style={styles.card}>
-      {/* Survey Image Placeholder */}
+      {/* Survey Image - Use the image URL if available */}
       <View style={styles.imageContainer}>
-        <View style={styles.imagePlaceholder}>
-          <Text style={styles.placeholderText}>IMG</Text>
-        </View>
+        {survey.image ? (
+          <Image
+            source={{ uri: survey.image }}
+            style={styles.image}
+            resizeMode="cover"
+          />
+        ) : (
+          <View style={styles.imagePlaceholder}>
+            <Text style={styles.placeholderText}>IMG</Text>
+          </View>
+        )}
       </View>
 
       {/* Survey Details */}
@@ -62,10 +70,13 @@ const SurveyCard: React.FC<SurveyCardProps> = ({ survey, onPress, surveyId }) =>
             <Ionicons name="time-outline" size={16} color={COLORS.gray600} />
             <Text style={styles.iconText}>{survey.estimatedTime}</Text>
           </View>
-          <View style={styles.iconContainer}>
-            <Ionicons name="people-outline" size={16} color={COLORS.gray600} />
-            <Text style={styles.iconText}>{survey.participantCount} {messages.SURVEYCARD.PEOPLE}</Text>
-          </View>
+          {/* Mostrar el contador de personas solo si showResponseCount es true */}
+          {survey.showResponseCount !== false && (
+            <View style={styles.iconContainer}>
+              <Ionicons name="people-outline" size={16} color={COLORS.gray600} />
+              <Text style={styles.iconText}>{survey.participantCount} {messages.SURVEYCARD.PEOPLE}</Text>
+            </View>
+          )}
           <View style={styles.iconContainer}>
             <Ionicons name="chatbubble-ellipses-outline" size={16} color={COLORS.gray600} />
             <Text style={styles.iconText}>{survey.questionCount} {messages.SURVEYCARD.QUESTIONS}</Text>
