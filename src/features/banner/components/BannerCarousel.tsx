@@ -13,9 +13,9 @@ interface BannerCarouselProps {
 
 const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners, loading = false, error = null }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [scrollViewOffset, setScrollViewOffset] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
-  const autoPlayInterval = useRef<NodeJS.Timeout | null>(null);
+  const isScrolling = useRef(false); // Para saber si el usuario está deslizando
+  const autoPlayInterval = useRef<number | NodeJS.Timeout | null>(null);
 
   // Auto-rotate banners every 30 seconds
   useEffect(() => {
@@ -44,11 +44,15 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners, loading = fals
     }
   };
 
-  const handleScroll = (event: any) => {
+  const handleScrollBegin = () => {
+    isScrolling.current = true;
+  };
+
+  const handleScrollEnd = (event: any) => {
     const contentOffset = event.nativeEvent.contentOffset.x;
-    const currentIndex = Math.round(contentOffset / width);
-    setCurrentIndex(currentIndex);
-    setScrollViewOffset(contentOffset);
+    const newCurrentIndex = Math.round(contentOffset / width);
+    setCurrentIndex(newCurrentIndex);
+    isScrolling.current = false;
   };
 
   const scrollToIndex = (index: number) => {
@@ -88,7 +92,8 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners, loading = fals
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
+        onScrollBeginDrag={handleScrollBegin}
+        onMomentumScrollEnd={handleScrollEnd}
         scrollEventThrottle={16}
         snapToInterval={width}
         snapToAlignment="start"
@@ -97,8 +102,12 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners, loading = fals
         {banners.map((banner, index) => (
           <View key={banner.id} style={[styles.bannerContainer, { width }]}>
             {banner.image ? (
-              <Image 
-                source={{ uri: `data:image/jpeg;base64,${banner.image}` }} 
+              <Image
+                source={{
+                  uri: banner.image.startsWith('http')
+                    ? banner.image
+                    : `data:image/jpeg;base64,${banner.image}`
+                }}
                 style={styles.bannerImage}
                 resizeMode="cover"
               />
@@ -118,15 +127,18 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners, loading = fals
       {/* Navigation Controls */}
       <View style={styles.navigationContainer}>
         {/* Previous Button */}
-        <TouchableOpacity 
-          style={styles.navButton} 
-          onPress={goToPrev}
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => {
+            const prevIndex = (currentIndex - 1 + banners.length) % banners.length;
+            scrollToIndex(prevIndex);
+          }}
           disabled={banners.length <= 1}
         >
-          <Ionicons 
-            name="chevron-back" 
-            size={24} 
-            color={banners.length <= 1 ? '#ccc' : '#fff'} 
+          <Ionicons
+            name="chevron-back"
+            size={24}
+            color={banners.length <= 1 ? '#ccc' : '#fff'}
           />
         </TouchableOpacity>
 
@@ -145,15 +157,18 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners, loading = fals
         </View>
 
         {/* Next Button */}
-        <TouchableOpacity 
-          style={styles.navButton} 
-          onPress={goToNext}
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => {
+            const nextIndex = (currentIndex + 1) % banners.length;
+            scrollToIndex(nextIndex);
+          }}
           disabled={banners.length <= 1}
         >
-          <Ionicons 
-            name="chevron-forward" 
-            size={24} 
-            color={banners.length <= 1 ? '#ccc' : '#fff'} 
+          <Ionicons
+            name="chevron-forward"
+            size={24}
+            color={banners.length <= 1 ? '#ccc' : '#fff'}
           />
         </TouchableOpacity>
       </View>
@@ -191,10 +206,18 @@ const styles = StyleSheet.create({
   bannerContainer: {
     height: 180,
     position: 'relative',
+    width: width, // Aseguramos que el contenedor tenga el ancho correcto
+    overflow: 'hidden', // Asegura que nada se desborde del contenedor
   },
   bannerImage: {
     width: '100%',
     height: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    resizeMode: 'cover', // Asegura que la imagen cubra todo el contenedor manteniendo proporciones
   },
   placeholderImage: {
     width: '100%',
@@ -210,20 +233,25 @@ const styles = StyleSheet.create({
   bannerContent: {
     position: 'absolute',
     bottom: 0,
-    left: 0,
-    right: 0,
+    left: '-2%', // Añade un pequeño margen en los lados
+    right: '7%', // Añade un pequeño margen en los lados
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     padding: 16,
+    minHeight: 60, // Asegura un mínimo espacio para el texto
+    maxWidth: '94%', // Limita el ancho máximo del contenido de texto
+    alignSelf: 'center', // Centra el contenido horizontalmente
   },
   title: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 4,
+    textAlign: 'center',
   },
   description: {
     color: '#fff',
     fontSize: 14,
+    textAlign: 'center',
   },
   navigationContainer: {
     flexDirection: 'row',

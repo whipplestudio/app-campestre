@@ -29,7 +29,14 @@ export const bannerService = {
       }
 
       const data = await response.json();
-      return data;
+      console.log('el response en banner es: ', data)
+
+      // Transform the API response to match the expected format
+      const transformedData = {
+        banners: data.data || [] // Extract banners from the 'data' property
+      };
+
+      return transformedData;
     } catch (error) {
       console.error('Error fetching available banners:', error);
       throw error;
