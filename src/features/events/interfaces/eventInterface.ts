@@ -11,6 +11,8 @@ export interface Event {
   ocupedSpots: number; // Number of occupied spots
   isRegistered: boolean; // Array of user IDs who registered
   image?: string;
+  inscritedShow?: boolean; // Whether to show registration count
+  progressShow?: boolean; // Whether to show progress bar
 }
 
 export interface EventState {

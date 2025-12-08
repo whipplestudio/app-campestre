@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Alert, Text, View } from 'react-native';
+import { Alert, Image, Text, View } from 'react-native';
 import Button from '../../../../shared/components/Button/Button';
 import Card from '../../../../shared/components/Card/Card';
 import { COLORS } from '../../../../shared/theme/colors';
@@ -79,9 +79,17 @@ const EventCard: React.FC<EventCardProps> = ({
 
   return (
     <Card style={styles.card}>
-      <View style={styles.imagePlaceholder}>
-        <Text style={styles.imagePlaceholderText}>Imagen del Evento</Text>
-      </View>
+      {event.image ? (
+        <Image
+          source={{ uri: event.image }}
+          style={styles.eventImage}
+          resizeMode="cover"
+        />
+      ) : (
+        <View style={styles.imagePlaceholder}>
+          <Text style={styles.imagePlaceholderText}>Imagen del Evento</Text>
+        </View>
+      )}
 
       <View style={styles.eventNameContainer}>
         <Text style={styles.eventName}>{event.name}</Text>
@@ -114,28 +122,32 @@ const EventCard: React.FC<EventCardProps> = ({
           <Text style={styles.infoText}>{event.location}</Text>
         </View>
 
-        <View style={styles.infoItem}>
-          <Ionicons name="people" size={16} color={COLORS.gray500} />
-          <Text style={styles.infoText}>
-            {event.totalSpots - event.availableSpots} {messages.EVENTCARD.REGISTERED} {event.totalSpots}
-          </Text>
-        </View>
+        {event.inscritedShow !== false && (
+          <View style={styles.infoItem}>
+            <Ionicons name="people" size={16} color={COLORS.gray500} />
+            <Text style={styles.infoText}>
+              {event.totalSpots - event.availableSpots} {messages.EVENTCARD.REGISTERED} {event.totalSpots}
+            </Text>
+          </View>
+        )}
       </View>
 
-      <View style={styles.progressBarContainer}>
-        <View style={styles.progressBar}>
-          <View
-            style={[
-              styles.progressFill,
-              {
-                width: `${progressPercentage}%`,
-                backgroundColor: progressPercentage > 75 ? COLORS.warning : COLORS.primary
-              }
-            ]}
-          />
+      {event.progressShow !== false && (
+        <View style={styles.progressBarContainer}>
+          <View style={styles.progressBar}>
+            <View
+              style={[
+                styles.progressFill,
+                {
+                  width: `${progressPercentage}%`,
+                  backgroundColor: progressPercentage > 75 ? COLORS.warning : COLORS.primary
+                }
+              ]}
+            />
+          </View>
+          <Text style={styles.progressText}>{progressPercentage}% {messages.EVENTCARD.BUSY}</Text>
         </View>
-        <Text style={styles.progressText}>{progressPercentage}% {messages.EVENTCARD.BUSY}</Text>
-      </View>
+      )}
 
       {isRegistered ? (
         <View style={styles.registeredContainer}>

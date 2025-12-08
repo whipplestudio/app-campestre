@@ -7,6 +7,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     backgroundColor: COLORS.white,
   },
+  eventImage: {
+    height: 120,
+    width: '100%',
+    borderRadius: 8,
+    marginBottom: 12,
+  },
   imagePlaceholder: {
     height: 120,
     backgroundColor: COLORS.gray100,

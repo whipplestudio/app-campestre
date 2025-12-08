@@ -13,6 +13,9 @@ interface EventsApiResponse {
       date: string;
       totalSpots: number;
       location: string;
+      image?: string;
+      inscritedShow?: boolean;
+      progressShow?: boolean;
       createdAt: string;
       updatedAt: string;
       dateISO: string;
@@ -277,7 +280,7 @@ export const eventsService = {
       }
 
       const result: EventsApiResponse = await response.json();
-
+      console.log('Result de eventos:', result.data.events);
       // Convertir los datos de la API al formato de Event
       const events: Event[] = result.data.events.map(apiEvent => ({
         id: apiEvent.id.toString(),
@@ -291,6 +294,9 @@ export const eventsService = {
         totalSpots: apiEvent.totalSpots,
         isRegistered: apiEvent.isRegistered, // La API no proporciona esta información directamente
         ocupedSpots: apiEvent.totalSpots - apiEvent.availableSpots,
+        image: apiEvent.image,
+        inscritedShow: apiEvent.inscritedShow,
+        progressShow: apiEvent.progressShow,
       }));
       console.log('EVENTOS:', events);
 
