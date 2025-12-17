@@ -9,17 +9,20 @@ config.resolver.sourceExts = [...config.resolver.sourceExts, 'mjs', 'cjs', 'css'
 
 // Configure resolver with custom logic
 config.resolver.resolveRequest = (context, moduleName, platform) => {
+  // Determine project root - use process.cwd() for Vercel compatibility
+  const projectRoot = process.cwd();
+  
   // Handle web-specific mocks first
   if (platform === 'web') {
     if (moduleName === 'react-native-worklets') {
       return {
-        filePath: path.resolve(__dirname, 'worklets-mock.js'),
+        filePath: path.resolve(projectRoot, 'worklets-mock.js'),
         type: 'sourceFile',
       };
     }
     if (moduleName === 'react-native-reanimated') {
       return {
-        filePath: path.resolve(__dirname, 'reanimated-mock.js'),
+        filePath: path.resolve(projectRoot, 'reanimated-mock.js'),
         type: 'sourceFile',
       };
     }
@@ -28,7 +31,7 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
   // Handle @ path aliases - resolve from project root
   if (moduleName.startsWith('@/')) {
     const relativePath = moduleName.substring(2); // Remove '@/'
-    const absolutePath = path.resolve(__dirname, relativePath);
+    const absolutePath = path.resolve(projectRoot, relativePath);
     
     // First check if file exists as-is (for assets with extensions like .png)
     if (fs.existsSync(absolutePath)) {
@@ -63,13 +66,22 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
       }
     }
     
-    // If still not found, throw descriptive error
-    throw new Error(
-      `Unable to resolve module ${moduleName}. Tried:\n` +
-      `  - ${absolutePath} (as-is)\n` +
-      `  - ${absolutePath} with extensions: ${codeExtensions.join(', ')}\n` +
-      `  - ${absolutePath}/index with extensions: ${codeExtensions.join(', ')}`
-    );
+    // If still not found, fall back to default resolver instead of throwing
+    // This allows metro to try other resolution strategies
+    try {
+      return context.resolveRequest(context, moduleName, platform);
+    } catch (e) {
+      // If default resolver also fails, provide detailed error
+      throw new Error(
+        `Unable to resolve module ${moduleName} from ${context.originModulePath || 'unknown'}.\n` +
+        `Project root: ${projectRoot}\n` +
+        `Tried:\n` +
+        `  - ${absolutePath} (as-is)\n` +
+        `  - ${absolutePath} with extensions: ${codeExtensions.join(', ')}\n` +
+        `  - ${absolutePath}/index with extensions: ${codeExtensions.join(', ')}\n` +
+        `Original error: ${e.message}`
+      );
+    }
   }
 
   // Use default resolver for everything else
