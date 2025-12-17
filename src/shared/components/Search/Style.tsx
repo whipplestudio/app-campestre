@@ -32,5 +32,6 @@ export const styles = StyleSheet.create({
   },
   clearButton: {
     padding: 4,
+    cursor: 'pointer' as any,
   }
 });

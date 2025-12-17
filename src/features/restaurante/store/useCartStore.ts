@@ -1,6 +1,5 @@
 import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
-import { CartState, CartItem, Dish } from '../interfaces/dishInterface';
+import { CartState, Dish } from '../interfaces/dishInterface';
 
 interface ExtendedCartState extends CartState {
   totalItems: number;
@@ -8,9 +7,7 @@ interface ExtendedCartState extends CartState {
   updateTotals: () => void;
 }
 
-export const useCartStore = create<ExtendedCartState>()(
-  devtools(
-    (set, get) => ({
+export const useCartStore = create<ExtendedCartState>()((set, get) => ({
       items: [],
       totalItems: 0,
       totalPrice: 0,
@@ -98,7 +95,5 @@ export const useCartStore = create<ExtendedCartState>()(
       getTotalPrice: () => get().totalPrice,
       
       getItemsCount: () => get().items.length,
-    }),
-    { name: 'cart-store' }
-  )
+    })
 );

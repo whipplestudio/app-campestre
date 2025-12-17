@@ -1,13 +1,22 @@
 import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
 import { MenusState } from '../interfaces/menuInterface';
 import { menuService } from '../services/menuService';
 
-export const useMenusStore = create<MenusState>()(
-  devtools(
-    (set) => ({
+export const useMenusStore = create<MenusState>()((set) => ({
       menus: menuService.getSampleMenus(),
+      loading: false,
+      error: null,
       setMenus: (menus) => set({ menus }),
+      fetchMenus: async () => {
+        set({ loading: true, error: null });
+        try {
+          const menus = menuService.getSampleMenus();
+          set({ menus, loading: false });
+        } catch (error) {
+          set({ error: error instanceof Error ? error.message : 'Error loading menus', loading: false });
+        }
+      },
+      getMenusByType: (type) => menuService.getSampleMenus().filter(menu => menu.type === type),
       addMenu: (menu) => 
         set((state) => ({
           menus: [...state.menus, { ...menu, id: Date.now().toString() }]
@@ -22,7 +31,5 @@ export const useMenusStore = create<MenusState>()(
         set((state) => ({
           menus: state.menus.filter((menu) => menu.id !== id)
         }))
-    }),
-    { name: 'menus-store' }
-  )
+    })
 );

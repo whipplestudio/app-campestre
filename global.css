@@ -1,0 +1,114 @@
+/* Global CSS for Web Platform */
+
+/* Fix TouchableOpacity and Pressable components */
+[role="button"],
+button,
+[data-focusable="true"] {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Ensure all interactive elements have pointer cursor */
+[onclick],
+[onpress] {
+  cursor: pointer !important;
+}
+
+/* Fix for React Native Web TouchableOpacity */
+div[style*="cursor: pointer"],
+div[aria-role="button"],
+div[role="button"] {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+/* Ensure pointer events work correctly */
+* {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+/* Fix for links */
+a {
+  cursor: pointer !important;
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+/* Improve button interactivity */
+button:hover,
+[role="button"]:hover {
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+button:active,
+[role="button"]:active {
+  opacity: 0.7;
+}
+
+button:disabled,
+[role="button"][aria-disabled="true"] {
+  cursor: not-allowed !important;
+  opacity: 0.5;
+}
+
+/* Fix for gesture handler components */
+[data-gesture-handler-id] {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+/* Ensure touch targets are properly sized */
+[role="button"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Fix for modal overlays */
+[role="dialog"],
+[role="alertdialog"] {
+  pointer-events: auto !important;
+}
+
+/* Fix scrolling on web */
+body {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Improve form inputs */
+input,
+textarea,
+select {
+  cursor: text !important;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid #10B981;
+  outline-offset: 2px;
+}
+
+/* Fix for React Native Web specific classes */
+.r-1loqt21 {
+  cursor: pointer !important;
+}
+
+.r-1otgn73 {
+  touch-action: manipulation !important;
+}
+
+/* Ensure all touchable views work */
+[style*="touchable"],
+[class*="touchable"] {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}

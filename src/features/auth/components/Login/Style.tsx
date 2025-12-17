@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
       borderRadius: 8,
       alignItems: 'center',
       marginTop: 8,
+      cursor: 'pointer' as any,
     },
     buttonText: {
       color: COLORS.white,
@@ -47,6 +48,7 @@ const styles = StyleSheet.create({
     forgotPasswordButton: {
       marginTop: 16,
       alignItems: 'center',
+      cursor: 'pointer' as any,
     },
     linkText: {
       color: COLORS.primaryLight,

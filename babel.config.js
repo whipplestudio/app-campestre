@@ -1,10 +1,15 @@
 module.exports = function(api) {
   api.cache(true);
+  const isWeb = process.env.EXPO_PLATFORM === 'web';
+  
   return {
-    presets: ['babel-preset-expo'],
+    presets: [
+      ['babel-preset-expo', { 
+        unstable_transformImportMeta: true 
+      }]
+    ],
     plugins: [
-      'react-native-reanimated/plugin',
-      'expo-router/babel',
+      ...(isWeb ? [] : ['react-native-reanimated/plugin']),
     ],
   };
 };

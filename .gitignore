@@ -31,6 +31,8 @@ yarn-error.*
 
 # local env files
 .env
+.env.local
+.env.production
 
 # typescript
 *.tsbuildinfo
@@ -42,3 +44,8 @@ app-example
 /android
 
 AuthKey_HC983ATRP7.p8
+
+# Elastic Beanstalk
+.elasticbeanstalk/
+.ebignore
+.vercel

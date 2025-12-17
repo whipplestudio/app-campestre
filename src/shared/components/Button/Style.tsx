@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth: 1,
+      cursor: 'pointer' as any,
     },
     buttonContent: {
       flexDirection: 'row',

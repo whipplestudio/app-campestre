@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import { COLORS } from '../../theme/colors';
 
 const { width } = Dimensions.get('window');
@@ -76,6 +76,7 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     minWidth: 100,
     alignItems: 'center',
+    cursor: 'pointer' as any,
   },
   cancelButton: {
     backgroundColor: COLORS.gray200,

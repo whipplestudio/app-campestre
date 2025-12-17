@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { COLORS } from '../../../../shared/theme/colors';
 import { useQuickActionStates } from '../../hooks/useQuickActionStates';
 import VehicleModal from '../VehicleModal';
@@ -53,7 +53,7 @@ const QuickActions: React.FC<QuickActionsProps> = ({ onVehicleSelect, onWaiterCa
       
       <View style={styles.quickActionsContainer}>
         {vehicleRequested ? (
-          <TouchableOpacity 
+          <Pressable 
             style={[styles.quickActionItem, styles.disabledActionItem]}
             disabled={true}
           >
@@ -61,22 +61,25 @@ const QuickActions: React.FC<QuickActionsProps> = ({ onVehicleSelect, onWaiterCa
               <Ionicons name="car-outline" size={20} color={COLORS.gray700} />
             </View>
             <Text style={[styles.quickActionText, styles.disabledActionText]}>Auto en 5 min</Text>
-          </TouchableOpacity>
+          </Pressable>
         ) : (
-          <TouchableOpacity 
-            style={[styles.quickActionItem, styles.carActionItem]}
+          <Pressable 
+            style={({ pressed }) => [
+              styles.quickActionItem, 
+              styles.carActionItem,
+              pressed && { opacity: 0.8 }
+            ]}
             onPress={() => setVehicleModalVisible(true)}
-            activeOpacity={0.8}
           >
             <View style={[styles.iconContainer, styles.carIconContainer]}>
               <Ionicons name="car-outline" size={20} color="#0369A1" />
             </View>
             <Text style={[styles.quickActionText, styles.carActionText]}>Pedir auto</Text>
-          </TouchableOpacity>
+          </Pressable>
         )}
         
         {waiterCalled ? (
-          <TouchableOpacity 
+          <Pressable 
             style={[styles.quickActionItem, styles.disabledActionItem]}
             disabled={true}
           >
@@ -84,18 +87,21 @@ const QuickActions: React.FC<QuickActionsProps> = ({ onVehicleSelect, onWaiterCa
               <Ionicons name="cafe-outline" size={20} color={COLORS.gray700} />
             </View>
             <Text style={[styles.quickActionText, styles.disabledActionText]}>Mesero en 7 min</Text>
-          </TouchableOpacity>
+          </Pressable>
         ) : (
-          <TouchableOpacity 
-            style={[styles.quickActionItem, styles.waiterActionItem]}
+          <Pressable 
+            style={({ pressed }) => [
+              styles.quickActionItem, 
+              styles.waiterActionItem,
+              pressed && { opacity: 0.8 }
+            ]}
             onPress={() => setWaiterModalVisible(true)}
-            activeOpacity={0.8}
           >
             <View style={[styles.iconContainer, styles.waiterIconContainer]}>
               <Ionicons name="cafe-outline" size={20} color="#B45309" />
             </View>
             <Text style={[styles.quickActionText, styles.waiterActionText]}>Llamar mesero</Text>
-          </TouchableOpacity>
+          </Pressable>
         )}
       </View>
       

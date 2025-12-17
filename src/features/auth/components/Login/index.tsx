@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Pressable, Text, TextInput, View } from 'react-native';
 
 //Alert 
 
@@ -50,19 +50,29 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         />
       </View>
 
-      <TouchableOpacity 
-        style={styles.loginButton} 
+      <Pressable 
+        style={({ pressed }) => [
+          styles.loginButton,
+          pressed && !isLoading && { opacity: 0.7 }
+        ]}
         onPress={() => onSubmit(email, password)}
         disabled={isLoading}
+        role="button"
       >
         <Text style={styles.buttonText}>
           {isLoading ? messages.LOGIN.LOADING : messages.LOGIN.BUTTON}
         </Text>
-      </TouchableOpacity>
+      </Pressable>
 
-      <TouchableOpacity style={styles.forgotPasswordButton}>
+      <Pressable 
+        style={({ pressed }) => [
+          styles.forgotPasswordButton,
+          pressed && { opacity: 0.7 }
+        ]}
+        role="button"
+      >
         <Text style={styles.linkText}>{messages.LOGIN.FORGOT_PASSWORD}</Text>
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 };

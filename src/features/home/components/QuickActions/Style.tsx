@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     justifyContent: 'center',
+    cursor: 'pointer' as any,
   },
   carActionItem: {
     backgroundColor: '#E0F2FE', // Pastel blue for car

@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
       marginTop: 30,
       justifyContent: 'center',
       alignItems: 'center',
+      cursor: 'pointer' as any,
     },
     titleContainer: {
       flex: 1,
@@ -60,6 +61,7 @@ const styles = StyleSheet.create({
       marginTop: 30,
       justifyContent: 'center',
       alignItems: 'center',
+      cursor: 'pointer' as any,
     },
     iconButton: {
       width: 40,
@@ -67,6 +69,7 @@ const styles = StyleSheet.create({
       borderRadius: 20,
       justifyContent: 'center',
       alignItems: 'center',
+      cursor: 'pointer' as any,
     },
   });
 

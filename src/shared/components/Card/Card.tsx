@@ -46,6 +46,7 @@ const Card: React.FC<CardProps> = ({
       shadowOpacity: 0.22,
       shadowRadius: 2.22,
     },
+    onPress && { cursor: 'pointer' as any },
     style,
   ];
 

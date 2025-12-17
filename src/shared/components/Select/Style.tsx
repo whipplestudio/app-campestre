@@ -23,6 +23,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: COLORS.white,
     minHeight: 48,
+    cursor: 'pointer' as any,
   },
   selectContainerFocused: {
     borderColor: COLORS.primary,
@@ -73,6 +74,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderBottomColor: '#EDF2F7',
+    cursor: 'pointer' as any,
   },
   itemText: {
     fontSize: 16,

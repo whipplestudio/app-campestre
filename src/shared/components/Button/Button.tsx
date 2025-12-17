@@ -1,6 +1,6 @@
 import React from 'react';
-import { TouchableOpacity, Text, View, ViewStyle, TextStyle, StyleProp } from 'react-native';
-import { styles } from './Style'
+import { Pressable, StyleProp, Text, TextStyle, View, ViewStyle } from 'react-native';
+import { styles } from './Style';
 
 interface ButtonProps {
   text?: string;
@@ -65,10 +65,15 @@ const Button: React.FC<ButtonProps> = ({
   const combinedStyles = [styles.button, getVariantStyle(), disabled && styles.disabledButton, containerStyle, style];
 
   return (
-    <TouchableOpacity
-      style={combinedStyles}
+    <Pressable
+      style={({ pressed }) => [
+        ...combinedStyles,
+        pressed && !disabled && { opacity: 0.7 }
+      ]}
       onPress={onPress}
       disabled={disabled}
+      role="button"
+      aria-label={text || title}
     >
       <View style={styles.buttonContent}>
         {icon && iconPosition === 'left' && icon}
@@ -79,7 +84,7 @@ const Button: React.FC<ButtonProps> = ({
         )}
         {icon && iconPosition === 'right' && icon}
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
