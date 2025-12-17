@@ -1,10 +1,11 @@
 {
-  "buildCommand": "yarn build",
+  "framework": null,
+  "buildCommand": "expo export --platform web",
   "outputDirectory": "dist",
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
