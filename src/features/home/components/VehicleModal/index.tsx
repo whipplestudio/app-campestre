@@ -1,6 +1,6 @@
-import { COLORS } from '@/src/shared/theme/colors';
 import React, { useState } from 'react';
 import { View } from 'react-native';
+import { COLORS } from '../../../../../src/shared/theme/colors';
 import Modal from '../../../../shared/components/Modal/Modal';
 import Select from '../../../../shared/components/Select/Select';
 import { useProfileStore } from '../../../profile/store/useProfileStore';

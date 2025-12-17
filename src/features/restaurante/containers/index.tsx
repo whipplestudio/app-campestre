@@ -1,7 +1,7 @@
 // src/features/restaurante/containers/index.tsx
-import Search from '@/src/shared/components/Search/Search';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
+import Search from '../../../../src/shared/components/Search/Search';
 import { COLORS } from '../../../shared/theme/colors';
 import RestaurantDishCard from '../components/RestaurantDishCard';
 import StickyCart from '../components/StickyCart';

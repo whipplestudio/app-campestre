@@ -1,6 +1,6 @@
-import Input from '@/src/shared/components/Input/Input';
 import React from 'react';
 import { Text, View } from 'react-native';
+import Input from '../../../../../src/shared/components/Input/Input';
 import Select from '../../../../shared/components//Select/Select';
 import useMessages from '../../hooks/useMessages';
 import { emergencyContact } from '../../interfaces/interfaces';
