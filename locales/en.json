@@ -1,0 +1,39 @@
+{
+  "auth": {
+    "logout": "Logout",
+    "logoutConfirm": "Are you sure you want to log out?"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "logout": "Log Out"
+  },
+  "surveys": {
+    "title": "Surveys",
+    "subtitle": "Your opinion helps us improve",
+    "total": "Total",
+    "completed": "Completed",
+    "completionRate": "Completion Rate",
+    "filter": {
+      "all": "All",
+      "services": "Services",
+      "restaurant": "Restaurant",
+      "sports": "Sports",
+      "events": "Events"
+    }
+  },
+  "surveyCard": {
+    "respond": "Respond",
+    "estimatedTime": "Estimated time",
+    "responses": "Responses",
+    "questions": "Questions"
+  },
+  "surveyDetail": {
+    "previous": "Previous",
+    "next": "Next",
+    "submit": "Submit",
+    "of": "of",
+    "question": "Question",
+    "commentPlaceholder": "Additional comments (optional)",
+    "back": "Back"
+  }
+}

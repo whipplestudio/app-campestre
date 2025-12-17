@@ -1,0 +1,304 @@
+{
+  "welcome": "Bienvenido",
+  "home": {
+    "title": "Inicio",
+    "welcome": "Bienvenido",
+    "subtitle": "al Club Campestre Tampico",
+    "quickActions": "Acciones Rápidas"
+  },
+  "settings": {
+    "title": "Configuración",
+    "appearance": "Apariencia",
+    "darkMode": "Modo Oscuro",
+    "notifications": "Notificaciones",
+    "enableNotifications": "Activar Notificaciones",
+    "language": "Idioma",
+    "Spanish": "Español",
+    "English": "Inglés"
+  },
+  "reservations": {
+    "title": "Reservaciones",
+    "myReservations": "Mis reservaciones"
+  },
+  "auth": {
+    "container": {
+      "title": "Inicio de Sesión"
+    },
+    "logout": {
+      "title": "Cerrar Sesión",
+      "confirm": "¿Estás seguro de que deseas cerrar sesión?"
+    },
+    "logo": {
+      "name": "Club Campestre",
+      "place": "Tampico"
+    },
+    "login": {
+      "title": "Inicio de Sesión",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "loginButton": "Iniciar Sesión",
+      "forgotPassword": "¿Olvidaste tu contraseña?"
+    },
+    "alert": {
+      "title": "Error",
+      "message": "Correo electrónico o contraseña inválidos",
+      "requiredFields": "Se requieren el correo electrónico y la contraseña"
+    }
+  },
+  "profile": {
+    "title": "Perfil del socio",
+    "name": "Nombre",
+    "lastName": "Apellido",
+    "user": "Usuario",
+    "email": "Correo electrónico",
+    "memberSince": "Socio desde",
+    "membershipType": "Tipo de membresía",
+    "save": "Guardar",
+    "edit": "Editar",
+    "dataUser": "No se encontraron datos del usuario",
+    "noSpecified": "No especificado",
+    "relationship": "Parentesco",
+    "phone": "Teléfono",
+    "age": "años",
+    "address": "Dirección",
+    "noFamilyMembers": "No hay familiares registrados",
+    "addMember": "Agregar familiar",
+    "exampleEmail": "correo@ejemplo.com",
+    "exampleAddress": "Calle, número, colonia, ciudad",
+    "exampleStreet": "Av. Insurgentes Sur",
+    "exampleExternalNumber": "145",
+    "exampleInternalNumber": "8A",
+    "exampleColony": "Colonia del Valle",
+    "exampleZipCode": "03100",
+    "exampleCity": "Ciudad de México",
+    "exampleState": "CDMX",
+    "exampleCountry": "México",
+    "noVehicles": "No hay vehículos registrados",
+    "addVehicle": "Agregar vehículo",
+    "sections": {
+      "personalInfo": "Información Personal",
+      "familyMembers": "Miembros de la Familia",
+      "vehicles": "Vehículos",
+      "emergencyContact": "Contacto de Emergencia"
+    }
+  },
+  "restaurant": {
+    "title": "Restaurante",
+    "headerText": "Restaurante - ordena desde tu mesa",
+    "openingHours": "Horario: 8:00 AM - 10:00 PM",
+    "searchPlaceholder": "Buscar platillos...",
+    "noDishesAvailable": "No hay platillos disponibles en este momento",
+    "dishAdded": "Platillo agregado al carrito",
+    "dishRemoved": "Platillo eliminado del carrito",
+    "add": "Agregar",
+    "carrito": {
+      "see": "Ver Carrito",
+      "title": "Carrito de Compras",
+      "empty": "Tu carrito está vacío",
+      "items": "producto",
+      "subtotal": "Subtotal",
+      "tax": "IVA",
+      "total": "Total",
+      "continueShopping": "Continuar Comprando",
+      "payment": "Proceder al Pago",
+      "checkout": "Pagar",
+      "clearCart": "Vaciar Carrito",
+      "confirmClear": "¿Estás seguro de que deseas vaciar el carrito?",
+      "cancel": "Cancelar",
+      "ok": "Aceptar",
+      "dish": "Platillo"
+    },
+    "tags": {
+      "popular": "Popular",
+      "spicy": "Picante",
+      "vegetarian": "Vegetariano",
+      "glutenFree": "Sin Gluten"
+    }
+  },
+  "menus": {
+    "title": "Menús",
+    "selectMenuType": "Selecciona el tipo de menú",
+    "noMenusAvailable": "No hay menús disponibles en este momento",
+    "noMenusForType": "No hay menús disponibles para esta categoría",
+    "types": {
+      "daily": "Menú Diario",
+      "weekly": "Menú Semanal",
+      "special": "Menú Especial"
+    },
+    "searchPlaceholder": "Buscar menús...",
+    "allMenus": "Todos los Menús",
+    "menuCard":{
+        "featured": "Destacado",
+        "download": "Descargar"
+    },
+    "menuHeader": {
+        "menu": "menú",
+        "RestaurantClub": "Restaurante del Club",
+        "allDownload": "Descargar Todo"
+    },
+    "restaurantHours": {
+        "title": "Horario del restaurante",
+        "breakfast": "Desayuno:",
+        "lunch": "Almuerzo:",
+        "dinner": "Cena:",
+        "text": "Los menús se actualizan semanalmente. Para reservaciones llama al 555-1234 o reserva desde la app."
+    }
+  },
+  "events": {
+    "title": "Eventos",
+    "titleSingular": "evento",
+    "noEvents": "No hay eventos disponibles en este momento",
+    "noEventsRegistered": "No hay eventos registrados todavía",
+    "placeholderSearch": "Buscar eventos...",
+    "eventCard": {
+        "registered": "inscritos de",
+        "busy": "ocupado",
+        "successRegistered": "¡Te has inscrito exitosamente!",
+        "cancelRegistration": "Cancelar registro",
+        "activateReminder": "Activar recordatorio",
+        "register": "Registrarse"
+    },
+
+    "upcomingEvents": "Próximos Eventos",
+    "makeReservation": "Hacer Reserva",
+    "eventName": "Nombre del Evento",
+    "eventDate": "Fecha del Evento",
+    "eventTime": "Hora del Evento",
+    "availableSpots": "Lugares Disponibles",
+    "bookEvent": "Reservar Evento"
+    
+  },
+  "surveys": {
+    "title": "Voz del Socio",
+    "subtitle": "Ayúdanos a mejorar nuestros servicios",
+    "loading": "Cargando encuesta...",
+    "question": "Pregunta",
+    "of": "de",
+    "required": "Obligatorio",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "submit": "Enviar",
+    "thankYou": "¡Gracias por responder!",
+    "textInformation": "Tu encuesta ha sido enviada exitosamente.",
+    "backToSurveys": "Volver a encuestas",
+    "answerSurvey": "Responder Encuesta",
+    "message": "¿Estás seguro de que deseas responder esta encuesta?",
+    "confirm": "Aceptar",
+    "cancel": "Cancelar",
+    "placeholder": "Escribe tu respuesta aquí...",
+    "yes": "Sí",
+    "no": "No",
+    "headerWithStats":{
+      "title": "Encuestas",
+      "text": "Tu opinión nos ayuda a mejorar",
+      "active": "Activas",
+      "completed": "Completadas",
+      "average": "Promedio"
+    },
+    "surveyCard": {
+      "people": "personas",
+      "questions": "preguntas",
+      "start": "Responder"
+    }
+  },
+  "reservation": {
+    "title": "Reservaciones",
+    "question": "¿Qué deseas reservar?",
+    "noHoursAvailable": "No hay disponibilidad de horarios",
+    "noCourtsAvailable": "No hay disponibilidad de canchas",
+    "diners": "Comensales",
+    "noTablesAvailable": "No hay disponibilidad de mesas",
+    "confirmReservation": "Confirmar Reservación",
+    "otherSelect": "Seleccionar otro servicio",
+    "calendarComponent":{
+      "date": "Fecha",
+      "sunday": "Dom",
+      "monday": "Lun",
+      "tuesday": "Mar",
+      "wednesday": "Mié",
+      "thursday": "Jue",
+      "friday": "Vie",
+      "saturday": "Sáb"
+    },
+    "confirmationModal":{
+      "title": "¡Reserva confirmada exitosamente!",
+      "message": "Tu reserva ha sido registrada en el sistema. ¡Disfruta de tu servicio!"
+    },
+    "court":{
+      "title": "Canchas",
+      "unavailableMessage": "No hay canchas disponibles"
+    },
+    "summaryCard":{
+      "title": "Resumen de reserva",
+      "service": "Servicio",
+      "date": "Fecha",
+      "time": "Hora",
+      "court": "Cancha",
+      "table": "Mesa",
+      "people": "Personas"
+    },
+    "tableSelector":{
+      "people": "pers."
+    },
+    "timeSlots":{
+      "title": "Horarios",
+      "unavailableMessage": "No hay horarios disponibles"
+    }
+  },
+  "accountStatements": {
+    "title": "Estados de cuentas",
+    "description": "Consulta y descarga tus estados de cuenta mensuales",
+    "emptyState": "No hay estados de cuenta registrados",
+    "container": {
+    "noStatements1": "No hay estados de cuenta registrados todavía.",
+    "noStatements2": "No hay estados de cuenta registrados.",
+    "noStatementsFilters": "No hay estados de cuenta con los filtros aplicados"
+    },
+    "accountStatementCard": {
+      "status": {
+        "paid": "Pagado",
+        "pending": "Pendiente",
+        "overdue": "Vencido"
+      },
+      "total": "Total a pagar",
+      "viewDetails": "Ver detalles",
+      "download": "Descargar"
+    },
+    "accountStatementDetail": {
+      "datePayLimit": "Fecha límite de pago",
+      "personalInformation": "Información personal",
+      "memberNumber": "Número de socio",
+      "name": "Nombre",
+      "address": "Dirección",
+      "city": "Ciudad",
+      "statementDetails": "Detalles del estado de cuenta",
+      "concept": "Concepto",
+      "charges": "Cargos",
+      "credits": "Abonos",
+      "summary": "Resumen"
+    }
+  },
+  "more": {
+    "title": "Más"
+  },
+  "help": {
+    "title": "Centro de ayuda"
+  },
+  "files": {
+    "title": "Documentos y reglamentos"
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "ok": "Aceptar",
+    "back": "Atrás",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "exampleEmail": "email@clubtampico.com",
+    "examplePassword": "Mi contraseña",
+    "logout": "Cerrar Sesión",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "textLogout": "No se pudo cerrar la sesión"
+  }
+}
