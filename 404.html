@@ -4,27 +4,37 @@
   <meta charset="utf-8">
   <title>Redirecting...</title>
   <script>
-    // GitHub Pages SPA redirect solution
-    // Store the current path and redirect to index.html
-    const baseUrl = '/app-campestre';
-    const currentPath = window.location.pathname;
-    
-    // Remove base URL from path if present
-    let redirectPath = currentPath;
-    if (currentPath.startsWith(baseUrl)) {
-      redirectPath = currentPath.substring(baseUrl.length);
-    }
-    
-    // Store the path in sessionStorage to restore after redirect
-    if (redirectPath && redirectPath !== '/' && redirectPath !== '/index.html') {
-      sessionStorage.setItem('redirectPath', redirectPath);
-    }
-    
-    // Redirect to index.html with the base URL
-    window.location.replace(baseUrl + '/index.html');
+    (function() {
+      // GitHub Pages SPA redirect solution
+      const baseUrl = '/app-campestre';
+      const currentPath = window.location.pathname;
+      
+      // Avoid infinite loops - don't redirect if already on index
+      if (currentPath === baseUrl || currentPath === baseUrl + '/' || currentPath === baseUrl + '/index.html') {
+        window.location.replace(baseUrl + '/');
+        return;
+      }
+      
+      // Remove base URL from path if present
+      let redirectPath = currentPath;
+      if (currentPath.startsWith(baseUrl)) {
+        redirectPath = currentPath.substring(baseUrl.length);
+      }
+      
+      // Only store valid SPA routes (not asset files)
+      if (redirectPath && 
+          redirectPath !== '/' && 
+          redirectPath !== '/index.html' &&
+          !redirectPath.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/i)) {
+        sessionStorage.setItem('spa_redirect', redirectPath);
+      }
+      
+      // Redirect to index.html
+      window.location.replace(baseUrl + '/index.html');
+    })();
   </script>
 </head>
 <body>
-  Redirecting...
+  <p style="text-align:center;margin-top:50px;font-family:sans-serif;color:#666;">Redirecting...</p>
 </body>
 </html>
