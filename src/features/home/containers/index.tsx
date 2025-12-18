@@ -4,14 +4,10 @@ import { Alert, ScrollView, View } from 'react-native';
 import styles from './Style';
 
 // Components
-import ActiveOrders from '../components/ActiveOrders';
+import AddFamilyMemberForm from '../../profile/components/AddFamilyMemberForm';
 import GuestManagement from '../components/GuestManagement';
 import GuestsModal from '../components/GuestsModal';
-import Header from '../components/Header';
 import MyQRCode from '../components/MyQRCode';
-import MyRewards from '../components/MyRewards';
-import QuickActions from '../components/QuickActions';
-import AddFamilyMemberForm from '../../profile/components/AddFamilyMemberForm';
 import { useMemberData } from '../hooks/useMemberData';
 
 // Banner component
@@ -96,7 +92,7 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <BannerContainer />
-      <Header />
+      {/*<Header />*/}
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
