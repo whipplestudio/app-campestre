@@ -5,32 +5,16 @@
   <title>Redirecting...</title>
   <script>
     (function() {
-      // GitHub Pages SPA redirect solution
       const baseUrl = '/app-campestre';
-      const currentPath = window.location.pathname;
+      const path = window.location.pathname.replace(baseUrl, '') || '/';
       
-      // Avoid infinite loops - don't redirect if already on index
-      if (currentPath === baseUrl || currentPath === baseUrl + '/' || currentPath === baseUrl + '/index.html') {
-        window.location.replace(baseUrl + '/');
-        return;
+      // Don't store asset requests
+      if (!path.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/i)) {
+        sessionStorage.setItem('spa_redirect', path);
       }
       
-      // Remove base URL from path if present
-      let redirectPath = currentPath;
-      if (currentPath.startsWith(baseUrl)) {
-        redirectPath = currentPath.substring(baseUrl.length);
-      }
-      
-      // Only store valid SPA routes (not asset files)
-      if (redirectPath && 
-          redirectPath !== '/' && 
-          redirectPath !== '/index.html' &&
-          !redirectPath.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/i)) {
-        sessionStorage.setItem('spa_redirect', redirectPath);
-      }
-      
-      // Redirect to index.html
-      window.location.replace(baseUrl + '/index.html');
+      // Always redirect to index
+      window.location.replace(baseUrl + '/');
     })();
   </script>
 </head>
