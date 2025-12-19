@@ -246,7 +246,7 @@ export const memberService = {
 
       const result: GetMemberResponse = await response.json();
       const data = result.data;
-
+console.log('data is::::::::::::::::::::::::::::::, ', data.user.phone)
       const memberProfile: userProfile = {
         id: data.id.toString(),
         memberCode: data.memberCode ? Number(data.memberCode) : undefined,
@@ -271,7 +271,7 @@ export const memberService = {
         roleId: data.user.roleId,
         email: data.user.email,
         phone: data.user.phone.length > 0 ? data.user.phone[0].number : undefined,
-        address: `${data.user.address.street} ${data.user.address.suburb} ${data.user.address.city} ${data.user.address.state} ${data.user.address.country}`,
+        address: `Calle ${data.user.address.street} ${data.user.address.externalNumber}, Colonia ${data.user.address.suburb}, C.P. ${data.user.address.zipCode}, ${data.user.address.city}, ${data.user.address.state}, ${data.user.address.country}`,
         street: data.user.address.street,
         externalNumber: data.user.address.externalNumber,
         internalNumber: data.user.address.internalNumber,

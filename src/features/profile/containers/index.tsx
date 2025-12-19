@@ -1,6 +1,6 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import Button from '../../../shared/components/Button/Button';
 import Modal from '../../../shared/components/Modal/Modal';
 import { useAuthStore } from '../../../store';
@@ -48,6 +48,7 @@ const ProfileContainer = () => {
   const [showAddFamilyForm, setShowAddFamilyForm] = useState(false);
   const [showGuestRestrictionModal, setShowGuestRestrictionModal] = useState(false);
 console.log('el profile esssssssssss: ', profile);
+console.log('el phone es en containerrrrrrrrrrrrr: ', profile?.phone)
   if (!currentUser) {
     return (
       <SafeAreaView style={styles.container}>
@@ -107,11 +108,11 @@ console.log('el profile esssssssssss: ', profile);
         >
           <PersonalInfo
             id={profile?.id || ''}
-            name={isEditing ? formData.name : (profile?.name || '')}
-            lastName={isEditing ? formData.lastName : (profile?.lastName || '')}
+            name={isEditing ? formData.name : profile?.name || ''}
+            lastName={isEditing ? formData.lastName : profile?.lastName || ''}
             email={isEditing ? formData.email : profile?.email}
             phone={isEditing ? formData.phone : profile?.phone}
-            address={isEditing ? formData.address : profile?.address}
+            address={isEditing ? '' : profile?.address}
             street={isEditing ? formData.street : profile?.street}
             externalNumber={isEditing ? formData.externalNumber : profile?.externalNumber}
             internalNumber={isEditing ? formData.internalNumber : profile?.internalNumber}
@@ -120,7 +121,7 @@ console.log('el profile esssssssssss: ', profile);
             city={isEditing ? formData.city : profile?.city}
             state={isEditing ? formData.state : profile?.state}
             country={isEditing ? formData.country : profile?.country}
-            memberSince={profile?.memberSince || new Date()}
+            memberSince={profile?.memberSince}
             isEditing={isEditing}
             onNameChange={(text) => handleInputChange('name', text)}
             onlastNameChange={(text) => handleInputChange('lastName', text)}

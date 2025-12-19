@@ -4,7 +4,7 @@ import { Alert } from 'react-native';
 import useLogout from '../../../hooks/useLogout';
 import { useAuthStore } from '../../../store';
 import useMessages from '../hooks/useMessages';
-import { updateProfileData, userProfile } from '../interfaces/interfaces';
+import { userProfile } from '../interfaces/interfaces';
 import { memberService, updateUser } from '../services/memberService';
 import { useProfileStore } from '../store/useProfileStore';
 
@@ -17,7 +17,7 @@ export const useProfile = () => {
   const { userId, token } = useAuthStore();
 
   const currentUser = profile as userProfile | null;
-  
+  console.log('.......---.-.-.-.-. currentUser: ', currentUser)
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingContactEmergency, setIsEditingContactEmergency] = useState(false);
 
@@ -25,7 +25,7 @@ export const useProfile = () => {
     const loadMember = async () => {
       if (userId && token) {
         const response = await memberService.getMemberById(userId, token);
-
+        console.log('---------------------------------response: ', response)
         if (response.success && response.data) {
           updateProfile(response.data);
         } else {
@@ -39,26 +39,59 @@ export const useProfile = () => {
 
 
   const [formData, setFormData] = useState({
-    name: currentUser?.name || '',
-    lastName: currentUser?.lastName || '',
-    email: currentUser?.email || '',
-    phone: currentUser?.phone || '',
-    address: currentUser?.address || '',
-    street: currentUser?.street || '',
-    externalNumber: currentUser?.externalNumber || '',
-    internalNumber: currentUser?.internalNumber || '',
-    colony: currentUser?.colony || '',
-    zipCode: currentUser?.zipCode || '',
-    city: currentUser?.city || '',
-    state: currentUser?.state || '',
-    country: currentUser?.country || '',
-    membershipType: currentUser?.membershipType || 'Premium',
+    name: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    address: '',
+    street: '',
+    externalNumber: '',
+    internalNumber: '',
+    colony: '',
+    zipCode: '',
+    city: '',
+    state: '',
+    country: '',
+    membershipType: 'Premium',
   });
+
+  // Efecto para actualizar formData cuando cambie el perfil
+  useEffect(() => {
+    if (currentUser) {
+      setFormData({
+        name: currentUser.name || '',
+        lastName: currentUser.lastName || '',
+        email: currentUser.email || '',
+        phone: currentUser.phone || '',
+        address: currentUser.address || '',
+        street: currentUser.street || '',
+        externalNumber: currentUser.externalNumber || '',
+        internalNumber: currentUser.internalNumber || '',
+        colony: currentUser.colony || '',
+        zipCode: currentUser.zipCode || '',
+        city: currentUser.city || '',
+        state: currentUser.state || '',
+        country: currentUser.country || '',
+        membershipType: currentUser.membershipType || 'Premium',
+      });
+    }
+  }, [currentUser]);
   const [emergencyContactFormData, setEmergencyContactFormData] = useState({
-    name: currentUser?.emergencyContact?.name || '',
-    relationship: currentUser?.emergencyContact?.relationship || '',
-    phone: currentUser?.emergencyContact?.phone || '',
+    name: '',
+    relationship: '',
+    phone: '',
   });
+
+  // Efecto para actualizar emergencyContactFormData cuando cambie el perfil
+  useEffect(() => {
+    if (currentUser && currentUser.emergencyContact) {
+      setEmergencyContactFormData({
+        name: currentUser.emergencyContact.name || '',
+        relationship: currentUser.emergencyContact.relationship || '',
+        phone: currentUser.emergencyContact.phone || '',
+      });
+    }
+  }, [currentUser]);
 
   const handleInputChange = useCallback((field: string, value: string) => {
     setFormData(prev => ({

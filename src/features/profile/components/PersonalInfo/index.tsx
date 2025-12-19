@@ -39,17 +39,37 @@ const PersonalInfo: React.FC<userProfile> = ({
   const { messages } = useMessages();
   const formatDate = (date: string | Date | undefined): string => {
     if (!date) return messages.CONTAINER.NO_SPECIFIED;
-    
+
     try {
-      const d = new Date(date);
+      // Si la fecha es una cadena ISO, creamos la fecha manteniendo la zona horaria original
+      let d: Date;
+      if (typeof date === 'string') {
+        // Para fechas en formato ISO con Z (UTC), mantenemos la fecha tal cual
+        if (date.endsWith('Z')) {
+          d = new Date(date);
+        } else {
+          // Para otros formatos, creamos la fecha directamente pero usamos métodos UTC
+          d = new Date(date);
+        }
+      } else {
+        d = date;
+      }
+
       // Check if the date is valid
       if (isNaN(d.getTime())) return messages.CONTAINER.NO_SPECIFIED;
-      
-      return d.toLocaleDateString('es-MX', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
+
+      // Extraer componentes de la fecha UTC para evitar problemas de zona horaria
+      const day = d.getUTCDate();
+      const month = d.getUTCMonth(); // 0-indexed (0 = Enero)
+      const year = d.getUTCFullYear();
+
+      // Array con los nombres de los meses en español
+      const months = [
+        'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+        'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+      ];
+
+      return `${day} de ${months[month]} de ${year}`;
     } catch (error) {
       console.error('Error formatting date:', error);
       return messages.CONTAINER.NO_SPECIFIED;
