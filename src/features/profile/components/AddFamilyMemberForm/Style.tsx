@@ -31,9 +31,17 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '700',
     color: COLORS.gray700,
-    marginBottom: 24,
+    marginBottom: 8,
     textAlign: 'left',
     letterSpacing: 0.2,
+  },
+  sectionSubtitle: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: COLORS.gray500,
+    marginBottom: 24,
+    textAlign: 'left',
+    lineHeight: 20,
   },
   inputGroup: {
     marginBottom: 20,
@@ -45,6 +53,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textTransform: 'uppercase',
     letterSpacing: 0.3,
+  },
+  helperText: {
+    fontSize: 13,
+    color: COLORS.gray500,
+    marginTop: 6,
+    fontStyle: 'italic',
   },
   input: {
     borderWidth: 2,

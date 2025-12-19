@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Alert } from 'react-native';
 import { useAuthStore } from '../../../store';
 import { AddFamilyMemberRequest, memberService } from '../services/memberService';
+import { passService, CreatePassRequest } from '../../home/services/passService';
 
 interface UseAddFamilyMemberProps {
   memberId: number;
@@ -90,18 +91,6 @@ export const useAddFamilyMember = ({ memberId, guestType = 'INVITADO', onAddSucc
       return false;
     }
 
-    // Validar relación (requerido)
-    if (!formData.relationship.trim()) {
-      Alert.alert('Error', 'La relación es requerida.');
-      return false;
-    }
-
-    // Validar fecha de nacimiento (requerido)
-    if (!formData.birthDate.trim()) {
-      Alert.alert('Error', 'La fecha de nacimiento es requerida.');
-      return false;
-    }
-
     // Validar número de teléfono (requerido, solo números, 10 dígitos)
     if (!formData.phone[0].number.trim()) {
       Alert.alert('Error', 'El número de teléfono es requerido.');
@@ -120,34 +109,6 @@ export const useAddFamilyMember = ({ memberId, guestType = 'INVITADO', onAddSucc
       }
     }
 
-    // Validar RFC (no requerido, pero si se proporciona, debe tener 12 o 13 caracteres)
-    if (formData.RFC.trim()) {
-      if (formData.RFC.length < 12 || formData.RFC.length > 13) {
-        Alert.alert('Error', 'El RFC debe tener 12 o 13 caracteres.');
-        return false;
-      }
-    }
-
-    // Validar fecha de expiración para pase temporal
-    /*if (tempPass && !formData.expireAt?.trim()) {
-      Alert.alert('Error', 'La fecha de expiración es requerida para el pase temporal.');
-      return false;
-    }
-
-    if (tempPass && formData.expireAt?.trim()) {
-      const expirationDate = new Date(formData.expireAt);
-      // Validar que la fecha sea válida
-      if (isNaN(expirationDate.getTime())) {
-        Alert.alert('Error', 'La fecha de expiración es inválida. Por favor ingrese una fecha válida.');
-        return false;
-      }
-      const currentDate = new Date();
-      if (expirationDate <= currentDate) {
-        Alert.alert('Error', 'La fecha de expiración debe ser posterior a la fecha actual.');
-        return false;
-      }
-    }*/
-
     return true;
   };
 
@@ -164,27 +125,22 @@ export const useAddFamilyMember = ({ memberId, guestType = 'INVITADO', onAddSucc
     setLoading(true);
 
     try {
-      // Construir submitData según si es pase temporal o no
-      let submitData: AddFamilyMemberRequest;
-      /*if (tempPass) {
-        // Incluir expireAt para pase temporal
-        submitData = {
-          ...formData,
-          expireAt: formData.expireAt
-        };
-      } else {
-        // Excluir expireAt para invitado normal
-        const { expireAt, ...dataWithoutExpireAt } = formData;
-        submitData = dataWithoutExpireAt;
-      }*/
-      submitData = formData;
-      console.log('........................................Submitting form data:', submitData);
-      const result = await memberService.addFamilyMember(submitData, token);
+      // Usar el nuevo endpoint /pass para crear pases de invitados
+      const passData: CreatePassRequest = {
+        guestName: formData.name,
+        guestLastName: formData.lastName,
+        guestEmail: formData.email,
+        guestPhone: formData.phone[0].number,
+        type: guestType === 'TEMPORAL' ? 'TEMPORAL' : 'GUEST'
+      };
+
+      console.log('Creating pass with data:', passData);
+      const result = await passService.createPass(passData);
 
       if (result.success && result.data) {
         Alert.alert(
           'Éxito',
-          'Miembro de la familia agregado correctamente.',
+          `Pase de invitado creado correctamente.\n\nEl invitado recibirá una notificación con el link para ver su pase QR.`,
           [
             {
               text: 'Aceptar',
@@ -196,21 +152,21 @@ export const useAddFamilyMember = ({ memberId, guestType = 'INVITADO', onAddSucc
           { cancelable: false }
         );
       } else {
-          Alert.alert(
-            'Error',
-            result.error || 'Ocurrió un error al cargar la información del perfil.',
-            [
-              {
-                text: 'Aceptar',
-                style: 'default'
-              }
-            ]
-          );
+        Alert.alert(
+          'Error',
+          result.error || 'Ocurrió un error al crear el pase de invitado.',
+          [
+            {
+              text: 'Aceptar',
+              style: 'default'
+            }
+          ]
+        );
       }
     } catch (error: any) {
       Alert.alert(
         'Error',
-        error.message || 'Ocurrió un error al agregar el miembro de la familia.',
+        error.message || 'Ocurrió un error al crear el pase de invitado.',
         [
           {
             text: 'Aceptar',
