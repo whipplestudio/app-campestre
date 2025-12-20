@@ -1,7 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { authService } from '../../services/authService';
+import { useAuth } from '../../store/useAuthStore';
 
 interface ChangePasswordProps {
   userId: number;
@@ -20,13 +32,41 @@ export const ChangePasswordScreen: React.FC = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const validatePassword = (password: string): boolean => {
+  const validatePassword = (password: string): { isValid: boolean; errors: string[] } => {
+    const errors: string[] = [];
+
     if (password.length < 8) {
-      Alert.alert('Error', 'La contraseña debe tener al menos 8 caracteres');
-      return false;
+      errors.push('• Mínimo 8 caracteres');
     }
-    return true;
+    if (!/[A-Z]/.test(password)) {
+      errors.push('• Al menos una letra mayúscula');
+    }
+    if (!/[a-z]/.test(password)) {
+      errors.push('• Al menos una letra minúscula');
+    }
+    if (!/[0-9]/.test(password)) {
+      errors.push('• Al menos un número');
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      errors.push('• Al menos un carácter especial (!@#$%^&*(),.?":{}|<>)');
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+    };
   };
+
+  const getPasswordStrength = (password: string): { strength: string; color: string } => {
+    const validation = validatePassword(password);
+    const validCount = 5 - validation.errors.length;
+
+    if (validCount === 5) return { strength: 'Fuerte', color: '#10b981' };
+    if (validCount >= 3) return { strength: 'Media', color: '#f59e0b' };
+    return { strength: 'Débil', color: '#ef4444' };
+  };
+
+  const { setPendingPasswordChange } = useAuth();
 
   const handleChangePassword = async () => {
     // Validaciones
@@ -40,7 +80,12 @@ export const ChangePasswordScreen: React.FC = () => {
       return;
     }
 
-    if (!validatePassword(newPassword)) {
+    const validation = validatePassword(newPassword);
+    if (!validation.isValid) {
+      Alert.alert(
+        'Contraseña no válida',
+        'La contraseña debe cumplir con los siguientes requisitos:\n\n' + validation.errors.join('\n')
+      );
       return;
     }
 
@@ -62,10 +107,11 @@ export const ChangePasswordScreen: React.FC = () => {
             {
               text: 'OK',
               onPress: () => {
+                setPendingPasswordChange(false);
                 // Si es primer login, navegar a la pantalla principal
                 if (isFirstLogin) {
-                  // @ts-ignore
-                  navigation.replace('Main');
+                  // La navegación se manejará automáticamente al limpiar pendingPasswordChange
+                  // El MainNavigator detectará que ya no está pendiente y mostrará MainTabs
                 } else {
                   navigation.goBack();
                 }
@@ -84,8 +130,16 @@ export const ChangePasswordScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+    >
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         {isFirstLogin && (
           <View style={styles.warningBox}>
             <Text style={styles.warningTitle}>⚠️ Cambio Obligatorio</Text>
@@ -142,6 +196,35 @@ export const ChangePasswordScreen: React.FC = () => {
               <Text>{showNewPassword ? '👁️' : '👁️‍🗨️'}</Text>
             </TouchableOpacity>
           </View>
+          
+          {newPassword.length > 0 && (
+            <View style={styles.passwordRequirements}>
+              <View style={styles.strengthContainer}>
+                <Text style={styles.strengthLabel}>Fortaleza: </Text>
+                <Text style={[styles.strengthValue, { color: getPasswordStrength(newPassword).color }]}>
+                  {getPasswordStrength(newPassword).strength}
+                </Text>
+              </View>
+              <Text style={styles.requirementsTitle}>Requisitos:</Text>
+              <View style={styles.requirementsList}>
+                <Text style={newPassword.length >= 8 ? styles.requirementMet : styles.requirementUnmet}>
+                  {newPassword.length >= 8 ? '✓' : '○'} Mínimo 8 caracteres
+                </Text>
+                <Text style={/[A-Z]/.test(newPassword) ? styles.requirementMet : styles.requirementUnmet}>
+                  {/[A-Z]/.test(newPassword) ? '✓' : '○'} Una letra mayúscula
+                </Text>
+                <Text style={/[a-z]/.test(newPassword) ? styles.requirementMet : styles.requirementUnmet}>
+                  {/[a-z]/.test(newPassword) ? '✓' : '○'} Una letra minúscula
+                </Text>
+                <Text style={/[0-9]/.test(newPassword) ? styles.requirementMet : styles.requirementUnmet}>
+                  {/[0-9]/.test(newPassword) ? '✓' : '○'} Un número
+                </Text>
+                <Text style={/[!@#$%^&*(),.?":{}|<>]/.test(newPassword) ? styles.requirementMet : styles.requirementUnmet}>
+                  {/[!@#$%^&*(),.?":{}|<>]/.test(newPassword) ? '✓' : '○'} Un carácter especial
+                </Text>
+              </View>
+            </View>
+          )}
         </View>
 
         <View style={styles.inputContainer}>
@@ -181,8 +264,8 @@ export const ChangePasswordScreen: React.FC = () => {
             <Text style={styles.cancelButtonText}>Cancelar</Text>
           </TouchableOpacity>
         )}
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -192,7 +275,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   content: {
-    flex: 1,
+    flexGrow: 1,
     padding: 20,
     justifyContent: 'center',
   },
@@ -275,6 +358,47 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     color: '#666',
     fontSize: 16,
+  },
+  passwordRequirements: {
+    marginTop: 12,
+    padding: 12,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+  },
+  strengthContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  strengthLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+  },
+  strengthValue: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  requirementsTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#555',
+    marginBottom: 6,
+  },
+  requirementsList: {
+    gap: 4,
+  },
+  requirementMet: {
+    fontSize: 13,
+    color: '#10b981',
+    marginBottom: 4,
+  },
+  requirementUnmet: {
+    fontSize: 13,
+    color: '#6b7280',
+    marginBottom: 4,
   },
 });
 

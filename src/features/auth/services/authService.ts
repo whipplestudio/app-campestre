@@ -2,6 +2,9 @@
 import { userProfile } from "../interfaces";
 
 // Servicio de autenticación
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 export const authService = {
   /**
    * Iniciar sesión con email y contraseña
@@ -66,14 +69,14 @@ export const authService = {
    * Cerrar sesión
    */
   logout: async (): Promise<void> => {
-    localStorage.removeItem('authToken');
+    await AsyncStorage.removeItem('authToken');
   },
 
   /**
    * Obtener el perfil del usuario actual
    */
   getCurrentUser: async (): Promise<userProfile | null> => {
-    const token = localStorage.getItem('authToken');
+    const token = await AsyncStorage.getItem('authToken');
     if (!token) return null;
     
     const user = '' //mockUsers.find(u => u.token === token);
@@ -95,13 +98,15 @@ export const authService = {
    */
   changePassword: async (currentPassword: string, newPassword: string): Promise<{ success: boolean; message?: string; error?: string }> => {
     try {
-      const token = localStorage.getItem('authToken');
+      const token = await AsyncStorage.getItem('authToken');
       if (!token) {
         return {
           success: false,
           error: 'No hay sesión activa',
         };
       }
+
+      
 
       const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/change-password`, {
         method: 'POST',

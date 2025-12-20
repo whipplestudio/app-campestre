@@ -1,7 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import { useStore } from '../store';
-
 // Import screens
 import AuthScreen from './authScreen';
 import MainTabs from './mainTabs';
@@ -13,12 +11,14 @@ import { RootStackParamList } from './types';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 // Main navigator
+import { useAuthStore } from '../features/auth/store/useAuthStore';
+
 const MainNavigator = (): React.JSX.Element => {
-  const { isAuthenticated } = useStore();
+  const { isAuthenticated, pendingPasswordChange } = useAuthStore();
 
   return (
     <Stack.Navigator>
-      {!isAuthenticated ? (
+      {!isAuthenticated || pendingPasswordChange ? (
         <Stack.Screen
           name="Auth"
           component={AuthScreen}

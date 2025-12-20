@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -24,6 +24,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 }) => {
   const { messages } = useMessages();
   const navigation = useNavigation();
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <View style={styles.content}>
@@ -42,14 +43,22 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>{messages.LOGIN.PASSWORD}</Text>
-        <TextInput
-          style={styles.input}
-          value={password}
-          onChangeText={onPasswordChange}
-          placeholder={messages.LOGIN.EXAMPLE_PASSWORD}
-          placeholderTextColor={styles.inputPlaceholder.color}
-          secureTextEntry
-        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            value={password}
+            onChangeText={onPasswordChange}
+            placeholder={messages.LOGIN.EXAMPLE_PASSWORD}
+            placeholderTextColor={styles.inputPlaceholder.color}
+            secureTextEntry={!showPassword}
+          />
+          <TouchableOpacity
+            onPress={() => setShowPassword(!showPassword)}
+            style={styles.eyeIcon}
+          >
+            <Text style={styles.eyeIconText}>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <TouchableOpacity 

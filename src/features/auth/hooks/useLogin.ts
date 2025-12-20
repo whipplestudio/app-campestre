@@ -17,11 +17,12 @@ import { userProfile } from '../interfaces';
 
 // Hooks
 import useMessages from './useMessages';
+import { AuthStackNavigationProp } from '../../../navigation/authScreen/types';
 
 export const useLogin = () => {
   const { messages } = useMessages();
-  const navigation = useNavigation();
-  const { setAuthData, clearAuth } = useAuth();
+  const navigation = useNavigation<AuthStackNavigationProp>();
+  const { setAuthData, clearAuth, setPendingPasswordChange } = useAuth();
   const { setProfile } = useProfileStore();
   
   // Estado local para manejar la carga y errores
@@ -65,15 +66,19 @@ export const useLogin = () => {
         setProfile(profileData as userProfile);
         
         // 4. Verificar si debe cambiar contraseña
+        const numericUserId = typeof user.id === 'number' ? user.id : Number(user.id);
+
         if (user.mustChangePassword) {
           console.log('Debe cambiar contraseña');
+          setPendingPasswordChange(true);
           // @ts-ignore
           navigation.navigate('ChangePassword', { 
-            userId: user.id, 
+            userId: numericUserId, 
             isFirstLogin: true 
           });
           return true;
         }
+        setPendingPasswordChange(false);
         
         // 5. Navegar a la pantalla principal
         // @ts-ignore - asumiendo que existe la ruta 'MainTabs'

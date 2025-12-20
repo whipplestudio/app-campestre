@@ -55,6 +55,29 @@ const styles = StyleSheet.create({
     inputPlaceholder: {
       color: COLORS.gray500,
     },
+    passwordContainer: {
+      position: 'relative',
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    passwordInput: {
+      flex: 1,
+      borderWidth: 1,
+      borderColor: COLORS.gray300,
+      borderRadius: 8,
+      padding: 12,
+      fontSize: 16,
+      backgroundColor: COLORS.white,
+      paddingRight: 48,
+    },
+    eyeIcon: {
+      position: 'absolute',
+      right: 12,
+      padding: 8,
+    },
+    eyeIconText: {
+      fontSize: 20,
+    },
   });
 
   export default styles;

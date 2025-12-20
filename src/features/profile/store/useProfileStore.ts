@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { UserProfile } from '../../../interfaces/user.interface';
 
@@ -25,7 +26,7 @@ export const useProfileStore = create<ProfileState>()(
     }),
     { 
       name: 'profile-storage',
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => AsyncStorage),
       // Solo persistir los datos necesarios del perfil
       partialize: (state) => ({
         profile: state.profile 

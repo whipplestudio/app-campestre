@@ -1,9 +1,11 @@
 import { create, StateCreator } from 'zustand';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 export type AuthState = {
   // Estado de autenticación
   isAuthenticated: boolean;
+  pendingPasswordChange: boolean;
   userId: string | null;
   token: string | null;
   refreshToken: string | null;
@@ -11,6 +13,7 @@ export type AuthState = {
   
   // Acciones
   setAuthData: (userId: string | null, token: string | null, expiresInSeconds?: number) => void;
+  setPendingPasswordChange: (pending: boolean) => void;
   clearAuth: () => void;
   isTokenExpired: () => boolean;
 };
@@ -21,6 +24,7 @@ type AuthStore = ReturnType<typeof createAuthStore>;
 const createAuthStore: StateCreator<AuthState> = (set, get) => ({
   // Estado inicial
   isAuthenticated: false,
+  pendingPasswordChange: false,
   userId: null,
   token: null,
   refreshToken: null,
@@ -28,17 +32,30 @@ const createAuthStore: StateCreator<AuthState> = (set, get) => ({
   
   // Acciones
   setAuthData: (userId, token, expiresInSeconds = 3600) => {
+    if (token) {
+      AsyncStorage.setItem('authToken', token).catch(() => {});
+    } else {
+      AsyncStorage.removeItem('authToken').catch(() => {});
+    }
+
     set({
       userId,
       token,
       isAuthenticated: !!userId && !!token,
+      pendingPasswordChange: false,
       expiresAt: expiresInSeconds 
         ? Date.now() + (expiresInSeconds * 1000)
         : null
     });
   },
+  setPendingPasswordChange: (pending: boolean) => {
+    set({
+      pendingPasswordChange: pending,
+    });
+  },
   
   clearAuth: () => {
+    AsyncStorage.removeItem('authToken').catch(() => {});
     set({
       userId: null,
       token: null,
@@ -60,7 +77,7 @@ export const useAuthStore = create<AuthState>()(
     createAuthStore,
     {
       name: 'auth-storage',
-      storage: createJSONStorage(() => localStorage)
+      storage: createJSONStorage(() => AsyncStorage)
     }
   )
 );
