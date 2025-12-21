@@ -7,6 +7,7 @@ export interface GuestUser {
   name: string;
   lastName: string;
   email: string;
+  type: string;
 }
 
 export interface Guest {
@@ -22,7 +23,6 @@ export interface Guest {
   invitedById: number;
   relationship: string;
   user: GuestUser;
-  type: string; // The guest type: 'INVITADO', 'DEPENDIENTE', or 'TEMPORAL'
 }
 
 export interface Address {

@@ -124,7 +124,7 @@ export const useAddFamilyMember = ({ memberId, guestType = 'INVITADO', onAddSucc
       }
 
       // Validar RFC (no requerido, pero si se proporciona, debe tener 12 o 13 caracteres)
-      if (formData.RFC.trim()) {
+      if (formData.RFC && formData.RFC.trim()) {
         if (formData.RFC.length < 12 || formData.RFC.length > 13) {
           Alert.alert('Error', 'El RFC debe tener 12 o 13 caracteres.');
           return false;
@@ -190,7 +190,11 @@ export const useAddFamilyMember = ({ memberId, guestType = 'INVITADO', onAddSucc
         }
       } else {
         // ORIGINAL: Usar endpoint /club-members para pases temporales
-        const submitData: AddFamilyMemberRequest = formData;
+        const submitData: AddFamilyMemberRequest = {
+          ...formData,
+          expireAt: formData.expireAt && formData.expireAt.trim() !== '' ? formData.expireAt : undefined,
+          RFC: formData.RFC && formData.RFC.trim() !== '' ? formData.RFC : undefined,
+        };
         console.log('Creating temporal pass with /club-members endpoint:', submitData);
         const result = await memberService.addFamilyMember(submitData, token);
 

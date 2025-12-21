@@ -73,7 +73,7 @@ export interface AddFamilyMemberRequest {
   type: string;
   birthDate: string;
   gender: string;
-  RFC: string;
+  RFC?: string;
   expireAt?: string; // Optional field for temporary pass
   address: {
     street: string;

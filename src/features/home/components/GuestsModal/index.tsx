@@ -12,6 +12,14 @@ interface GuestsModalProps {
   onDeleteGuest?: (guestId: number) => Promise<boolean>;
 }
 
+const GUEST_TAB_TYPE_MAP = {
+  invitado: 'INVITADO',
+  dependiente: 'DEPENDIENTE',
+  temporal: 'TEMPORAL',
+} as const;
+
+type GuestTab = keyof typeof GUEST_TAB_TYPE_MAP;
+
 const GuestsModal: React.FC<GuestsModalProps> = ({
   visible,
   guests,
@@ -21,15 +29,19 @@ const GuestsModal: React.FC<GuestsModalProps> = ({
 }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [guestToDelete, setGuestToDelete] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<'invitados' | 'dependientes' | 'temporales'>('invitados');
+  const [activeTab, setActiveTab] = useState<GuestTab>('dependiente');
+
+  const activeGuestType = GUEST_TAB_TYPE_MAP[activeTab];
 
   // Filter guests by type
-  const filteredGuests = guests.filter(guest => guest.type === activeTab.toUpperCase());
+  const filteredGuests = guests.filter(guest => guest.user?.type === activeGuestType);
+
+  console.log('filteredGuests', filteredGuests);
 
   // Check if we have any guests of a specific type
-  const hasInvitados = guests.some(guest => guest.type === 'INVITADO');
-  const hasDependientes = guests.some(guest => guest.type === 'DEPENDIENTE');
-  const hasTemporales = guests.some(guest => guest.type === 'TEMPORAL');
+  // const hasInvitados = guests.some(guest => guest.type === 'INVITADO');
+  const hasDependientes = guests.some(guest => guest.user?.type === 'DEPENDIENTE');
+  const hasTemporales = guests.some(guest => guest.user?.type === 'TEMPORAL');
 
   return (
     <Modal
@@ -41,7 +53,7 @@ const GuestsModal: React.FC<GuestsModalProps> = ({
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Lista de invitados</Text>
+            <Text style={styles.modalTitle}>Lista de socios relacionados</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <Ionicons name="close" size={24} color={COLORS.gray600} />
             </TouchableOpacity>
@@ -49,37 +61,37 @@ const GuestsModal: React.FC<GuestsModalProps> = ({
 
           {/* Tabs for different guest types */}
           <View style={styles.tabsContainer}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={[styles.tab, activeTab === 'invitados' && styles.activeTab]}
               onPress={() => setActiveTab('invitados')}
             >
               <Text style={[
                 styles.tabText,
-                activeTab === 'invitados' ? styles.activeTabText : (hasInvitados ? styles.tabText : styles.disabledTabText)
+                activeTab === 'invitado' ? styles.activeTabText : (hasInvitados ? styles.tabText : styles.disabledTabText)
               ]}>
-                Invitados
+                Invitado 
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
-              style={[styles.tab, activeTab === 'dependientes' && styles.activeTab]}
-              onPress={() => setActiveTab('dependientes')}
+              style={[styles.tab, activeTab === 'dependiente' && styles.activeTab]}
+              onPress={() => setActiveTab('dependiente')}
             >
               <Text style={[
                 styles.tabText,
-                activeTab === 'dependientes' ? styles.activeTabText : (hasDependientes ? styles.tabText : styles.disabledTabText)
+                activeTab === 'dependiente' ? styles.activeTabText : (hasDependientes ? styles.tabText : styles.disabledTabText)
               ]}>
-                Dependientes
+                Dependiente
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.tab, activeTab === 'temporales' && styles.activeTab]}
-              onPress={() => setActiveTab('temporales')}
+              style={[styles.tab, activeTab === 'temporal' && styles.activeTab]}
+              onPress={() => setActiveTab('temporal')}
             >
               <Text style={[
                 styles.tabText,
-                activeTab === 'temporales' ? styles.activeTabText : (hasTemporales ? styles.tabText : styles.disabledTabText)
+                activeTab === 'temporal' ? styles.activeTabText : (hasTemporales ? styles.tabText : styles.disabledTabText)
               ]}>
-                Temporales
+                Temporal
               </Text>
             </TouchableOpacity>
           </View>
@@ -124,8 +136,8 @@ const GuestsModal: React.FC<GuestsModalProps> = ({
             ) : (
               <View style={styles.noGuestsContainer}>
                 <Text>
-                  {activeTab === 'invitados' ? 'No hay invitados registrados' :
-                   activeTab === 'dependientes' ? 'No hay socios dependientes registrados' :
+                  {activeTab === 'invitado' ? 'No hay invitados registrados' :
+                   activeTab === 'dependiente' ? 'No hay socios dependientes registrados' :
                    'No hay pases temporales registrados'}
                 </Text>
               </View>

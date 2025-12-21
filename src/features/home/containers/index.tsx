@@ -57,7 +57,6 @@ const HomeScreen = () => {
   const [showGuestsModal, setShowGuestsModal] = useState(false);
 
   const { getMemberData, loading, memberData, deleteGuest } = useMemberData();
-console.log('Member data in HomeScreen:', memberData);
   const handleGuestPassSuccess = useCallback(async () => {
     // Refresh the member data to get updated passes available and guests
     if (userId) {

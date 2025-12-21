@@ -87,7 +87,7 @@ const GuestManagement: React.FC<GuestManagementProps> = ({ onNewPassPress, onNew
             disabled={!isSocioOrDependiente}
           >
             <Text style={[styles.outlineButtonText, !isSocioOrDependiente ? styles.disabledButtonText : null]}>
-              Ver invitados
+              Socios relacionados
             </Text>
           </TouchableOpacity>
         </View>
