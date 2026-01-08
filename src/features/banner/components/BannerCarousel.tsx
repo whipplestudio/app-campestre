@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Image, ScrollView, StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native';
 import { Banner } from '../interfaces/Banner';
 
 const { width } = Dimensions.get('window');
@@ -12,16 +12,21 @@ interface BannerCarouselProps {
 
 const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners, loading = false, error = null }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedBanner, setSelectedBanner] = useState<Banner | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
-  const isScrolling = useRef(false); // Para saber si el usuario está deslizando
+  const isScrolling = useRef(false);
   const autoPlayInterval = useRef<number | NodeJS.Timeout | null>(null);
 
-  // Auto-rotate banners every 30 seconds
   useEffect(() => {
-    if (banners.length > 1) {
+    if (banners.length > 0) {
       autoPlayInterval.current = setInterval(() => {
-        goToNext();
-      }, 30000); // 30 seconds
+        setCurrentIndex(prevIndex => {
+          const nextIndex = (prevIndex + 1) % banners.length;
+          scrollToIndex(nextIndex);
+          return nextIndex;
+        });
+      }, 10000);
     }
 
     return () => {
@@ -31,16 +36,14 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners, loading = fals
     };
   }, [banners.length]);
 
-  const goToNext = () => {
-    if (banners.length > 0) {
-      setCurrentIndex(prevIndex => (prevIndex + 1) % banners.length);
-    }
+  const handleBannerPress = (banner: Banner) => {
+    setSelectedBanner(banner);
+    setModalVisible(true);
   };
 
-  const goToPrev = () => {
-    if (banners.length > 0) {
-      setCurrentIndex(prevIndex => (prevIndex - 1 + banners.length) % banners.length);
-    }
+  const closeModal = () => {
+    setModalVisible(false);
+    setSelectedBanner(null);
   };
 
   const handleScrollBegin = () => {
@@ -99,7 +102,12 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners, loading = fals
         contentContainerStyle={styles.scrollContainer}
       >
         {banners.map((banner, index) => (
-          <View key={banner.id} style={[styles.bannerContainer, { width }]}>
+          <TouchableOpacity 
+            key={banner.id} 
+            style={[styles.bannerContainer, { width }]}
+            activeOpacity={0.9}
+            onPress={() => handleBannerPress(banner)}
+          >
             {banner.image ? (
               <Image
                 source={{
@@ -115,62 +123,46 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners, loading = fals
                 <Text style={styles.placeholderText}>Imagen no disponible</Text>
               </View>
             )}
-            <View style={styles.bannerContent}>
-              <Text style={styles.title}>{banner.title}</Text>
-              <Text style={styles.description}>{banner.description}</Text>
-            </View>
-          </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
 
-      {/* Navigation Controls */}
-      {/* <View style={styles.navigationContainer}> */}
-        {/* Previous Button */}
-        {/* <TouchableOpacity
-          style={styles.navButton}
-          onPress={() => {
-            const prevIndex = (currentIndex - 1 + banners.length) % banners.length;
-            scrollToIndex(prevIndex);
-          }}
-          disabled={banners.length <= 1}
-        >
-          <Ionicons
-            name="chevron-back"
-            size={24}
-            color={banners.length <= 1 ? '#ccc' : '#fff'}
-          />
-        </TouchableOpacity> */}
-
-        {/* Indicators */}
-        {/* <View style={styles.indicatorsContainer}>
-          {banners.map((_, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.indicator,
-                { backgroundColor: index === currentIndex ? '#fff' : 'rgba(255,255,255,0.5)' }
-              ]}
-              onPress={() => scrollToIndex(index)}
-            />
-          ))}
-        </View> */}
-
-        {/* Next Button */}
-        {/* <TouchableOpacity
-          style={styles.navButton}
-          onPress={() => {
-            const nextIndex = (currentIndex + 1) % banners.length;
-            scrollToIndex(nextIndex);
-          }}
-          disabled={banners.length <= 1}
-        >
-          <Ionicons
-            name="chevron-forward"
-            size={24}
-            color={banners.length <= 1 ? '#ccc' : '#fff'}
-          />
-        </TouchableOpacity>
-      </View> */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+              <Text style={styles.closeButtonText}>✕</Text>
+            </TouchableOpacity>
+            
+            {selectedBanner && (
+              <>
+                {selectedBanner.image && (
+                  <Image
+                    source={{
+                      uri: selectedBanner.image.startsWith('http')
+                        ? selectedBanner.image
+                        : `data:image/jpeg;base64,${selectedBanner.image}`
+                    }}
+                    style={styles.modalImage}
+                    resizeMode="cover"
+                  />
+                )}
+                <View style={styles.modalTextContent}>
+                  <Text style={styles.modalTitle}>{selectedBanner.title}</Text>
+                  {selectedBanner.description && (
+                    <Text style={styles.modalDescription}>{selectedBanner.description}</Text>
+                  )}
+                </View>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -203,20 +195,16 @@ const styles = StyleSheet.create({
     // Add padding to prevent content from being cut off
   },
   bannerContainer: {
-    height: 180,
+    height: 220,
     position: 'relative',
-    width: width, // Aseguramos que el contenedor tenga el ancho correcto
-    overflow: 'hidden', // Asegura que nada se desborde del contenedor
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+    backgroundColor: '#f5f5f5',
   },
   bannerImage: {
     width: '100%',
     height: '100%',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    resizeMode: 'cover', // Asegura que la imagen cubra todo el contenedor manteniendo proporciones
   },
   placeholderImage: {
     width: '100%',
@@ -229,49 +217,68 @@ const styles = StyleSheet.create({
     color: '#999',
     fontSize: 16,
   },
-  bannerContent: {
-    position: 'absolute',
-    bottom: 0,
-    left: '-2%', // Añade un pequeño margen en los lados
-    right: '7%', // Añade un pequeño margen en los lados
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    padding: 16,
-    minHeight: 60, // Asegura un mínimo espacio para el texto
-    maxWidth: '94%', // Limita el ancho máximo del contenido de texto
-    alignSelf: 'center', // Centra el contenido horizontalmente
-  },
-  title: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 4,
-    textAlign: 'center',
-  },
-  description: {
-    color: '#fff',
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  navigationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+  modalOverlay: {
+    flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
-  },
-  navButton: {
-    padding: 8,
-  },
-  indicatorsContainer: {
-    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  indicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginHorizontal: 4,
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    width: '90%',
+    maxHeight: '80%',
+    overflow: 'hidden',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    zIndex: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  modalImage: {
+    width: '100%',
+    height: 200,
+  },
+  modalTextContent: {
+    padding: 20,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    color: '#333',
+  },
+  modalDescription: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 16,
+    lineHeight: 24,
+  },
+  modalDetails: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  modalDetailLabel: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#333',
+    marginRight: 8,
+  },
+  modalDetailValue: {
+    fontSize: 14,
+    color: '#666',
   },
 });
 
